@@ -58,6 +58,20 @@ export interface Note {
   contentHash: string;
 }
 
+export interface TocEntry {
+  depth: 2 | 3;
+  text: string;
+  id: string;
+}
+
+export interface RenderedPage {
+  /** Article body HTML (goes inside `article.qf-prose`). */
+  html: string;
+  toc: TocEntry[];
+  /** Content hash of the source at render time; render-cache key. */
+  contentHash: string;
+}
+
 export interface Attachment {
   absPath: string;
   /** Vault-relative posix path, NFC-normalized. */
