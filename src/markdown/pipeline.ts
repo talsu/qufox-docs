@@ -15,10 +15,14 @@ import { unified } from "unified";
 import { VFile } from "vfile";
 import type { Href } from "../site/url.js";
 import type { SiteIndex, TocEntry } from "../types.js";
+import { rehypeCallouts } from "./callouts.js";
 import { remarkBlockIds } from "./ofm/block-ids.js";
 import { MAX_EMBED_DEPTH, type RenderContext } from "./ofm/context.js";
+import { remarkHighlight } from "./ofm/highlight.js";
 import { preprocess } from "./ofm/preprocess.js";
+import { remarkTags } from "./ofm/tags.js";
 import { sliceByFragment } from "./ofm/transclude.js";
+import { remarkUnsupported } from "./ofm/unsupported.js";
 import { remarkWikilinks } from "./ofm/wikilinks.js";
 import { rehypeCodeLanguageFallback, rehypeQfClasses } from "./qf-classes.js";
 import { extractFenceLanguages, ShikiService } from "./shiki.js";
@@ -41,6 +45,8 @@ export interface RenderMarkdownContext {
 export interface RenderedMarkdown {
   html: string;
   toc: TocEntry[];
+  /** Non-fatal notices (e.g. unsupported blocks) collected during rendering. */
+  warnings: string[];
 }
 
 /** mdast phase: parse + Obsidian transforms (wikilinks, embeds, block ids). */
@@ -50,8 +56,11 @@ function buildMdastProcessor(breaks: boolean) {
     .use(remarkFrontmatter, ["yaml"])
     .use(remarkGfm)
     .use(breaks ? [remarkBreaks] : [])
+    .use(remarkHighlight)
     .use(remarkWikilinks)
+    .use(remarkTags)
     .use(remarkBlockIds)
+    .use(remarkUnsupported)
     .freeze();
 }
 
@@ -60,6 +69,7 @@ function buildHastProcessor(shiki: ShikiService) {
   return unified()
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
+    .use(rehypeCallouts)
     .use(rehypeSlug)
     .use(rehypeQfClasses)
     .use(rehypeAutolinkHeadings, {
@@ -111,7 +121,11 @@ export class MarkdownRenderer {
     const hast = (await this.#hast.run(mdast, file)) as HastRoot;
     const html = this.#hast.stringify(hast, file);
 
-    return { html: String(html), toc: (file.data.toc as TocEntry[] | undefined) ?? [] };
+    return {
+      html: String(html),
+      toc: (file.data.toc as TocEntry[] | undefined) ?? [],
+      warnings: [...new Set(file.messages.map((message) => message.reason))],
+    };
   }
 
   #rootContext(relPath: string): RenderContext {

@@ -151,3 +151,78 @@ describe("block ids", () => {
     expect(html).not.toContain("^quote-1");
   });
 });
+
+describe("callouts", () => {
+  it("renders a callout with the type modifier, sprite icon, and title", async () => {
+    const html = await render("> [!tip] Fast path\n> Body.");
+    expect(html).toContain('class="qf-callout qf-callout--tip"');
+    expect(html).toContain('class="qf-callout__title"');
+    expect(html).toContain('href="#qf-i-sparkle"');
+    expect(html).toContain("Fast path");
+    expect(html).toContain('class="qf-callout__body"');
+  });
+
+  it("defaults the title to the type when none is given", async () => {
+    const html = await render("> [!warning]\n> Careful.");
+    expect(html).toContain("qf-callout--warning");
+    expect(html).toContain(">Warning<");
+  });
+
+  it("renders foldable callouts as details/summary", async () => {
+    const collapsed = await render("> [!note]- Collapsed\n> Body.");
+    expect(collapsed).toContain("<details");
+    expect(collapsed).toContain("<summary");
+    expect(collapsed).not.toMatch(/<details[^>]*\bopen\b/);
+
+    const expanded = await render("> [!note]+ Expanded\n> Body.");
+    expect(expanded).toMatch(/<details[^>]*\bopen\b/);
+  });
+
+  it("maps aliases to the canonical type", async () => {
+    const html = await render("> [!summary] TLDR\n> Short.");
+    expect(html).toContain("qf-callout--abstract");
+  });
+
+  it("falls back to note for unknown types", async () => {
+    const html = await render("> [!nonsense] Huh\n> Body.");
+    expect(html).toContain("qf-callout--note");
+  });
+
+  it("nests callouts", async () => {
+    const html = await render("> [!note] Outer\n>\n> > [!info] Inner\n> > Nested.");
+    expect(html).toContain("qf-callout--note");
+    expect(html).toContain("qf-callout--info");
+  });
+});
+
+describe("marks, tags, and unsupported blocks", () => {
+  it("renders ==highlights== as mark elements", async () => {
+    const html = await render("A ==highlighted== phrase.");
+    expect(html).toContain("<mark>highlighted</mark>");
+  });
+
+  it("links inline #tags to their tag pages", async () => {
+    const html = await render("A #project and a #inbox/to-read tag.");
+    expect(html).toContain('class="qf-tag"');
+    expect(html).toContain('href="/tags/project"');
+    expect(html).toContain('href="/tags/inbox/to-read"');
+    expect(html).toContain(">#project<");
+  });
+
+  it("ignores digit-only tags and tags inside code", async () => {
+    const html = await render("Not #1984 and `#nope` and\n```\n#fenced\n```");
+    expect(html).not.toContain('href="/tags/1984"');
+    expect(html).not.toContain('href="/tags/nope"');
+    expect(html).not.toContain('href="/tags/fenced"');
+  });
+
+  it("replaces unsupported code blocks with a warning callout", async () => {
+    const { html, warnings } = await renderer.render("```mermaid\ngraph TD; A-->B;\n```", {
+      relPath: "x.md",
+    });
+    expect(html).toContain("qf-callout--warning");
+    expect(html).toContain("qufox-docs");
+    expect(html).not.toContain("graph TD");
+    expect(warnings.some((w) => w.includes("mermaid"))).toBe(true);
+  });
+});

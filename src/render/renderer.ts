@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import pc from "picocolors";
 import type { MarkdownRenderer } from "../markdown/pipeline.js";
 import type { Note, RenderedPage } from "../types.js";
 
@@ -19,10 +20,13 @@ export class Renderer {
     if (cached !== undefined && cached.contentHash === note.contentHash) return cached;
 
     const raw = await readFile(note.absPath, "utf8");
-    const { html, toc } = await this.#markdown.render(raw, {
+    const { html, toc, warnings } = await this.#markdown.render(raw, {
       title: note.title,
       relPath: note.relPath,
     });
+    for (const warning of warnings) {
+      console.warn(pc.yellow(`  ! ${note.relPath}: ${warning}`));
+    }
     const page: RenderedPage = { html, toc, contentHash: note.contentHash };
     this.#cache.set(note.slug, page);
     return page;
