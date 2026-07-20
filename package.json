@@ -1,0 +1,52 @@
+{
+  "name": "qufox-docs",
+  "version": "0.0.0",
+  "description": "Serve a folder of Obsidian-flavored Markdown as a modern blog, live.",
+  "keywords": [
+    "markdown",
+    "obsidian",
+    "blog",
+    "documentation",
+    "static-site-generator",
+    "live-reload"
+  ],
+  "homepage": "https://github.com/talsu/qufox-docs#readme",
+  "bugs": "https://github.com/talsu/qufox-docs/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/talsu/qufox-docs.git"
+  },
+  "license": "MIT",
+  "author": "talsu <talsu84@gmail.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.12"
+  },
+  "packageManager": "pnpm@11.15.0",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.4",
+    "@types/node": "^26.1.1",
+    "tsdown": "^0.22.11",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
