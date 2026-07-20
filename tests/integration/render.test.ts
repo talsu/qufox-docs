@@ -2,19 +2,25 @@ import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it } from "vitest";
 import { createServer, type QufoxServer } from "../../src/boot.js";
 import { resolveConfig } from "../../src/config/load.js";
+import type { QufoxUserConfig } from "../../src/config/schema.js";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 
-let site: QufoxServer;
-
-beforeAll(async () => {
+async function serveFixture(overrides?: QufoxUserConfig): Promise<QufoxServer> {
   const config = await resolveConfig({
     cwd: repoRoot,
     mode: "serve",
     contentDir: "fixtures/vault",
     env: {},
+    overrides,
   });
-  site = await createServer(config, { watch: false });
+  return createServer(config, { watch: false });
+}
+
+let site: QufoxServer;
+
+beforeAll(async () => {
+  site = await serveFixture();
 });
 
 describe("home page", () => {
@@ -104,5 +110,59 @@ describe("asset routes", () => {
     expect((await site.app.request("/assets/vault/hello-world.md")).status).toBe(404);
     expect((await site.app.request("/assets/vault/_private/secret.md")).status).toBe(404);
     expect((await site.app.request("/assets/vault/../package.json")).status).toBe(404);
+  });
+});
+
+describe("tag, archive, and pagination routes", () => {
+  it("lists all tags with counts", async () => {
+    const html = await (await site.app.request("/tags")).text();
+    expect(html).toContain("qf-tag");
+    expect(html).toContain('href="/tags/intro"');
+    expect(html).toContain("qf-badge--count");
+  });
+
+  it("shows posts for a tag", async () => {
+    const response = await site.app.request("/tags/intro");
+    expect(response.status).toBe(200);
+    const html = await response.text();
+    expect(html).toContain("#intro");
+    expect(html).toContain("Hello World");
+  });
+
+  it("serves unicode and nested tags", async () => {
+    const korean = await site.app.request(`/tags/${encodeURIComponent("한글태그")}`);
+    expect(korean.status).toBe(200);
+    expect(await korean.text()).toContain("소개");
+  });
+
+  it("404s on an unknown tag", async () => {
+    expect((await site.app.request("/tags/nonexistent")).status).toBe(404);
+  });
+
+  it("groups the archive by year", async () => {
+    const html = await (await site.app.request("/archive")).text();
+    expect(html).toContain("qf-list");
+    expect(html).toContain("2026");
+    expect(html).toContain("Hello World");
+  });
+
+  it("redirects /page/1 to the home root", async () => {
+    const response = await site.app.request("/page/1");
+    expect(response.status).toBe(301);
+    expect(response.headers.get("location")).toBe("/");
+  });
+
+  it("paginates the home feed when a page size is set", async () => {
+    const paged = await serveFixture({ feed: { pageSize: 2 } });
+    const first = await (await paged.app.request("/")).text();
+    expect(first).toContain("qf-pagination");
+    expect(first).toContain('href="/page/2"');
+
+    const second = await paged.app.request("/page/2");
+    expect(second.status).toBe(200);
+    expect(await second.text()).toContain("qf-pagination__item");
+
+    // Only a handful of published posts exist, so a far page is out of range.
+    expect((await paged.app.request("/page/99")).status).toBe(404);
   });
 });
