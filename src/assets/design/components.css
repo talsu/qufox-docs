@@ -1,4 +1,4 @@
-/*! qufox-design v0.6.0 — components.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
+/*! qufox-design v0.6.1 — components.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
 /* qufox · component library
  * Requires tokens.css. All components are plain CSS classes,
  * framework-agnostic (work with React, Vue, vanilla HTML).
@@ -2727,11 +2727,13 @@ details.qf-callout > .qf-callout__title:focus-visible { outline: none; box-shado
 .qf-toc__item--d2 { padding-left: var(--s-4); }
 .qf-toc__item--d3 { padding-left: var(--s-7); }
 .qf-toc__link {
-  display: flex; align-items: center; min-height: 44px;   /* WCAG 2.5.5 터치 타깃 */
-  padding: var(--s-2) var(--s-3);
+  /* block(=flex 아님)이라야 text-overflow:ellipsis 가 직접 텍스트에 적용된다.
+     padding(12*2) + line-height(20) = 44px 터치 타깃(WCAG 2.5.5), 단일 행 세로 중앙. */
+  display: block;
+  padding: var(--s-4) var(--s-3);
+  line-height: var(--s-6);
   border-left: 2px solid transparent;
   color: var(--text-muted); text-decoration: none;
-  line-height: var(--lh-snug);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .qf-toc__link:hover { color: var(--text-secondary); }
