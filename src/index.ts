@@ -1,10 +1,15 @@
 /**
  * qufox-docs — serve a folder of Obsidian-flavored Markdown as a modern blog.
  *
- * Programmatic API entry point. The public surface (`createServer`, `buildSite`)
- * lands together with the corresponding subsystems.
- *
  * @packageDocumentation
  */
 
-export {};
+export { ConfigError, type ResolveConfigOptions, resolveConfig } from "./config/load.js";
+export {
+  configSchema,
+  defineConfig,
+  type QufoxConfig,
+  type QufoxUserConfig,
+  type ResolvedConfig,
+} from "./config/schema.js";
+export { ENGINE_VERSION } from "./version.js";
