@@ -66,7 +66,7 @@ export function createApp(context: AppContext): Hono {
     const rendered = await renderer.render(note);
     c.header("ETag", etag);
     c.header("Cache-Control", "no-cache");
-    return c.html(PostPage({ note, page: rendered, ...page }));
+    return c.html(PostPage({ note, page: rendered, index, ...page }));
   });
 
   app.notFound((c) => notFound(c));

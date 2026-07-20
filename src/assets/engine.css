@@ -39,6 +39,39 @@ pre.shiki span {
   overflow-x: auto;
 }
 
+/* ── Theme toggle (show the icon for the theme you can switch to) ────── */
+[data-theme-icon="light"] {
+  display: none;
+}
+
+[data-theme="light"] [data-theme-icon="dark"] {
+  display: none;
+}
+
+[data-theme="light"] [data-theme-icon="light"] {
+  display: inline-block;
+}
+
+/* ── Post feed metadata row ──────────────────────────────────────────── */
+.qf-post-meta {
+  color: var(--text-muted);
+  font-size: var(--fs-13);
+}
+
+/* ── Table of contents (right-hand aside) ────────────────────────────── */
+.qf-toc {
+  position: sticky;
+  top: var(--s-6);
+}
+
+/* ── Prev / next post navigation ─────────────────────────────────────── */
+.qf-postnav__eyebrow {
+  color: var(--text-muted);
+  font-size: var(--fs-11);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
 /* ── Heading anchors (appended by the pipeline) ──────────────────────── */
 .qf-heading-anchor {
   margin-inline-start: var(--s-2);

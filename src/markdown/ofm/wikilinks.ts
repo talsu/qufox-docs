@@ -10,7 +10,7 @@ import {
   splitTarget,
 } from "../../content/resolve.js";
 import { relPathKey } from "../../content/slugs.js";
-import type { Note, SiteIndex } from "../../types.js";
+import type { Note } from "../../types.js";
 import { getRenderContext, type RenderContext } from "./context.js";
 
 /** `[[link]]`, `[[link|alias]]`, `![[embed]]`, `![[embed|size]]`. */

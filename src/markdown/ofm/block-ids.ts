@@ -18,13 +18,16 @@ export function remarkBlockIds() {
       const last = children[children.length - 1];
       if (last === undefined || last.type !== "text") return;
 
-      const match = (last as Text).value.match(BLOCK_ID_PATTERN);
+      const text = last as Text;
+      const match = text.value.match(BLOCK_ID_PATTERN);
       if (match === null) return;
 
-      (last as Text).value = (last as Text).value.slice(0, match.index).replace(/\s+$/, "");
-      const data = (node.data ??= {});
-      const hProperties = ((data as { hProperties?: Record<string, unknown> }).hProperties ??= {});
-      (hProperties as Record<string, unknown>).id = `block-${match[1]}`;
+      text.value = text.value.slice(0, match.index).replace(/\s+$/, "");
+      const data = (node.data ?? {}) as { hProperties?: Record<string, unknown> };
+      const hProperties = data.hProperties ?? {};
+      hProperties.id = `block-${match[1]}`;
+      data.hProperties = hProperties;
+      node.data = data as typeof node.data;
     });
   };
 }

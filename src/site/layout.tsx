@@ -13,6 +13,8 @@ export interface DocumentProps extends PageContext {
   /** Page title; the site title is appended automatically. */
   title?: string;
   description?: string;
+  /** Optional right-hand column (e.g. the table of contents). */
+  aside?: Child;
   children?: Child;
 }
 
@@ -50,6 +52,7 @@ export function Document(props: DocumentProps) {
           rel="stylesheet"
           href={`${href("assets/app/engine.css")}?v=${config.engineVersion}`}
         />
+        <script defer src={href("assets/app/theme.js")} />
         {config.mode === "serve" ? <script defer src={href("assets/app/livereload.js")} /> : null}
       </head>
       <body>
@@ -59,15 +62,45 @@ export function Document(props: DocumentProps) {
               <a class="qf-navbar__brand" href={href("")}>
                 {config.site.title}
               </a>
+              <div class="qf-navbar__nav">
+                <a class="qf-navbar__link" href={href("tags")}>
+                  Tags
+                </a>
+                <a class="qf-navbar__link" href={href("archive")}>
+                  Archive
+                </a>
+              </div>
               <span class="qf-navbar__spacer" />
+              <ThemeToggle />
             </nav>
           </header>
           <main class="qf-app-shell__main">
             <div class="qf-container qf-container--narrow">{props.children}</div>
           </main>
+          {props.aside !== undefined ? (
+            <aside class="qf-app-shell__aside">{props.aside}</aside>
+          ) : null}
         </div>
       </body>
     </html>
+  );
+}
+
+function ThemeToggle() {
+  return (
+    <button
+      type="button"
+      class="qf-btn qf-btn--ghost qf-btn--icon"
+      data-theme-toggle
+      aria-label="Toggle color theme"
+    >
+      <svg class="qf-icon qf-icon--sm" aria-hidden="true" data-theme-icon="dark">
+        <use href="#qf-i-moon" />
+      </svg>
+      <svg class="qf-icon qf-icon--sm" aria-hidden="true" data-theme-icon="light">
+        <use href="#qf-i-sun" />
+      </svg>
+    </button>
   );
 }
 
