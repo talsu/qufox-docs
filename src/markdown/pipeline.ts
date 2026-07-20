@@ -66,9 +66,12 @@ export class MarkdownRenderer {
       .freeze();
   }
 
-  async render(raw: string): Promise<RenderedMarkdown> {
+  async render(raw: string, context: { title?: string } = {}): Promise<RenderedMarkdown> {
     await this.#shiki.ensureLanguages(extractFenceLanguages(raw));
-    const file = await this.#processor.process(raw);
+    const file = await this.#processor.process({
+      value: raw,
+      data: { pageTitle: context.title },
+    });
     return {
       html: String(file),
       toc: (file.data.toc as TocEntry[] | undefined) ?? [],

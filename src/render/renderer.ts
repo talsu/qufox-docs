@@ -19,7 +19,7 @@ export class Renderer {
     if (cached !== undefined && cached.contentHash === note.contentHash) return cached;
 
     const raw = await readFile(note.absPath, "utf8");
-    const { html, toc } = await this.#markdown.render(raw);
+    const { html, toc } = await this.#markdown.render(raw, { title: note.title });
     const page: RenderedPage = { html, toc, contentHash: note.contentHash };
     this.#cache.set(note.slug, page);
     return page;

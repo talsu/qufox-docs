@@ -14,6 +14,8 @@ export function rehypeQfClasses() {
   return (tree: Root, file: VFile) => {
     const toc: TocEntry[] = [];
 
+    stripDuplicateTitle(tree, file);
+
     visit(tree, "element", (node, index, parent) => {
       if (node.tagName === "table" && parent !== undefined && typeof index === "number") {
         addClass(node, "qf-table");
@@ -77,6 +79,23 @@ export function rehypeCodeLanguageFallback(shiki: ShikiService) {
       }
     });
   };
+}
+
+/**
+ * The template renders the note title in the page header, so a leading H1
+ * that repeats it (the common Obsidian pattern) is dropped from the body.
+ */
+function stripDuplicateTitle(tree: Root, file: VFile): void {
+  const pageTitle = file.data.pageTitle;
+  if (typeof pageTitle !== "string" || pageTitle === "") return;
+
+  const firstElementIndex = tree.children.findIndex((child) => child.type === "element");
+  if (firstElementIndex === -1) return;
+  const first = tree.children[firstElementIndex];
+  if (first === undefined || first.type !== "element" || first.tagName !== "h1") return;
+
+  const matches = hastToString(first).trim().toLowerCase() === pageTitle.trim().toLowerCase();
+  if (matches) tree.children.splice(firstElementIndex, 1);
 }
 
 function addClass(node: Element, name: string): void {
