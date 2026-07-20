@@ -10,6 +10,7 @@ const main = defineCommand({
   },
   subCommands: {
     serve: () => import("./serve.js").then((m) => m.serveCommand),
+    build: () => import("./build.js").then((m) => m.buildCommand),
   },
 });
 

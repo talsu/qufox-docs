@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-export { bootSite, createServer, type QufoxServer, type Site } from "./boot.js";
+export { bootSite, buildSearchIndex, createServer, type QufoxServer, type Site } from "./boot.js";
 export { ConfigError, type ResolveConfigOptions, resolveConfig } from "./config/load.js";
 export {
   configSchema,
@@ -13,4 +13,5 @@ export {
   type QufoxUserConfig,
   type ResolvedConfig,
 } from "./config/schema.js";
+export { type BuildResult, exportSite } from "./export/build.js";
 export { ENGINE_VERSION } from "./version.js";
