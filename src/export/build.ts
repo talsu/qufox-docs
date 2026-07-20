@@ -1,4 +1,4 @@
-import { cp, mkdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import pc from "picocolors";
 import { ASSETS_DIR } from "../assets-dir.js";
@@ -31,8 +31,7 @@ export async function exportSite(config: ResolvedConfig): Promise<BuildResult> {
   const app = createApp({ ...site });
   const warnings: string[] = [];
 
-  await rm(outDir, { recursive: true, force: true });
-  await mkdir(outDir, { recursive: true });
+  await emptyDir(outDir);
 
   const referencedAttachments = new Set<string>();
   const routes = enumerateRoutes(site);
@@ -151,6 +150,13 @@ async function copyEngineAssets(outDir: string): Promise<void> {
   for (const script of ["theme.js", "search.js"]) {
     await cp(join(ASSETS_DIR, "client", script), join(outDir, "assets", "app", script));
   }
+}
+
+/** Empty a directory's contents without removing the directory itself (works on mount points). */
+async function emptyDir(dir: string): Promise<void> {
+  await mkdir(dir, { recursive: true });
+  const entries = await readdir(dir);
+  await Promise.all(entries.map((entry) => rm(join(dir, entry), { recursive: true, force: true })));
 }
 
 async function writeSite(outDir: string, file: string, contents: string): Promise<void> {
