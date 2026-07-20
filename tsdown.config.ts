@@ -7,4 +7,5 @@ export default defineConfig({
   fixedExtension: false,
   dts: true,
   clean: true,
+  copy: [{ from: "src/assets", to: "dist" }],
 });

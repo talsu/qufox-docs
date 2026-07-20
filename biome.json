@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/__snapshots__", "!fixtures"]
+    "includes": ["**", "!**/__snapshots__", "!fixtures", "!src/assets/design"]
   },
   "formatter": {
     "enabled": true,

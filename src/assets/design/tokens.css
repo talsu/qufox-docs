@@ -1,0 +1,700 @@
+/*! qufox-design v0.5.0 — tokens.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
+/* qufox · design-system tokens
+ * Dark-first. Semantic aliases flip under [data-theme="light"].
+ * Import at the root of your stylesheet:
+ *   @import "/design-system/tokens.css";
+ */
+
+:root {
+  /* ───── Brand (from brand-assets/tokens.css) ───── */
+  --qufox-night: #1e1b4b;
+  --qufox-lavender: #e9d5ff;
+  --qufox-violet: #8b5cf6;
+  --qufox-paper: #fafaff;
+
+  /* ───── Neutral scale (cool-navy tinted) ─────────
+   * Used for all surfaces, borders, and text in dark mode.
+   * Generated along the night-lavender axis so chrome harmonizes with brand. */
+  --n-0: #0e0c2a; /* deepest — app shell background */
+  --n-1: #141232; /* chat canvas */
+  --n-2: #1a1840; /* sidebar / panels */
+  --n-3: #221f4f; /* elevated surface (modals, popovers) */
+  --n-4: #2c285e; /* hovered surface */
+  --n-5: #3a3570; /* pressed / selected */
+  --n-6: #4d4780; /* dividers / strong borders */
+  --n-7: #6b6599; /* disabled text */
+  --n-8: #9892bf; /* muted text (timestamps, helpers) */
+  --n-9: #c4bfdc; /* secondary text */
+  --n-10: #e9d5ff; /* primary text (= lavender) */
+  --n-11: #f7f1ff; /* headings, emphasized */
+
+  /* ───── Accent scale (violet) ───── */
+  --a-50: #f5eeff;
+  --a-100: #e9dcff;
+  --a-200: #d4b8ff;
+  --a-300: #b48eff;
+  --a-400: #9d6ffd;
+  --a-500: #8b5cf6; /* primary accent */
+  --a-600: #7848e0;
+  --a-700: #5f38b8;
+  --a-800: #472a8c;
+  --a-900: #2f1c5e;
+  /* accent 채널(알파 틴트·ring 용). [data-brand] 이 ramp 와 함께 이 값을 덮어 화이트라벨. */
+  --accent-rgb: 139, 92, 246;
+
+  /* ───── Semantic status ───── */
+  --ok-400: #4ade80; /* online / success */
+  --ok-600: #16a34a;
+  --warn-400: #fbbf24; /* idle */
+  --warn-600: #d97706;
+  --danger-400: #f87171; /* DnD / error */
+  --danger-600: #dc2626;
+  --info-400: #60a5fa;
+  --info-600: #2563eb;
+  --info-700: #1d4ed8;
+  --ok-700: #166534; /* 라이트 표면 텍스트용 어두운 녹 */
+  --warn-700: #9a4708; /* 라이트 코드 string */
+  --warn-800: #92400e; /* 라이트 표면 텍스트용 어두운 앰버 */
+  --danger-700: #b91c1c; /* danger 버튼 hover / 라이트 텍스트 */
+  --gold-700: #8c6d00; /* 라이트 표면 골드 텍스트/글리프(AA) */
+  --gold-400: #f5c518; /* favorite/star — status 팔레트에 없는 골드(--warn 의미 오염 회피) */
+  --gold-600: #c99a00;
+
+  /* 확장 hue (viz 범주형 팔레트 전용 — status 의미 없음). 400=다크 표면용 밝은, 700=라이트 표면용 어두운. */
+  --teal-400: #2dd4bf;
+  --teal-700: #0f766e;
+  --orange-400: #fb923c;
+  --orange-700: #c2410c;
+  --pink-400: #f472b6;
+  --pink-700: #be185d;
+
+  /* ───── Typography ─────
+   * 브랜드 폰트는 --font-display / --font-mono-family 단일 슬롯에 격리(화이트라벨 교체 지점).
+   * 구조 토큰(--font-sans/--font-mono)은 그 슬롯 + 시스템 폴백 스택. 컴포넌트는 구조 토큰만 소비.
+   * 다른 폰트로 리브랜딩: brand.config.json 의 fontDisplay/fontMono/fontLink 변경(폴백은 유지). */
+  --font-display: "Space Grotesk";
+  --font-mono-family: "Geist Mono";
+  --font-sans:
+    var(--font-display), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-mono-family), ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+
+  --fs-11: 0.6875rem; /* 11px — timestamps, tags */
+  --fs-12: 0.75rem; /* 12px — small labels */
+  --fs-13: 0.8125rem; /* 13px — helpers, metadata */
+  --fs-14: 0.875rem; /* 14px — secondary body */
+  --fs-15: 0.9375rem; /* 15px — message body (base) */
+  --fs-16: 1rem; /* 16px — settings body */
+  --fs-18: 1.125rem; /* 18px — section titles */
+  --fs-20: 1.25rem; /* 20px — modal titles */
+  --fs-24: 1.5rem; /* 24px — page titles */
+  --fs-32: 2rem; /* 32px — display */
+  --fs-display: clamp(
+    2rem,
+    4vw,
+    2.75rem
+  ); /* 유동 히어로 헤딩(32→44px). 고정 스텝 램프의 반응형 변형. */
+  /* 072-N6-5 (D2 · FR-PS-09, 사용자 승인): 채팅 폰트 크기. 기본 = 메시지 본문 base(--fs-15).
+     외관 설정이 6단계(12/13/14/15/16/18 → --fs-12..--fs-18 rem 토큰) 중 하나를 <html>
+     style 에 --fs-chat 로 주입한다(rem 기반 — WCAG 1.4.4 Resize text 준수). */
+  --fs-chat: var(--fs-15);
+
+  --lh-tight: 1.2;
+  --lh-snug: 1.35;
+  --lh-normal: 1.5;
+  --lh-loose: 1.65;
+
+  --tracking-tight: -0.02em; /* headings */
+  --tracking-normal: 0;
+  --tracking-caps: 0.12em; /* eyebrow caps */
+
+  /* ───── Spacing (4px base) ───── */
+  --s-0: 0;
+  --s-1: 2px;
+  --s-2: 4px;
+  --s-3: 8px;
+  --s-4: 12px;
+  --s-5: 16px;
+  --s-6: 20px;
+  --s-7: 24px;
+  --s-8: 32px;
+  --s-9: 40px;
+  --s-10: 48px;
+  --s-11: 64px;
+  --s-12: 80px;
+
+  /* ───── Radii (medium — 8–14px, per brand direction) ───── */
+  --r-xs: 4px; /* badges, tags */
+  --r-sm: 6px; /* chips, small inputs */
+  --r-md: 8px; /* buttons */
+  --r-lg: 10px; /* inputs, menus */
+  --r-xl: 14px; /* cards, modals */
+  --r-2xl: 20px; /* large surfaces */
+  --r-pill: 999px; /* avatars, pills */
+
+  /* ───── Elevation (dark-tuned shadows + borders) ───── */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --elev-2: 0 2px 6px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --elev-3: 0 6px 16px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --elev-4: 0 16px 40px rgba(0, 0, 0, 0.55), 0 4px 8px rgba(0, 0, 0, 0.35);
+  --ring-accent: 0 0 0 2px var(--a-500);
+  --ring-focus: 0 0 0 2px var(--a-400), 0 0 0 4px rgba(var(--accent-rgb), 0.3);
+  --ring-danger: 0 0 0 2px var(--danger-400);
+
+  /* ───── Motion ───── */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-instant: 80ms;
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
+  --dur-deliberate: 520ms;
+  --dur-longpress: 500ms; /* mobile press-and-hold → context sheet */
+  --motion-typing: 1.4s; /* qf-typing 3점 bounce 루프 */
+
+  /* ───── Z-index layers ───── */
+  --z-base: 0;
+  --z-header: 10;
+  --z-drawer: 15; /* mobile slide-in drawers — above header, below dropdowns */
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-tabbar: 40; /* mobile bottom tab bar — global chrome above sticky content */
+  /* Settings overlay (full-viewport popup) sits below alert dialogs so
+     confirm prompts opened from within settings still land on top. */
+  --z-settings-bg: 50;
+  --z-settings: 51;
+  /* Modal / alert dialog — above settings so destructive confirms are
+     visible even when opened from inside a settings overlay. */
+  --z-modal-bg: 60;
+  --z-modal: 61;
+  /* Toasts float above every overlay so notifications stay visible
+     even during a modal confirm (e.g. "저장됨" right after the user
+     clicks Save inside a settings dialog). */
+  --z-toast: 70;
+  --z-tooltip: 80;
+  --z-media-overlay: 45; /* 영상 스테이지 위 글래스 컨트롤 — 모달/토스트 아래 */
+
+  /* ───── Layout widths · app-layout (chat 특화) ─────
+   * 아래 폭/높이는 채팅 앱 셸 레이아웃 치수다(범용 scale 토큰 아님). 화이트라벨/
+   * 신규 앱은 자체 레이아웃 토큰을 정의한다. 범용 토큰은 위의 spacing(--s-*)·
+   * radii(--r-*)·typography(--fs-*)·z-index·motion 스케일이다. (docs/adr/0002) */
+  --w-serverlist: 72px;
+  --w-channellist: 240px;
+  --w-channellist-min: 160px; /* drag-resize lower bound */
+  --w-channellist-max: 400px; /* drag-resize upper bound */
+  --w-memberlist: 240px;
+  --w-drawer-left: calc(
+    var(--w-serverlist) +
+    var(--w-channellist)
+  ); /* 312px — mobile left drawer */
+  --w-thread: 420px;
+  --w-topbar-search: 180px;
+  --w-settings: 820px;
+  --h-topbar: 48px;
+  --h-topbar-search: 28px;
+  --h-typingbar: 24px;
+  --h-composer: 48px; /* desktop composer min input height */
+
+  /* ───── Generic layout (범용 — 비-채팅 앱도 사용. app-layout 과 구분) ───── */
+  --container-w: 960px; /* 기본 본문 최대폭 */
+  --container-w-narrow: 640px; /* 폼·문서 */
+  --container-w-wide: 1200px; /* 대시보드·테이블 */
+  --grid-cell-min: 240px; /* qf-grid auto-fill 최소 셀폭 */
+  --sidenav-w: 240px; /* qf-app-shell / qf-sidenav 기본 폭 */
+  --aside-w: 280px; /* qf-app-shell 우측 보조 패널(aside) 폭 — 3단 레이아웃 */
+  --h-navbar: 56px; /* qf-navbar 높이 */
+  --aspect-16x9: 16 / 9; /* 미디어 슬롯 종횡비(비디오/썸네일) */
+  --aspect-2x3: 2 / 3; /* 미디어 슬롯 종횡비(포스터) */
+  --shell-vh: 100dvh; /* 풀뷰포트 셸 높이(dvh — 모바일 URL바/키보드 클리핑 방지) */
+  --composer-max-h: 180px; /* qf-composer auto-grow 성장 상한 */
+  --composer-font-min: 16px; /* qf-composer 입력 폰트 하한(iOS 줌 가드) */
+
+  /* ───── Mobile layout · layer: mobile (qf-m-*) ───── */
+  --m-topbar-h: 52px;
+  --m-tabbar-h: 56px; /* excl. safe area */
+  --m-tabbar-h-ios: 49px; /* iOS bottom tab bar standard */
+  --m-composer-h: 56px;
+  --m-touch: 44px; /* min hit target */
+  --m-gutter: 16px;
+  --m-sheet-r: 20px; /* bottom-sheet top radius */
+  --m-statusbar: 62px; /* iOS status bar clearance (9:41 row) — device-frame mockups only */
+  --m-swipe-threshold: 60px; /* drawer + reply swipe commit distance */
+  --m-swipe-icon-size: 32px;
+  --m-keyboard-pad: env(keyboard-inset-height, 0px);
+  --m-panel-ease: var(--ease-standard);
+  --m-panel-dur: var(--dur-slow);
+  --m-sheet-ease: var(--ease-emphasized);
+  --m-sheet-dur: var(--dur-base);
+  --m-tile-h: 64px;
+  --m-dm-row-avatar: 40px;
+  --m-dm-row-h: 64px;
+
+  /* ───── Component sizing & density ───── */
+  --sz-status-dot: 14px; /* presence dot on avatar-md */
+  --size-typing-dot: 7px; /* qf-typing 점 크기 */
+  --sort-indicator-size: 12px; /* qf-sort-toggle 방향 글리프 */
+  --sz-status-dot-sm: 10px; /* avatar-sm */
+  --sz-status-dot-ring: var(--s-1); /* 2px ring offset */
+
+  /* Message density — 2-tier: cozy(default) / compact. spacious reserved. */
+  --msg-group-gap-cozy: var(--s-5); /* 16px gap before a new author group */
+  --msg-group-gap-compact: var(--s-2); /* 4px */
+  --msg-group-gap-spacious: var(--s-6); /* 20px (reserved) */
+  --msg-pt-head-cozy: var(--s-5);
+  --msg-pt-head-compact: var(--s-2);
+  --msg-indent: calc(var(--s-10) + var(--s-4)); /* 60px = avatar 40 + gap 12 + 8 */
+  --avatar-msg-cozy: var(--s-10); /* 40px */
+  --avatar-msg-compact: var(--s-8); /* 32px */
+  --msg-group-threshold-ms: 480000; /* 8min author-grouping window (JS) */
+
+  /* Channel row density (Discord-calibrated: compact default rows) */
+  --h-channel-row-default: var(--s-8); /* 32px */
+  --h-channel-row-compact: var(--s-7); /* 24px */
+  --h-channel-row-spacious: var(--s-9); /* 40px (reserved) */
+
+  /* Server rail pill indicator heights */
+  --nav-pill-h-hover: var(--s-3); /* 8px */
+  --nav-pill-h-active: var(--s-8); /* 32px */
+
+  /* ───── Semantic aliases (dark default) ───── */
+  --bg-app: var(--n-0);
+  --bg-chat: var(--n-1);
+  --bg-panel: var(--n-2);
+  --bg-elevated: var(--n-3);
+  --bg-hover: var(--n-4);
+  --bg-selected: var(--n-5);
+  --bg-input: var(
+    --n-2
+  ); /* lifted above chat canvas so the compose area reads as a distinct surface (Discord/Slack parity) */
+  --bg-floating: var(
+    --n-0
+  ); /* popovers / command palette / autocomplete — darkest floating layer */
+  --border: var(--n-4);
+  --border-strong: var(--n-6);
+  --divider: var(--n-3);
+
+  /* 미디어 레터박스 표면 — 대비/커버 미디어 뒤 *무채색* 다크(neutral 표면은 night-lavender 틴트라
+     영상/포스터 주위에 보라 헤일로가 낀다). 테마 반응. on-media 글래스(--on-media-*)와는 별개. */
+  --bg-media: #121214;
+  /* 밝은 썸네일 위 배지 텍스트 AA용 그라데이션 스크림(미디어 위라 테마 무관 고정). */
+  --media-overlay-scrim: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0) 38%,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(0, 0, 0, 0.55)
+  );
+  /* on-media 글래스 크롬 — 임의 영상/이미지 위에 떠서 *테마 무관 항상 밝게* 유지(고정값, light 미오버라이드). */
+  --on-media-text: #ffffff;
+  --on-media-text-muted: rgba(255, 255, 255, 0.7);
+  --on-media-border: rgba(255, 255, 255, 0.18);
+  --on-media-border-hover: rgba(255, 255, 255, 0.42);
+  --on-media-glass-bg: rgba(15, 23, 42, 0.68);
+  --on-media-glass-bg-strong: rgba(15, 23, 42, 0.85);
+  --on-media-danger-text: #fecaca;
+  --on-media-danger-border: rgba(248, 113, 113, 0.35);
+  /* safe-area inset — 노치/컷아웃 회피, 최소 --s-4 보장. */
+  --safe-top: max(var(--s-4), env(safe-area-inset-top));
+  --safe-right: max(var(--s-4), env(safe-area-inset-right));
+  --safe-bottom: max(var(--s-4), env(safe-area-inset-bottom));
+  --safe-left: max(var(--s-4), env(safe-area-inset-left));
+
+  /* 코드 표면(codeblock/pre) + 반전 칩(tooltip). 컴포넌트가 raw 팔레트(--n-0/--n-9)를
+     직접 쓰던 것을 시맨틱으로 추상화 → 테마 인지 + 브랜드 추종(neutral ramp 파생). */
+  --bg-code: var(--n-0);
+  --text-code: var(--n-9);
+  --bg-inverse: var(--n-0);
+  --text-inverse: var(--n-11);
+  /* 코드 구문 강조 테마 — 코드 표면(--bg-code) 위에서 읽히는 색. 태그=브랜드 accent,
+     속성=ok(녹), 문자열=warn(앰버), 주석/구두점=muted. 하이라이트 엔진은 소비처(Prism 등)나
+     빌드 하이라이터가 담당하고, 색은 여기(테마 인지·브랜드 추종). */
+  --syntax-tag: var(--a-300);
+  --syntax-attr: var(--ok-400);
+  --syntax-string: var(--warn-400);
+  --syntax-comment: var(--text-muted);
+  --syntax-punct: var(--text-secondary);
+
+  --text: var(--n-10);
+  --text-strong: var(--n-11);
+  --text-secondary: var(--n-9);
+  --text-muted: var(--n-8);
+  --text-disabled: var(--n-7);
+  --text-onAccent: #ffffff;
+
+  --accent: var(--a-500);
+  --accent-hover: var(--a-400);
+  --accent-press: var(--a-600);
+  --accent-subtle: var(--a-900);
+  /* solid accent(흰 텍스트 onAccent 얹는 면, 예: primary 버튼). a-500 흰 텍스트는 4.23:1 로
+     AA 미달 → a-600 부터 사용해 ≥4.5 보장. 채널과 무관하게 ramp 기반이라 브랜드 추종. */
+  --accent-solid: var(--a-600);
+  --accent-solid-hover: var(--a-700);
+  --accent-solid-press: var(--a-800);
+
+  --link: var(--a-300);
+  --favorite: var(--gold-400); /* 즐겨찾기 활성 채움 */
+  --favorite-muted: var(--text-muted); /* 비활성 */
+  /* accent/status 를 *텍스트*로 쓸 때(라벨/뱃지글자) — fill 용 raw 셰이드는 다크 표면 전용이라
+     AA 미달. 테마 인지 텍스트 토큰으로 분리(라이트는 어두운 셰이드). */
+  --accent-text: var(--a-300);
+  --text-ok: var(--ok-400);
+  --text-warn: var(--warn-400);
+  --text-danger: var(--danger-400);
+  --text-info: var(--info-400);
+  --link-hover: var(--a-200);
+  /* generic accent-tint 표면(반투명). chat --mention-* 는 이를 alias 한다(범용 primitive). */
+  --accent-bg: rgba(var(--accent-rgb), 0.15);
+  --accent-bgHov: rgba(var(--accent-rgb), 0.25);
+  --danger-bg: rgba(248, 113, 113, 0.15); /* danger 틴트 표면(badge/menu hover) */
+  --danger-bgHov: rgba(248, 113, 113, 0.25);
+  --ok-bg: rgba(74, 222, 128, 0.15); /* success/online 틴트 */
+  --bg-row-hover: rgba(233, 213, 255, 0.02); /* 리스트/메시지 행 hover(테마별) */
+  --accent-on-subtle: var(--a-200); /* accent-subtle 표면 위 텍스트(badge/tag/mention) */
+  --bg-track: var(--n-5); /* 스위치 off 트랙 등 컨트롤 표면 */
+  --text-on-bright-fill: var(--n-0); /* 밝은 status 채움(ok-400 등) 위 고정 다크 텍스트 */
+  --accent-bg-faint: rgba(
+    var(--accent-rgb),
+    0.06
+  ); /* 아주 옅은 accent 표면(행 강조 등). 채널 기반 → 브랜드 추종. */
+  --mention-bg: var(--accent-bg);
+  --mention-bgHov: var(--accent-bgHov);
+  --badge-unread-bg: var(
+    --a-600
+  ); /* generic unread badge = violet; a-600 so white text clears AA (5.52:1) */
+  --badge-mention-bg: var(--danger-600); /* @mention badge = danger (distinct meaning) */
+  --unread-divider-accent: var(
+    --a-400
+  ); /* "new messages" line + label — lighter so the 11px label clears AA on dark */
+  --scrim: rgba(0, 0, 0, 0.55); /* drawer/sheet/lightbox dim — 중립(브랜드 무관) */
+  --scrim-strong: rgba(0, 0, 0, 0.92); /* 컨택트 시트 등 근불투명 스크림 */
+  --scrim-blur: 8px; /* 라이트박스 줌 스크림 블러 반경 */
+
+  /* ───── Data viz 범주형 팔레트 (qf-chart/barchart/donut/heatmap/legend 공유) ─────
+     테마별 셰이드(다크=밝은, 라이트=어두운)로 양 표면 ≥3.0(그래픽 AA, 대비 매트릭스 강제).
+     viz-1 = accent 라 브랜드 추종(primary 시리즈), 2~8 = 범주 구분 위한 고정 hue. */
+  --viz-1: var(--a-400);
+  --viz-2: var(--info-400);
+  --viz-3: var(--teal-400);
+  --viz-4: var(--ok-400);
+  --viz-5: var(--warn-400);
+  --viz-6: var(--orange-400);
+  --viz-7: var(--danger-400);
+  --viz-8: var(--pink-400);
+  /* chart 구조 토큰 — 표면/텍스트 토큰 alias(라이트서 자동 추종, 별도 override 불필요). */
+  --chart-grid: var(--border); /* y 그리드라인 */
+  --chart-axis: var(--border-strong); /* 축선 */
+  --chart-label: var(--text-muted); /* 눈금/축 레이블 */
+  --chart-tooltip-bg: var(--bg-floating); /* 호버 값 툴팁 표면 */
+  --chart-tooltip-text: var(--text);
+  --chart-track: var(--bg-track); /* barchart/progress 트랙(빈 막대 바닥) */
+  --heat-empty: var(--bg-elevated); /* heatmap 0 값 셀 */
+
+  --status-online: var(--ok-400);
+  --status-idle: var(--warn-400);
+  --status-dnd: var(--danger-400);
+  --status-offline: var(--n-7);
+  --status-streaming: var(--a-400); /* live / screen-share (violet, not Twitch purple) */
+
+  /* 아바타 상태점 ring = 아바타가 놓인 표면색(점을 표면에서 도려낸 효과). 범용 기본은
+     content 표면(--bg-chat)이며, 소비처가 실제 표면에 맞게 override 한다(generic 결합 해제, docs/tasks/002 G-1). */
+  --avatar-ring: var(--bg-panel);
+
+  --scrollbar-thumb: rgba(233, 213, 255, 0.12);
+  --scrollbar-thumbH: rgba(233, 213, 255, 0.24);
+}
+
+[data-theme="light"] {
+  --bg-app: var(--qufox-paper);
+  --bg-chat: #ffffff;
+  --bg-panel: #f4f1fa;
+  --bg-elevated: #ffffff;
+  --bg-hover: #ede7f7;
+  --bg-selected: #e1d6f2;
+  --bg-input: #ffffff;
+  --bg-floating: #ffffff;
+  --border: #e1dcec;
+  --border-strong: #c9c2db;
+  --divider: #ede9f4;
+  --bg-media: #e9e9ec;
+  --favorite: var(--gold-700); /* light: 진한 골드(AA) */
+  --accent-text: var(--a-600);
+  --text-ok: var(--ok-700);
+  --text-warn: var(--warn-800);
+  --text-danger: var(--danger-700);
+  --text-info: var(--info-700);
+  /* light: 코드는 옅은 패널 + 본문색, 반전 칩(tooltip)은 다크 neutral 유지(--text-inverse 는 :root 값 사용) */
+  --bg-code: var(--bg-panel);
+  --text-code: var(--text);
+  --bg-inverse: var(--n-2);
+  /* 라이트 코드 표면(밝은 패널) 위에선 더 진한 hue 로 대비 확보 */
+  --syntax-tag: var(--a-600);
+  --syntax-attr: var(--ok-700);
+  --syntax-string: var(--warn-700);
+
+  /* viz 팔레트 라이트 셰이드(어두운 hue 로 옅은 표면 위 ≥3.0). chart 구조 토큰은 표면 alias 라 자동 추종. */
+  --viz-1: var(--a-600);
+  --viz-2: var(--info-700);
+  --viz-3: var(--teal-700);
+  --viz-4: var(--ok-700);
+  --viz-5: #b7791f; /* 라이트 amber=ochre gold — gold-700(올리브)/warn-800(갈색)은 탁하고, caramel 은 orange 와 충돌. ochre 가 amber·orange·red 구분 최선(panel 3.26 > 3.0). */
+  --viz-6: var(--orange-700);
+  --viz-7: var(--danger-700);
+  --viz-8: var(--pink-700);
+
+  --text: var(--qufox-night);
+  --text-strong: #0f0c2b;
+  --text-secondary: #3f3a5c;
+  --text-muted: #6a6689;
+  --text-disabled: #a49fbb;
+  --text-onAccent: #ffffff;
+
+  --accent: var(--a-500);
+  --accent-hover: var(--a-600);
+  --accent-press: var(--a-700);
+  --accent-subtle: var(
+    --a-100
+  ); /* 브랜드 추종(하드코딩 violet 제거). qufox #E9DCFF ≈ 기존, ocean 연한 파랑 */
+
+  --link: var(--a-600);
+  --link-hover: var(--a-700);
+  --accent-bg: rgba(var(--accent-rgb), 0.1);
+  --accent-bgHov: rgba(var(--accent-rgb), 0.18);
+  --bg-row-hover: rgba(30, 27, 75, 0.03);
+  --accent-on-subtle: var(--a-700);
+  --bg-track: #c9c2db;
+  /* --mention-bg/--mention-bgHov 는 :root 에서 var(--accent-bg/-Hov) alias — 값 동일 유지 */
+
+  --elev-1: 0 1px 2px rgba(30, 27, 75, 0.08);
+  --elev-2: 0 2px 8px rgba(30, 27, 75, 0.1), 0 1px 2px rgba(30, 27, 75, 0.05);
+  --elev-3: 0 8px 24px rgba(30, 27, 75, 0.12), 0 2px 4px rgba(30, 27, 75, 0.06);
+  --elev-4: 0 20px 48px rgba(30, 27, 75, 0.18);
+
+  --scrollbar-thumb: rgba(30, 27, 75, 0.15);
+  --scrollbar-thumbH: rgba(30, 27, 75, 0.28);
+}
+
+/* ───── Base element styles ───── */
+html,
+body {
+  margin: 0;
+  background: var(--bg-app);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-15);
+  line-height: var(--lh-normal);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbars (dark-aware) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumbH);
+}
+
+/* Focus ring — always visible via keyboard, hidden on mouse click. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+/* Text inputs opt out of the halo — the caret is the focus cue, and
+   the ring was causing a visible border flash during typing. Kept for
+   buttons, links, and other interactive chrome where keyboard users
+   need an explicit target. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[contenteditable]:focus-visible {
+  box-shadow: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+/* ───── Reduced motion (WCAG 2.3.3) ─────
+   Global guard so every DS animation/transition respects the user's
+   OS-level "reduce motion" preference. Components don't need their own
+   media query — they inherit this. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 화이트라벨 브랜드 테마(시드→자동 파생) · scripts/build.mjs + packages/tokens/src/brands.json ── */
+
+[data-brand="ocean"] {
+  --a-50: #ebf1ff;
+  --a-100: #d5e2ff;
+  --a-200: #aac5ff;
+  --a-300: #75a0ff;
+  --a-400: #4f85fd;
+  --a-500: #3974f4;
+  --a-600: #2960db;
+  --a-700: #2f509a;
+  --a-800: #233c74;
+  --a-900: #17284d;
+  --accent-rgb: 57, 116, 244;
+  --n-0: #0f1013;
+  --n-1: #14161a;
+  --n-2: #1b1d22;
+  --n-3: #23252c;
+  --n-4: #2c2f37;
+  --n-5: #383d47;
+  --n-6: #484e5c;
+  --n-7: #636b7e;
+  --n-8: #9097a8;
+  --n-9: #bec3cc;
+  --n-10: #dadde2;
+  --n-11: #f3f3f5;
+}
+[data-brand="ocean"][data-theme="light"] {
+  --bg-app: #fafafb;
+  --bg-panel: #f2f2f4;
+  --bg-hover: #e8eaec;
+  --bg-selected: #d8dbdf;
+  --border: #dcdee3;
+  --border-strong: #c2c6cd;
+  --divider: #eaebed;
+  --text: #1f2226;
+  --text-strong: #0f1113;
+  --text-secondary: #3a3e47;
+  --text-muted: #636a79;
+}
+
+[data-brand="forest"] {
+  --a-50: #c1ffd8;
+  --a-100: #57ff95;
+  --a-200: #00e354;
+  --a-300: #00bc45;
+  --a-400: #02a03d;
+  --a-500: #088e39;
+  --a-600: #147939;
+  --a-700: #1d5f35;
+  --a-800: #154828;
+  --a-900: #0e2f1a;
+  --accent-rgb: 8, 142, 57;
+  --n-0: #0d110f;
+  --n-1: #121714;
+  --n-2: #181f1b;
+  --n-3: #1f2722;
+  --n-4: #27322b;
+  --n-5: #324037;
+  --n-6: #415247;
+  --n-7: #597162;
+  --n-8: #839d8d;
+  --n-9: #b7c6bc;
+  --n-10: #d6dfd9;
+  --n-11: #f1f4f2;
+}
+[data-brand="forest"][data-theme="light"] {
+  --bg-app: #fafbfa;
+  --bg-panel: #f0f3f1;
+  --bg-hover: #e6ebe8;
+  --bg-selected: #d5ddd8;
+  --border: #d9e0dc;
+  --border-strong: #bcc8c1;
+  --divider: #e7ece9;
+  --text: #1d231f;
+  --text-strong: #0e110f;
+  --text-secondary: #35413a;
+  --text-muted: #5b6f62;
+}
+
+[data-brand="amber"] {
+  --a-50: #ffefd4;
+  --a-100: #ffdda4;
+  --a-200: #ffb73e;
+  --a-300: #e48f00;
+  --a-400: #c27b03;
+  --a-500: #aa6e09;
+  --a-600: #8b6018;
+  --a-700: #6a4f20;
+  --a-800: #503b18;
+  --a-900: #352710;
+  --accent-rgb: 170, 110, 9;
+  --n-0: #11100e;
+  --n-1: #181613;
+  --n-2: #1f1d19;
+  --n-3: #282520;
+  --n-4: #332f28;
+  --n-5: #413c33;
+  --n-6: #544d42;
+  --n-7: #736a5b;
+  --n-8: #a09686;
+  --n-9: #c7c2b8;
+  --n-10: #e0dcd7;
+  --n-11: #f4f3f1;
+}
+[data-brand="amber"][data-theme="light"] {
+  --bg-app: #fbfafa;
+  --bg-panel: #f3f2f1;
+  --bg-hover: #ebe9e7;
+  --bg-selected: #dddad6;
+  --border: #e1deda;
+  --border-strong: #c9c5be;
+  --divider: #ecebe8;
+  --text: #24211d;
+  --text-strong: #12100e;
+  --text-secondary: #423e36;
+  --text-muted: #71695c;
+}
+
+[data-brand="rose"] {
+  --a-50: #ffecf0;
+  --a-100: #ffd8e0;
+  --a-200: #ffaec0;
+  --a-300: #ff7694;
+  --a-400: #fc416a;
+  --a-500: #f21445;
+  --a-600: #c92247;
+  --a-700: #952d44;
+  --a-800: #712233;
+  --a-900: #4c1722;
+  --accent-rgb: 242, 20, 69;
+  --n-0: #130f10;
+  --n-1: #1a1516;
+  --n-2: #231b1d;
+  --n-3: #2d2325;
+  --n-4: #382c2f;
+  --n-5: #48393c;
+  --n-6: #5d494d;
+  --n-7: #7f646a;
+  --n-8: #a99197;
+  --n-9: #cdbfc2;
+  --n-10: #e3dbdd;
+  --n-11: #f5f3f3;
+}
+[data-brand="rose"][data-theme="light"] {
+  --bg-app: #fbfafa;
+  --bg-panel: #f4f2f2;
+  --bg-hover: #ede9e9;
+  --bg-selected: #e0d9da;
+  --border: #e3ddde;
+  --border-strong: #cec3c5;
+  --divider: #eeeaeb;
+  --text: #272021;
+  --text-strong: #131010;
+  --text-secondary: #483b3e;
+  --text-muted: #7b6469;
+}

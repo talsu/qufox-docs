@@ -1,0 +1,54 @@
+/*!
+ * qufox-docs engine bridge styles.
+ * Everything here uses design-system tokens only — no raw colors, sizes,
+ * or shadows. Site structure comes from components.css; this file covers
+ * the engine-generated markup the design system cannot know about.
+ */
+
+/* ── Code blocks (shiki dual-theme output) ─────────────────────────────
+ * Shiki emits per-token `--shiki-dark` / `--shiki-light` variables
+ * (defaultColor: false); the active theme picks which one applies.
+ * Surfaces come from design tokens, token colors from the shiki theme. */
+.qf-prose pre.shiki {
+  background: var(--bg-code);
+  color: var(--text-code);
+  font-family: var(--font-mono-family, var(--font-mono));
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s-4);
+  overflow-x: auto;
+}
+
+.qf-prose pre.shiki code {
+  background: none;
+  padding: 0;
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+pre.shiki span {
+  color: var(--shiki-dark);
+}
+
+[data-theme="light"] pre.shiki span {
+  color: var(--shiki-light);
+}
+
+/* ── Tables (wrapped by the pipeline for horizontal scroll) ──────────── */
+.qf-table-wrap {
+  overflow-x: auto;
+}
+
+/* ── Heading anchors (appended by the pipeline) ──────────────────────── */
+.qf-heading-anchor {
+  margin-inline-start: var(--s-2);
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+
+.qf-prose :is(h1, h2, h3, h4, h5, h6):hover .qf-heading-anchor,
+.qf-heading-anchor:focus-visible {
+  opacity: 1;
+}

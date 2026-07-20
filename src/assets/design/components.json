@@ -1,0 +1,3407 @@
+{
+  "$description": "qufox 컴포넌트 매니페스트 — 사람과 AI 공용. 각 항목은 클래스 사용 인터페이스를 요약한다.",
+  "$note": "범용/채팅 분리(docs/tasks/001, docs/adr/0002) 완료. layer = generic | chat | mobile. 모바일 내부 도메인(generic/chat)은 ADR 0002 표 참조. qf-doc-*(문서 전용)은 제외. category 필드 추가(카탈로그 그룹, 페이지 생성 기준).",
+  "version": "0.2.0",
+  "tokensRef": "../tokens/dist/tokens.json",
+  "components": [
+    {
+      "name": "Button",
+      "class": "qf-btn",
+      "layer": "generic",
+      "category": "Actions",
+      "purpose": "기본 액션 버튼입니다.",
+      "variants": [
+        "qf-btn--primary",
+        "qf-btn--secondary",
+        "qf-btn--ghost",
+        "qf-btn--danger",
+        "qf-btn--link",
+        "qf-btn--sm",
+        "qf-btn--lg",
+        "qf-btn--icon"
+      ],
+      "requiredTokens": [
+        "--accent",
+        "--text",
+        "--text-onAccent",
+        "--border",
+        "--r-md",
+        "--s-3",
+        "--s-5",
+        "--dur-fast"
+      ],
+      "a11y": "키보드 포커스가 보이도록 하고, 비활성은 disabled 또는 aria-disabled 로 전달합니다. 아이콘 전용 버튼은 aria-label 로 의미를 보충하고, 텍스트 대비는 AA 4.5:1 을 지킵니다.",
+      "exampleHtml": "<button class=\"qf-btn qf-btn--primary\">Save</button>",
+      "purposeEn": "A primary action button.",
+      "a11yEn": "Make keyboard focus visible and convey the disabled state via disabled or aria-disabled. For icon-only buttons, add meaning with aria-label, and keep text contrast at AA 4.5:1."
+    },
+    {
+      "name": "IconButton",
+      "class": "qf-row-iconbtn",
+      "layer": "generic",
+      "category": "Actions",
+      "purpose": "리스트 행에 들어가는 군더더기 없는 아이콘 전용 버튼입니다.",
+      "variants": [],
+      "requiredTokens": ["--text-muted", "--text-strong", "--accent", "--r-xs"],
+      "a11y": "아이콘만 표시하므로 aria-label 로 동작을 반드시 전달하고, 키보드 포커스를 보이게 하며 비활성은 disabled 로 알립니다. 색만으로 상태를 전하지 않도록 합니다.",
+      "exampleHtml": "<button class=\"qf-row-iconbtn\" aria-label=\"Settings\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-settings\"/></svg></button>",
+      "examples": [
+        {
+          "label": "Settings",
+          "html": "<button class=\"qf-row-iconbtn\" aria-label=\"Settings\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-settings\"/></svg></button>"
+        },
+        {
+          "label": "Search",
+          "html": "<button class=\"qf-row-iconbtn\" aria-label=\"Search\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-search\"/></svg></button>"
+        },
+        {
+          "label": "More",
+          "html": "<button class=\"qf-row-iconbtn\" aria-label=\"More\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-more\"/></svg></button>"
+        },
+        {
+          "label": "Edit",
+          "html": "<button class=\"qf-row-iconbtn\" aria-label=\"Edit\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-edit\"/></svg></button>"
+        },
+        {
+          "label": "Notifications",
+          "html": "<button class=\"qf-row-iconbtn\" aria-label=\"Notifications\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-bell\"/></svg></button>"
+        }
+      ],
+      "purposeEn": "A clean, icon-only button designed to sit in list rows.",
+      "a11yEn": "Since only an icon is shown, the action must always be conveyed via aria-label; keep keyboard focus visible and signal the disabled state with disabled. Do not rely on color alone to convey state."
+    },
+    {
+      "name": "Input",
+      "class": "qf-input",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "한 줄 텍스트 입력 필드입니다.",
+      "variants": [],
+      "requiredTokens": [
+        "--bg-input",
+        "--text",
+        "--border",
+        "--border-strong",
+        "--text-muted",
+        "--r-lg",
+        "--s-4",
+        "--ring-danger"
+      ],
+      "a11y": "오류 상태는 aria-invalid=\"true\" 로 전달하며 보더와 링으로 함께 표시합니다. 라벨은 label 요소나 aria-label 로 연결하고, 안내문은 aria-describedby 로 묶습니다.",
+      "exampleHtml": "<input class=\"qf-input\" type=\"text\" aria-label=\"Search\" placeholder=\"Search\">",
+      "purposeEn": "A single-line text input field.",
+      "a11yEn": "Convey the error state with aria-invalid=\"true\", reinforced by the border and focus ring. Associate the label via a label element or aria-label, and tie helper text together with aria-describedby."
+    },
+    {
+      "name": "Textarea",
+      "class": "qf-textarea",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "여러 줄 텍스트를 입력하는 입력 필드입니다. qf-input 위에 높이, 세로 리사이즈를 더합니다.",
+      "variants": [],
+      "requiredTokens": [
+        "--bg-input",
+        "--border",
+        "--text",
+        "--r-lg",
+        "--s-3",
+        "--s-4",
+        "--ring-accent"
+      ],
+      "a11y": "label 을 for/id 또는 감싼 라벨로 연결하고, 오류는 aria-invalid=true 로 표시합니다. 리사이즈는 세로만 허용해 레이아웃 깨짐을 막습니다.",
+      "exampleHtml": "<textarea class=\"qf-input qf-textarea\" rows=\"3\" aria-label=\"Notes\" placeholder=\"Enter a note\"></textarea>",
+      "purposeEn": "A multi-line text input field that adds height and vertical resizing on top of qf-input.",
+      "a11yEn": "Associate the label via for/id or a wrapping label, and indicate errors with aria-invalid=true. Allow vertical-only resizing to prevent layout breakage."
+    },
+    {
+      "name": "Field",
+      "class": "qf-field",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "라벨, 컨트롤, 도움말, 오류 메시지를 묶는 폼 필드 래퍼입니다.",
+      "variants": ["qf-field__label", "qf-field__hint", "qf-field__error"],
+      "requiredTokens": [
+        "--s-2",
+        "--fs-12",
+        "--text-secondary",
+        "--text-muted",
+        "--danger-400",
+        "--tracking-caps"
+      ],
+      "a11y": "라벨을 컨트롤과 연결하고(감싸거나 for/id), 오류 텍스트는 aria-describedby 로 연결합니다. 색뿐 아니라 텍스트로 오류를 전달합니다.",
+      "exampleHtml": "<label class=\"qf-field\"><span class=\"qf-field__label\">Email</span><input class=\"qf-input\" type=\"email\" placeholder=\"you@example.com\"><span class=\"qf-field__hint\">Enter your work email.</span></label>",
+      "purposeEn": "A form field wrapper that groups the label, control, helper text, and error message.",
+      "a11yEn": "Associate the label with the control (by wrapping it or via for/id), and link error text with aria-describedby. Convey errors with text, not color alone."
+    },
+    {
+      "name": "DateRange",
+      "class": "qf-daterange",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "시작, 종료 날짜를 묶는 범위 입력입니다. 달력 선택은 브라우저 native date picker 를 사용합니다.",
+      "variants": ["qf-daterange__sep"],
+      "requiredTokens": ["--s-3", "--text-muted", "--bg-input", "--border", "--r-lg"],
+      "a11y": "각 input 에 from/to 라벨을 aria-label 로 연결하고, 범위 의미(시작~종료)를 함께 전달합니다.",
+      "exampleHtml": "<div class=\"qf-daterange\"><input class=\"qf-input\" type=\"date\" aria-label=\"Start date\" value=\"2026-06-01\"><span class=\"qf-daterange__sep\">~</span><input class=\"qf-input\" type=\"date\" aria-label=\"End date\" value=\"2026-06-16\"></div>",
+      "purposeEn": "A range input that groups a start and end date, using the browser's native date picker for calendar selection.",
+      "a11yEn": "Associate each input with a from/to label via aria-label, and also convey the range meaning (start to end)."
+    },
+    {
+      "name": "Avatar",
+      "class": "qf-avatar",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "사용자를 나타내는 원형 아바타입니다(상태 점은 옵션).",
+      "variants": [
+        "qf-avatar--xs",
+        "qf-avatar--sm",
+        "qf-avatar--md",
+        "qf-avatar--lg",
+        "qf-avatar--xl",
+        "qf-avatar__status",
+        "qf-avatar__status--online",
+        "qf-avatar__status--idle",
+        "qf-avatar__status--dnd",
+        "qf-avatar__status--offline"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--r-pill",
+        "--sz-status-dot",
+        "--sz-status-dot-ring",
+        "--status-online",
+        "--status-offline",
+        "--avatar-ring"
+      ],
+      "a11y": "이미지에는 의미 있는 alt 를 제공하고, 상태 점은 색만으로 전하지 않도록 온라인, 자리 비움 등 텍스트나 aria-label 로 보충합니다.",
+      "exampleHtml": "<span class=\"qf-avatar qf-avatar--md\">M<span class=\"qf-avatar__status qf-avatar__status--online\"></span></span>",
+      "examples": [
+        {
+          "label": "Online",
+          "html": "<span class=\"qf-avatar qf-avatar--md\">M<span class=\"qf-avatar__status qf-avatar__status--online\"></span></span>"
+        },
+        {
+          "label": "Idle",
+          "html": "<span class=\"qf-avatar qf-avatar--md\">H<span class=\"qf-avatar__status qf-avatar__status--idle\"></span></span>"
+        },
+        {
+          "label": "Do not disturb",
+          "html": "<span class=\"qf-avatar qf-avatar--md\">J<span class=\"qf-avatar__status qf-avatar__status--dnd\"></span></span>"
+        },
+        {
+          "label": "Offline",
+          "html": "<span class=\"qf-avatar qf-avatar--md\">S<span class=\"qf-avatar__status qf-avatar__status--offline\"></span></span>"
+        }
+      ],
+      "purposeEn": "A circular avatar that represents a user (with an optional status dot).",
+      "a11yEn": "Provide meaningful alt text for the image, and do not convey the status dot by color alone, supplementing it with text or aria-label such as online or away."
+    },
+    {
+      "name": "Badge",
+      "class": "qf-badge",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "라벨이나 개수를 강조하는 작은 배지입니다.",
+      "variants": [
+        "qf-badge--accent",
+        "qf-badge--danger",
+        "qf-badge--success",
+        "qf-badge--dot",
+        "qf-badge--count"
+      ],
+      "requiredTokens": [
+        "--bg-hover",
+        "--text-secondary",
+        "--accent-subtle",
+        "--danger-600",
+        "--r-xs",
+        "--r-pill",
+        "--s-2",
+        "--fs-11"
+      ],
+      "a11y": "색만으로 의미를 전하지 않도록 텍스트를 함께 두고, 개수 배지는 읽지 않음 N건 처럼 aria-label 로 보충합니다.",
+      "exampleHtml": "<span class=\"qf-badge qf-badge--count\" aria-label=\"3 new notifications\">3</span>",
+      "purposeEn": "A small badge that highlights a label or a count.",
+      "a11yEn": "Include text so meaning is not conveyed by color alone, and supplement count badges with aria-label such as N unread."
+    },
+    {
+      "name": "Tooltip",
+      "class": "qf-tooltip",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "요소를 가리킬 때 짧은 설명을 띄우는 말풍선입니다.",
+      "variants": [],
+      "requiredTokens": ["--bg-inverse", "--text-inverse", "--r-sm", "--fs-12", "--elev-2"],
+      "a11y": "role=\"tooltip\" 으로 표시하고 대상에 aria-describedby 로 연결합니다. pointer-events 가 없으므로 키보드 포커스로도 내용을 접근할 수 있게 합니다.",
+      "exampleHtml": "<span class=\"qf-tooltip\" role=\"tooltip\" id=\"tt-1\">Open settings</span>",
+      "purposeEn": "A bubble that shows a short description when an element is pointed at.",
+      "a11yEn": "Mark it with role=\"tooltip\" and associate it with the target via aria-describedby. Since it has no pointer-events, ensure the content is also reachable via keyboard focus."
+    },
+    {
+      "name": "Modal",
+      "class": "qf-modal",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "화면 위에 띄우는 모달 대화상자입니다.",
+      "variants": [
+        "qf-modal-backdrop",
+        "qf-modal__header",
+        "qf-modal__title",
+        "qf-modal__body",
+        "qf-modal__footer"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--r-xl",
+        "--elev-4",
+        "--s-7",
+        "--divider",
+        "--z-modal",
+        "--z-modal-bg"
+      ],
+      "a11y": "role=\"dialog\" 와 aria-modal=\"true\" 를 지정하고 aria-labelledby 로 제목과 연결합니다. 포커스를 모달 안에 가두고 Esc 로 닫으며, 열릴 때 포커스를 옮깁니다.",
+      "exampleHtml": "<div class=\"qf-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"m-t\"><div class=\"qf-modal__header\"><h2 class=\"qf-modal__title\" id=\"m-t\">Delete project</h2><button class=\"qf-btn qf-btn--icon qf-btn--lg qf-btn--ghost\" aria-label=\"Close\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-x\"/></svg></button></div><div class=\"qf-modal__body\">This action cannot be undone. The project and all its data will be permanently deleted.</div><div class=\"qf-modal__footer\"><button class=\"qf-btn qf-btn--ghost\">Cancel</button><button class=\"qf-btn qf-btn--danger\">Delete</button></div></div>",
+      "purposeEn": "A modal dialog presented over the screen.",
+      "a11yEn": "Set role=\"dialog\" and aria-modal=\"true\", and associate the title via aria-labelledby. Trap focus within the modal, close on Esc, and move focus into it when it opens."
+    },
+    {
+      "name": "Menu",
+      "class": "qf-menu",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "동작 목록을 보여주는 드롭다운 메뉴입니다.",
+      "variants": ["qf-menu__item", "qf-menu__item--danger", "qf-menu__separator", "qf-menu__kbd"],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--bg-hover",
+        "--r-lg",
+        "--r-sm",
+        "--divider",
+        "--s-2",
+        "--elev-3"
+      ],
+      "a11y": "role=\"menu\" 와 role=\"menuitem\" 을 지정하고, 위아래 화살표로 이동하며 Esc 로 닫습니다. 단축키는 텍스트로 함께 보여 색만으로 의미를 전하지 않습니다.",
+      "exampleHtml": "<div class=\"qf-menu\" role=\"menu\"><button class=\"qf-menu__item\" role=\"menuitem\">Edit<kbd class=\"qf-menu__kbd\">⌘E</kbd></button><button class=\"qf-menu__item\" role=\"menuitem\">Copy<kbd class=\"qf-menu__kbd\">⌘C</kbd></button><div class=\"qf-menu__separator\" role=\"separator\"></div><button class=\"qf-menu__item qf-menu__item--danger\" role=\"menuitem\">Delete</button></div>",
+      "purposeEn": "A dropdown menu that presents a list of actions.",
+      "a11yEn": "Set role=\"menu\" and role=\"menuitem\", navigate with the up and down arrows, and close on Esc. Show shortcuts as text so meaning is not conveyed by color alone."
+    },
+    {
+      "name": "Tabs",
+      "class": "qf-tabs",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "여러 뷰를 전환하는 탭 모음입니다.",
+      "variants": ["qf-tabs__item"],
+      "requiredTokens": [
+        "--divider",
+        "--text-secondary",
+        "--text-strong",
+        "--accent",
+        "--s-3",
+        "--s-4",
+        "--fs-14"
+      ],
+      "a11y": "role=\"tablist\" 과 role=\"tab\" 을 지정하고 선택 탭은 aria-selected=\"true\" 로 알립니다. 좌우 화살표로 이동하며 밑줄 표시 외에 상태를 텍스트로도 전합니다.",
+      "exampleHtml": "<div class=\"qf-tabs\" role=\"tablist\"><button class=\"qf-tabs__item\" role=\"tab\" aria-selected=\"true\">All</button><button class=\"qf-tabs__item\" role=\"tab\" aria-selected=\"false\">Mentions</button><button class=\"qf-tabs__item\" role=\"tab\" aria-selected=\"false\">Unread</button></div>",
+      "purposeEn": "A set of tabs for switching between multiple views.",
+      "a11yEn": "Set role=\"tablist\" and role=\"tab\", and mark the active tab with aria-selected=\"true\". Navigate with the left and right arrows, and convey state with text in addition to the underline indicator."
+    },
+    {
+      "name": "Toast",
+      "class": "qf-toast",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "화면 모서리에 잠깐 뜨는 알림 메시지입니다.",
+      "variants": [
+        "qf-toast--success",
+        "qf-toast--danger",
+        "qf-toast--warn",
+        "qf-toast__title",
+        "qf-toast__body"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--accent",
+        "--ok-400",
+        "--danger-400",
+        "--warn-400",
+        "--r-md",
+        "--elev-3"
+      ],
+      "a11y": "role=\"status\" 와 aria-live=\"polite\" 로 알리고 오류는 role=\"alert\" 를 씁니다. 좌측 색 막대만으로 의미를 전하지 않도록 제목과 본문 텍스트를 함께 둡니다.",
+      "exampleHtml": "<div class=\"qf-toast qf-toast--success\" role=\"status\" aria-live=\"polite\"><div class=\"qf-toast__title\">Saved</div></div>",
+      "purposeEn": "A notification message that appears briefly in a corner of the screen.",
+      "a11yEn": "Announce with role=\"status\" and aria-live=\"polite\", and use role=\"alert\" for errors. Include title and body text so meaning is not conveyed by the left color bar alone."
+    },
+    {
+      "name": "ToastRegion",
+      "class": "qf-toast-region",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "여러 qf-toast 를 쌓아 올리는 고정 컨테이너입니다. 기본 우상단, --bottom/--left 로 위치를 바꿉니다.",
+      "variants": ["qf-toast-region--bottom", "qf-toast-region--left"],
+      "requiredTokens": ["--z-toast", "--s-5", "--s-3"],
+      "a11y": "region 에 aria-live=polite(긴급은 assertive)를 두어 추가되는 토스트를 스크린리더가 읽게 합니다. pointer-events 는 토스트에만.",
+      "exampleHtml": "<div class=\"qf-toast-region\" aria-live=\"polite\"><div class=\"qf-toast qf-toast--success\" role=\"status\"><div class=\"qf-toast__title\">Saved</div></div><div class=\"qf-toast qf-toast--warn\" role=\"status\"><div class=\"qf-toast__title\">Sync delayed</div></div></div>",
+      "purposeEn": "A fixed container that stacks multiple qf-toast elements, defaulting to the top right and repositionable with --bottom/--left.",
+      "a11yEn": "Set aria-live=polite (assertive for urgent) on the region so screen readers announce toasts as they are added. Apply pointer-events to the toasts only."
+    },
+    {
+      "name": "CodeBlock",
+      "class": "qf-codeblock",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "코드를 모노스페이스로 표시하는 코드 블록입니다.",
+      "variants": [
+        "qf-codeblock--with-header",
+        "qf-codeblock__lang",
+        "qf-codeblock__header",
+        "qf-codeblock__header-lang",
+        "qf-codeblock__copy",
+        "qf-code-inline"
+      ],
+      "requiredTokens": [
+        "--bg-code",
+        "--text-code",
+        "--divider",
+        "--r-md",
+        "--s-4",
+        "--fs-13",
+        "--font-mono",
+        "--ok-400"
+      ],
+      "a11y": "복사 버튼은 button 요소로 두고 복사 완료는 색만이 아니라 'Copied' 텍스트로 함께 알립니다. 코드는 pre, code 마크업으로 감싸 의미를 전달합니다.",
+      "exampleHtml": "<pre class=\"qf-codeblock\"><span class=\"qf-codeblock__lang\">ts</span><code>const a = 1;</code></pre>",
+      "purposeEn": "A code block that displays code in a monospace font.",
+      "a11yEn": "Use a button element for the copy button and signal copy completion with 'Copied' text, not color alone. Wrap code in pre and code markup to convey its meaning."
+    },
+    {
+      "name": "Prose",
+      "class": "qf-prose",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "마크다운 등 장문 문서를 디자인 시스템 톤으로 렌더하는 본문(prose) 스타일입니다.",
+      "variants": [],
+      "requiredTokens": [
+        "--text",
+        "--text-strong",
+        "--link",
+        "--accent",
+        "--divider",
+        "--bg-panel",
+        "--font-mono",
+        "--container-w-narrow"
+      ],
+      "a11y": "시맨틱 HTML 계층(h1→h6 순서, ul/ol/blockquote/table 구조)을 유지하고, 링크는 밑줄로 색 외 단서를 함께 줍니다. 본문 대비 AA, 코드/표는 토큰 색을 사용합니다.",
+      "exampleHtml": "<article class=\"qf-prose\"><h2>Document title</h2><p>The body uses <strong>emphasis</strong>, a <a href=\"#prose\">link</a>, and <code>inline</code> code.</p><ul><li>First item</li><li>Second item</li></ul><blockquote>Blockquotes are highlighted with the accent bar.</blockquote></article>",
+      "purposeEn": "A body (prose) style that renders long-form documents such as Markdown in the design system's tone.",
+      "a11yEn": "Maintain the semantic HTML hierarchy (h1→h6 order, ul/ol/blockquote/table structure), and underline links to provide a cue beyond color. Keep body contrast at AA, and use token colors for code and tables."
+    },
+    {
+      "name": "SettingsLayout",
+      "class": "qf-settings",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "좌측 내비게이션과 본문 영역으로 나뉜 설정 레이아웃입니다.",
+      "variants": [
+        "qf-settings__nav",
+        "qf-settings__nav-head",
+        "qf-settings__nav-item",
+        "qf-settings__main"
+      ],
+      "requiredTokens": [
+        "--bg-panel",
+        "--divider",
+        "--s-4",
+        "--s-8",
+        "--r-sm",
+        "--text-secondary",
+        "--bg-selected"
+      ],
+      "a11y": "내비 항목은 aria-selected로 현재 선택을 표현하고 키보드 포커스가 보이게 합니다. 선택 상태는 배경색뿐 아니라 aria 속성으로 함께 전달합니다.",
+      "exampleHtml": "<div class=\"qf-settings\"><nav class=\"qf-settings__nav\"><a class=\"qf-settings__nav-item\" aria-selected=\"true\">General</a></nav><div class=\"qf-settings__main\">Content</div></div>",
+      "purposeEn": "A settings layout split into a left navigation and a main content area.",
+      "a11yEn": "Express the current selection on nav items with aria-selected and keep keyboard focus visible. Convey the selected state via aria attributes, not background color alone."
+    },
+    {
+      "name": "ToggleRow",
+      "class": "qf-toggle-row",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "제목과 설명, 우측 컨트롤을 한 줄로 묶는 설정 토글 행입니다.",
+      "variants": ["qf-toggle-row__text", "qf-toggle-row__title", "qf-toggle-row__desc"],
+      "requiredTokens": [
+        "--s-5",
+        "--divider",
+        "--fs-15",
+        "--fs-13",
+        "--text-strong",
+        "--text-muted",
+        "--font-sans"
+      ],
+      "a11y": "행의 제목 텍스트를 우측 스위치의 라벨로 연결해 무엇을 켜고 끄는지 화면 낭독기에 전달합니다.",
+      "exampleHtml": "<div class=\"qf-toggle-row\"><div class=\"qf-toggle-row__text\"><div class=\"qf-toggle-row__title\" id=\"r1\">Notifications</div><div class=\"qf-toggle-row__desc\">Receive desktop notifications</div></div><button class=\"qf-switch\" role=\"switch\" aria-checked=\"true\" aria-labelledby=\"r1\"></button></div>",
+      "purposeEn": "A settings toggle row that groups a title, description, and a control on the right into a single line.",
+      "a11yEn": "Associate the row's title text as the label for the switch on the right so screen readers know what is being turned on and off."
+    },
+    {
+      "name": "Switch",
+      "class": "qf-switch",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "켜짐, 꺼짐 상태를 토글하는 스위치입니다.",
+      "variants": [],
+      "requiredTokens": [
+        "--bg-track",
+        "--accent",
+        "--r-pill",
+        "--dur-fast",
+        "--dur-base",
+        "--ease-spring"
+      ],
+      "a11y": "role=switch와 aria-checked로 상태를 전달하고 라벨을 연결합니다. 키보드로 토글 가능하며 포커스가 보이게 합니다.",
+      "exampleHtml": "<button class=\"qf-switch\" role=\"switch\" aria-checked=\"true\" aria-label=\"Turn on notifications\"></button>",
+      "purposeEn": "A switch that toggles between on and off states.",
+      "a11yEn": "Convey state with role=switch and aria-checked, and associate a label. Make it togglable via keyboard and keep focus visible."
+    },
+    {
+      "name": "EmptyState",
+      "class": "qf-empty",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "내용이 없을 때 안내하는 빈 상태 영역입니다.",
+      "variants": ["qf-empty__title", "qf-empty__body"],
+      "requiredTokens": [
+        "--s-12",
+        "--s-7",
+        "--s-4",
+        "--text-muted",
+        "--text-strong",
+        "--fs-18",
+        "--fs-14"
+      ],
+      "a11y": "안내 의미를 아이콘이 아닌 제목, 본문 텍스트로 전달합니다. 동적으로 나타날 때는 aria-live 영역에 넣는 것을 권장합니다.",
+      "exampleHtml": "<div class=\"qf-empty\"><svg class=\"qf-icon qf-icon--xl\" aria-hidden=\"true\" style=\"color:var(--text-muted)\"><use href=\"#qf-i-inbox\"/></svg><div class=\"qf-empty__title\">No items yet</div><div class=\"qf-empty__body\">Add your first item to get started.</div><button class=\"qf-btn qf-btn--primary qf-btn--sm\">New item</button></div>",
+      "purposeEn": "An empty-state area that provides guidance when there is no content.",
+      "a11yEn": "Convey the guidance through title and body text rather than the icon. When it appears dynamically, placing it in an aria-live region is recommended."
+    },
+    {
+      "name": "Skeleton",
+      "class": "qf-skel",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "콘텐츠 로딩 중에 보여 주는 자리표시자 스켈레톤입니다.",
+      "variants": [],
+      "requiredTokens": ["--bg-hover", "--bg-selected", "--r-sm"],
+      "a11y": "로딩 영역을 aria-busy=\"true\"로 표시하고 의미 있는 콘텐츠가 아님을 화면 낭독기에 알립니다. 모션 민감 사용자를 위해 prefers-reduced-motion을 존중하는 것을 권장합니다.",
+      "exampleHtml": "<div class=\"qf-skel\" aria-hidden=\"true\" style=\"width: 60%; height: var(--s-4)\"></div>",
+      "purposeEn": "A placeholder skeleton shown while content is loading.",
+      "a11yEn": "Mark the loading area with aria-busy=\"true\" to tell screen readers it is not meaningful content. Respecting prefers-reduced-motion for motion-sensitive users is recommended."
+    },
+    {
+      "name": "Eyebrow",
+      "class": "qf-eyebrow",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "섹션 위에 올리는 작은 대문자 레이블입니다.",
+      "variants": [],
+      "requiredTokens": ["--fs-11", "--font-sans", "--tracking-caps", "--accent"],
+      "a11y": "대문자 변환은 시각 표현이며 실제 텍스트는 정상 표기로 두어 화면 낭독기가 올바르게 읽도록 합니다. 강조 색에만 의미를 싣지 않습니다.",
+      "exampleHtml": "<span class=\"qf-eyebrow\">New feature</span>",
+      "purposeEn": "A small uppercase label placed above a section.",
+      "a11yEn": "The uppercase transform is visual presentation only, so keep the actual text in normal casing so screen readers read it correctly. Do not carry meaning in the accent color alone."
+    },
+    {
+      "name": "SettingsOverlay",
+      "class": "qf-settings-overlay",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "전체 화면 위에 띄우는 설정 오버레이입니다.",
+      "variants": [
+        "qf-settings-overlay__backdrop",
+        "qf-settings-overlay__card",
+        "qf-settings-overlay__close"
+      ],
+      "requiredTokens": [
+        "--z-settings",
+        "--z-settings-bg",
+        "--bg-app",
+        "--r-xl",
+        "--elev-4",
+        "--s-8",
+        "--dur-base"
+      ],
+      "a11y": "카드는 role=dialog와 aria-modal=\"true\"로 모달임을 알리고 포커스를 가두며 Esc로 닫습니다. 닫기 버튼에는 aria-label을 둡니다.",
+      "exampleHtml": "<div class=\"qf-settings-overlay__backdrop\"></div><div class=\"qf-settings-overlay__card\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Settings\"><button class=\"qf-settings-overlay__close\" aria-label=\"Close\">×</button><div class=\"qf-stack\" style=\"padding:var(--s-8)\"><h2>Settings</h2><p style=\"color:var(--text-secondary);max-width:560px\">Edit app-wide settings such as account, notifications, and theme in a full-screen overlay. Lay it out with navigation on the left and a content area on the right.</p></div></div>",
+      "purposeEn": "A settings overlay presented over the full screen.",
+      "a11yEn": "Mark the card as a modal with role=dialog and aria-modal=\"true\", trap focus, and close on Esc. Give the close button an aria-label."
+    },
+    {
+      "name": "Banner",
+      "class": "qf-banner",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "상단 또는 본문에 알림을 표시하는 배너입니다.",
+      "variants": [
+        "qf-banner--info",
+        "qf-banner--warn",
+        "qf-banner--danger",
+        "qf-banner--accent",
+        "qf-banner__icon",
+        "qf-banner__msg",
+        "qf-banner__actions",
+        "qf-banner__close"
+      ],
+      "requiredTokens": [
+        "--accent",
+        "--accent-subtle",
+        "--info-400",
+        "--warn-400",
+        "--danger-400",
+        "--bg-panel",
+        "--s-3",
+        "--text-strong"
+      ],
+      "a11y": "성격에 맞춰 role=status 또는 role=alert를 부여하고 정보 의미를 색뿐 아니라 아이콘과 텍스트로 전달합니다. 닫기 버튼에는 aria-label을 둡니다.",
+      "exampleHtml": "<div class=\"qf-banner qf-banner--warn\" role=\"status\"><span class=\"qf-banner__msg\">Your connection is unstable.</span><button class=\"qf-banner__close\" aria-label=\"Close\">×</button></div>",
+      "purposeEn": "A banner that displays a notice at the top of the page or inline.",
+      "a11yEn": "Assign role=status or role=alert to match its nature, and convey the informational meaning with an icon and text, not color alone. Give the close button an aria-label."
+    },
+    {
+      "name": "KeyboardShortcutSheet",
+      "class": "qf-kbd-sheet",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "단축키 목록을 그룹별로 보여 주는 시트입니다.",
+      "variants": [
+        "qf-kbd-sheet__group",
+        "qf-kbd-sheet__group-title",
+        "qf-kbd-sheet__row",
+        "qf-kbd-sheet__keys",
+        "qf-kbd-sheet__plus",
+        "qf-kbd"
+      ],
+      "requiredTokens": [
+        "--s-6",
+        "--s-8",
+        "--s-2",
+        "--fs-11",
+        "--fs-14",
+        "--text-muted",
+        "--text-secondary",
+        "--tracking-caps"
+      ],
+      "a11y": "각 키캡은 kbd 요소로 표기해 의미를 전달하고 모달 안에 둘 때는 dialog 컨텍스트에서 포커스를 관리합니다.",
+      "exampleHtml": "<div class=\"qf-kbd-sheet\"><div class=\"qf-kbd-sheet__group\"><div class=\"qf-kbd-sheet__group-title\">Navigation</div><div class=\"qf-kbd-sheet__row\"><span>Open search</span><span class=\"qf-kbd-sheet__keys\"><kbd class=\"qf-kbd\">Ctrl</kbd><span class=\"qf-kbd-sheet__plus\">+</span><kbd class=\"qf-kbd\">K</kbd></span></div></div></div>",
+      "purposeEn": "A sheet that presents a list of keyboard shortcuts grouped by category.",
+      "a11yEn": "Mark each keycap with a kbd element to convey its meaning, and manage focus within the dialog context when placed inside a modal."
+    },
+    {
+      "name": "CommandPalette",
+      "class": "qf-cmd-palette",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "단축키로 여는 명령, 검색 팔레트입니다.",
+      "variants": [
+        "qf-cmd-palette-backdrop",
+        "qf-cmd-palette__search",
+        "qf-cmd-palette__input",
+        "qf-cmd-palette__list",
+        "qf-cmd-palette__section",
+        "qf-cmd-palette__row",
+        "qf-cmd-palette__row-icon",
+        "qf-cmd-palette__label",
+        "qf-cmd-palette__path",
+        "qf-cmd-palette__kbd",
+        "qf-cmd-palette__empty"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--r-xl",
+        "--elev-4",
+        "--accent",
+        "--bg-selected",
+        "--s-4"
+      ],
+      "a11y": "결과 행은 aria-selected로 현재 선택을 알리고 선택 행은 좌측 accent bar로 색 외 단서를 함께 제공합니다. 키보드 위아래 이동과 포커스 가시를 보장하고, 빈 결과는 텍스트로 안내합니다.",
+      "exampleHtml": "<div class=\"qf-cmd-palette\" role=\"dialog\" aria-label=\"Command palette\"><div class=\"qf-cmd-palette__search\"><input class=\"qf-cmd-palette__input\" role=\"combobox\" aria-expanded=\"true\" aria-controls=\"cmd-list\" placeholder=\"Search commands\"></div><ul id=\"cmd-list\" class=\"qf-cmd-palette__list\" role=\"listbox\"><li class=\"qf-cmd-palette__row\" role=\"option\" aria-selected=\"true\"><span class=\"qf-cmd-palette__label\">New document</span></li></ul></div>",
+      "purposeEn": "A command and search palette opened via a keyboard shortcut.",
+      "a11yEn": "Indicate the current selection on result rows with aria-selected, and provide a cue beyond color via a left accent bar on the selected row. Ensure up and down keyboard navigation and visible focus, and convey empty results with text."
+    },
+    {
+      "name": "EmojiPicker",
+      "class": "qf-emoji-picker",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "이모지를 검색, 카테고리별로 골라 넣는 선택기입니다.",
+      "variants": [
+        "qf-emoji-picker__search",
+        "qf-emoji-picker__search-field",
+        "qf-emoji-picker__search-input",
+        "qf-emoji-picker__tabs",
+        "qf-emoji-picker__tab",
+        "qf-emoji-picker__grid",
+        "qf-emoji-picker__category-label",
+        "qf-emoji-picker__row",
+        "qf-emoji-picker__cell",
+        "qf-emoji-picker__preview",
+        "qf-emoji-picker__preview-shortcode",
+        "qf-emoji-picker__preview--empty"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--r-xl",
+        "--elev-4",
+        "--accent",
+        "--bg-hover",
+        "--bg-selected",
+        "--s-3"
+      ],
+      "a11y": "카테고리 탭과 이모지 셀은 aria-selected로 상태를 전하고, 선택 탭은 하단 accent 표시로 색 외 단서를 더합니다. 하단 미리보기에 shortcode 텍스트를 함께 노출하고 포커스 가시를 보장합니다.",
+      "exampleHtml": "<div class=\"qf-emoji-picker\" role=\"dialog\" aria-label=\"Select emoji\"><div class=\"qf-emoji-picker__search\"><div class=\"qf-emoji-picker__search-field\"><span class=\"qf-emoji-picker__search-icon\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-search\"/></svg></span><input class=\"qf-emoji-picker__search-input\" type=\"search\" aria-label=\"Search emoji\" placeholder=\"Search\"></div></div><div class=\"qf-emoji-picker__tabs\" role=\"tablist\"><button class=\"qf-emoji-picker__tab\" role=\"tab\" aria-selected=\"true\" aria-label=\"Smileys\">😀</button><button class=\"qf-emoji-picker__tab\" role=\"tab\" aria-selected=\"false\" aria-label=\"Animals\">🐶</button><button class=\"qf-emoji-picker__tab\" role=\"tab\" aria-selected=\"false\" aria-label=\"Food\">🍔</button><button class=\"qf-emoji-picker__tab\" role=\"tab\" aria-selected=\"false\" aria-label=\"Activities\">⚽</button><button class=\"qf-emoji-picker__tab\" role=\"tab\" aria-selected=\"false\" aria-label=\"Symbols\">🎵</button></div><div class=\"qf-emoji-picker__grid\"><div class=\"qf-emoji-picker__category-label\">Smileys</div><div class=\"qf-emoji-picker__row\"><button class=\"qf-emoji-picker__cell\" aria-selected=\"true\" aria-label=\"Emoji\">😀</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😃</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😄</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😁</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😆</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😅</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😂</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">🤣</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😊</button></div><div class=\"qf-emoji-picker__row\"><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😇</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">🙂</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">🙃</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😉</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😌</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😍</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">🥰</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😘</button><button class=\"qf-emoji-picker__cell\" aria-label=\"Emoji\">😗</button></div></div><div class=\"qf-emoji-picker__preview\"><span class=\"qf-emoji-picker__preview-emoji\">😀</span><span class=\"qf-emoji-picker__preview-shortcode\">:grinning:</span></div></div>",
+      "purposeEn": "A picker for searching emoji and choosing them by category.",
+      "a11yEn": "Convey state on category tabs and emoji cells with aria-selected, and add a cue beyond color via a bottom accent indicator on the selected tab. Surface the shortcode text in the bottom preview and ensure visible focus."
+    },
+    {
+      "name": "UploadOverlay",
+      "class": "qf-upload-overlay",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "파일을 끌어다 놓는 동안 표시되는 드래그 앤 드롭 안내 오버레이입니다.",
+      "variants": [
+        "qf-upload-overlay__icon",
+        "qf-upload-overlay__title",
+        "qf-upload-overlay__hint"
+      ],
+      "requiredTokens": [
+        "--accent-bg",
+        "--accent",
+        "--r-xl",
+        "--s-3",
+        "--s-4",
+        "--text-strong",
+        "--text-secondary"
+      ],
+      "a11y": "오버레이는 pointer-events 없이 시각 안내만 담당하며, 제목과 힌트 텍스트로 동작을 명확히 전달합니다. 점선 테두리와 함께 안내 문구를 두어 색 단독 의존을 피합니다.",
+      "exampleHtml": "<div class=\"qf-upload-overlay\" role=\"status\" aria-live=\"polite\"><div class=\"qf-upload-overlay__icon\"><svg class=\"qf-icon\" aria-hidden=\"true\"><use href=\"#qf-i-upload\"/></svg></div><p class=\"qf-upload-overlay__title\">Drop here to upload</p><p class=\"qf-upload-overlay__hint\">Up to 50MB</p></div>",
+      "purposeEn": "A drag-and-drop guidance overlay shown while files are being dragged over a drop target.",
+      "a11yEn": "The overlay is purely visual with no pointer-events, conveying its action through a title and hint text. A dashed border is paired with guidance text so meaning is not carried by color alone."
+    },
+    {
+      "name": "Notice",
+      "class": "qf-notice",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "정보, 경고, 위험을 알리는 인라인 안내 박스입니다.",
+      "variants": [
+        "qf-notice--info",
+        "qf-notice--warn",
+        "qf-notice--danger",
+        "qf-notice__icon",
+        "qf-notice__body",
+        "qf-notice__title"
+      ],
+      "requiredTokens": [
+        "--border",
+        "--s-1",
+        "--info-400",
+        "--warn-400",
+        "--danger-400",
+        "--r-md",
+        "--bg-elevated",
+        "--text-secondary"
+      ],
+      "a11y": "좌측 보더 색과 아이콘에 더해 제목, 본문 텍스트로 의미를 전달해 색 단독 의존을 피합니다. 경고, 위험은 role=alert로, 정보는 role=status로 스크린리더에 알립니다.",
+      "exampleHtml": "<div class=\"qf-notice qf-notice--warn\" role=\"alert\"><span class=\"qf-notice__icon\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-alert\"/></svg></span><div class=\"qf-notice__body\"><p class=\"qf-notice__title\">Caution</p>You have unsaved changes.</div></div>",
+      "purposeEn": "An inline message box that surfaces info, warning, or danger states.",
+      "a11yEn": "Meaning is carried by a title and body text in addition to the left border color and icon, avoiding reliance on color alone. Warning and danger use role=alert, while info uses role=status to announce to screen readers."
+    },
+    {
+      "name": "OtpInput",
+      "class": "qf-otp-input",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "인증 코드를 자리별로 입력하는 일회용 코드 입력란입니다.",
+      "variants": ["qf-otp-input__digit"],
+      "requiredTokens": [
+        "--s-2",
+        "--s-10",
+        "--fs-24",
+        "--font-mono",
+        "--accent",
+        "--ring-accent",
+        "--danger-400",
+        "--ring-danger"
+      ],
+      "a11y": "각 자리 입력은 포커스 시 accent ring으로 가시하고, 오류는 aria-invalid와 danger ring으로 색 외 상태를 함께 전합니다. inputMode=numeric로 숫자 키패드를 제공하고 라벨로 용도를 안내합니다.",
+      "exampleHtml": "<div class=\"qf-otp-input\" role=\"group\" aria-label=\"6-digit verification code\"><input class=\"qf-otp-input__digit\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Digit 1\"><input class=\"qf-otp-input__digit\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Digit 2\"><input class=\"qf-otp-input__digit\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Digit 3\"><input class=\"qf-otp-input__digit\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Digit 4\"><input class=\"qf-otp-input__digit\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Digit 5\"><input class=\"qf-otp-input__digit\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Digit 6\"></div>",
+      "purposeEn": "A one-time code input field where a verification code is entered one digit per box.",
+      "a11yEn": "Each digit box shows an accent ring on focus for visible focus, and errors are conveyed beyond color with aria-invalid and a danger ring. inputMode=numeric brings up the numeric keypad, and a label communicates the field's purpose."
+    },
+    {
+      "name": "PasswordStrengthMeter",
+      "class": "qf-strength-meter",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "비밀번호 강도를 막대와 라벨로 실시간 표시합니다.",
+      "variants": [
+        "qf-strength-meter__track",
+        "qf-strength-meter__bar",
+        "qf-strength-meter__label"
+      ],
+      "requiredTokens": [
+        "--s-1",
+        "--s-2",
+        "--bg-hover",
+        "--danger-400",
+        "--warn-400",
+        "--ok-400",
+        "--ok-600",
+        "--r-sm"
+      ],
+      "a11y": "강도는 data-strength 막대 색과 함께 라벨 텍스트(약함, 보통, 강함)로 전달해 색 단독 의존을 피합니다. aria-live로 강도 변화를 알립니다.",
+      "exampleHtml": "<div class=\"qf-strength-meter\" data-strength=\"strong\"><div class=\"qf-strength-meter__track\"><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar is-on\"></span></div><p class=\"qf-strength-meter__label\" aria-live=\"polite\">Strong</p></div>",
+      "examples": [
+        {
+          "label": "Weak",
+          "html": "<div class=\"qf-strength-meter\" data-strength=\"weak\"><div class=\"qf-strength-meter__track\"><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar\"></span><span class=\"qf-strength-meter__bar\"></span></div><p class=\"qf-strength-meter__label\" aria-live=\"polite\">Weak</p></div>"
+        },
+        {
+          "label": "Medium",
+          "html": "<div class=\"qf-strength-meter\" data-strength=\"ok\"><div class=\"qf-strength-meter__track\"><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar\"></span></div><p class=\"qf-strength-meter__label\" aria-live=\"polite\">Medium</p></div>"
+        },
+        {
+          "label": "Strong",
+          "html": "<div class=\"qf-strength-meter\" data-strength=\"strong\"><div class=\"qf-strength-meter__track\"><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar is-on\"></span><span class=\"qf-strength-meter__bar is-on\"></span></div><p class=\"qf-strength-meter__label\" aria-live=\"polite\">Strong</p></div>"
+        }
+      ],
+      "purposeEn": "Displays password strength in real time using a bar and a label.",
+      "a11yEn": "Strength is conveyed through label text (weak, fair, strong) alongside the data-strength bar color, avoiding reliance on color alone. aria-live announces changes in strength."
+    },
+    {
+      "name": "BackupCodes",
+      "class": "qf-backup-codes",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "2단계 인증의 일회용 복구 코드를 보여주는 목록입니다.",
+      "variants": ["qf-backup-codes__code"],
+      "requiredTokens": [
+        "--s-2",
+        "--s-4",
+        "--bg-input",
+        "--border",
+        "--r-md",
+        "--font-mono",
+        "--text-strong",
+        "--text-muted"
+      ],
+      "a11y": "사용한 코드는 취소선과 함께 흐린 색으로 구분하며, 상태를 시각만이 아니라 텍스트로 함께 안내하면 좋습니다. mono 정렬로 코드 가독성을 확보합니다.",
+      "exampleHtml": "<ul class=\"qf-backup-codes\" aria-label=\"Backup codes\"><li class=\"qf-backup-codes__code\">A1B2-C3D4</li><li class=\"qf-backup-codes__code is-used\">E5F6-G7H8</li><li class=\"qf-backup-codes__code\">J9K0-L1M2</li><li class=\"qf-backup-codes__code\">N3P4-Q5R6</li><li class=\"qf-backup-codes__code\">S7T8-U9V0</li><li class=\"qf-backup-codes__code\">W1X2-Y3Z4</li><li class=\"qf-backup-codes__code\">B5C6-D7E8</li><li class=\"qf-backup-codes__code\">F9G0-H1J2</li></ul>",
+      "purposeEn": "A list that displays one-time recovery codes for two-factor authentication.",
+      "a11yEn": "Used codes are distinguished with a strikethrough and dimmed color; it is best to also convey their state through text and not visuals alone. A monospace alignment keeps the codes legible."
+    },
+    {
+      "name": "Checkbox",
+      "class": "qf-checkbox",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "약관 동의 등 확인을 받는 체크박스입니다.",
+      "variants": ["qf-checkbox__input", "qf-checkbox__label"],
+      "requiredTokens": [
+        "--s-3",
+        "--s-5",
+        "--accent",
+        "--fs-13",
+        "--text-secondary",
+        "--lh-normal"
+      ],
+      "a11y": "네이티브 input 위에 accent-color만 얹어 focus-visible 포커스 가시를 보존합니다. label과 input을 연결해 라벨 클릭과 스크린리더 읽기를 보장합니다.",
+      "exampleHtml": "<label class=\"qf-checkbox\"><input class=\"qf-checkbox__input\" type=\"checkbox\"><span class=\"qf-checkbox__label\">I agree to the terms</span></label>",
+      "purposeEn": "A checkbox for confirmations such as agreeing to terms.",
+      "a11yEn": "Only accent-color is layered onto the native input to preserve focus-visible focus visibility. The label and input are associated so that clicking the label works and screen readers read it correctly."
+    },
+    {
+      "name": "Stack",
+      "class": "qf-stack",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "자식 요소를 세로로 일정 간격으로 쌓는 레이아웃 프리미티브입니다.",
+      "variants": ["qf-stack--tight", "qf-stack--loose"],
+      "requiredTokens": ["--s-4", "--s-2", "--s-6"],
+      "a11y": "레이아웃 전용이라 자체 시맨틱이 없습니다. 의미 있는 묶음이면 ul/section 등 적절한 요소에 적용하세요. 간격은 --qf-gap 으로 조절합니다.",
+      "exampleHtml": "<div class=\"qf-stack\"><div>First</div><div>Second</div></div>",
+      "purposeEn": "A layout primitive that stacks child elements vertically at a consistent spacing.",
+      "a11yEn": "Layout-only, so it carries no semantics of its own. For a meaningful grouping, apply it to an appropriate element such as ul or section. Spacing is controlled via --qf-gap."
+    },
+    {
+      "name": "Cluster",
+      "class": "qf-cluster",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "요소를 가로로 묶고 넘치면 줄바꿈하는 레이아웃 프리미티브입니다(툴바, 태그군, 액션열).",
+      "variants": ["qf-cluster--between", "qf-cluster--end", "qf-cluster--tight"],
+      "requiredTokens": ["--s-3", "--s-2"],
+      "a11y": "레이아웃 전용. 액션 묶음이면 의미에 맞는 컨테이너 요소를 쓰고, 시각 순서와 DOM 순서를 일치시킵니다.",
+      "exampleHtml": "<div class=\"qf-cluster\"><button class=\"qf-btn qf-btn--primary\">Save</button><button class=\"qf-btn qf-btn--ghost\">Cancel</button></div>",
+      "purposeEn": "A layout primitive that groups elements horizontally and wraps when they overflow (toolbars, tag groups, action rows).",
+      "a11yEn": "Layout-only. For an action grouping, use a container element that fits its meaning, and keep visual order in sync with DOM order."
+    },
+    {
+      "name": "Grid",
+      "class": "qf-grid",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "셀이 자동으로 채워지는 반응형 그리드 레이아웃입니다.",
+      "variants": ["qf-grid--cols-2", "qf-grid--cols-3", "qf-grid--cols-4"],
+      "requiredTokens": ["--s-4", "--grid-cell-min"],
+      "a11y": "레이아웃 전용. --qf-grid-min 으로 최소 셀폭을 조절하며, 콘텐츠 순서가 의미를 가지면 DOM 순서를 유지합니다.",
+      "exampleHtml": "<div class=\"qf-grid\"><section class=\"qf-card\"><div class=\"qf-card__body\">A</div></section><section class=\"qf-card\"><div class=\"qf-card__body\">B</div></section></div>",
+      "purposeEn": "A responsive grid layout whose cells fill in automatically.",
+      "a11yEn": "Layout-only. Use --qf-grid-min to control the minimum cell width, and preserve DOM order when content order is meaningful."
+    },
+    {
+      "name": "Container",
+      "class": "qf-container",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "본문을 중앙 정렬하고 최대폭을 제한하는 페이지 컨테이너입니다.",
+      "variants": ["qf-container--narrow", "qf-container--wide"],
+      "requiredTokens": ["--container-w", "--container-w-narrow", "--container-w-wide", "--s-5"],
+      "a11y": "레이아웃 전용. 페이지 본문 폭과 좌우 여백을 일관되게 유지합니다. 보통 main/section 에 적용합니다.",
+      "exampleHtml": "<main class=\"qf-container qf-container--narrow\"><h1>Title</h1></main>",
+      "purposeEn": "A page container that centers content and constrains its maximum width.",
+      "a11yEn": "Layout-only. Keeps page content width and horizontal padding consistent. Typically applied to main or section."
+    },
+    {
+      "name": "Divider",
+      "class": "qf-divider",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "콘텐츠를 구분하는 수평 또는 수직 선입니다.",
+      "variants": ["qf-divider--vertical"],
+      "requiredTokens": ["--divider", "--s-5", "--s-4"],
+      "a11y": "의미 있는 구분은 hr 또는 role=separator 로 표현합니다. 순수 장식이면 aria-hidden 을 고려합니다.",
+      "exampleHtml": "<hr class=\"qf-divider\">",
+      "purposeEn": "A horizontal or vertical line that separates content.",
+      "a11yEn": "Express a meaningful separation with hr or role=separator. If it is purely decorative, consider aria-hidden."
+    },
+    {
+      "name": "Card",
+      "class": "qf-card",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "콘텐츠를 묶는 표면 컨테이너입니다(헤더, 본문, 푸터 슬롯).",
+      "variants": [
+        "qf-card__header",
+        "qf-card__title",
+        "qf-card__body",
+        "qf-card__footer",
+        "qf-card--interactive"
+      ],
+      "requiredTokens": [
+        "--bg-panel",
+        "--border",
+        "--divider",
+        "--r-xl",
+        "--s-6",
+        "--text-strong",
+        "--border-strong"
+      ],
+      "a11y": "상호작용 카드(--interactive)는 키보드 접근 가능한 요소(a/button)로 감싸거나 적절한 role 과 tabindex 를 부여하고 포커스를 보이게 합니다.",
+      "exampleHtml": "<section class=\"qf-card\"><div class=\"qf-card__header\"><h3 class=\"qf-card__title\">Title</h3></div><div class=\"qf-card__body\">This is the content.</div></section>",
+      "purposeEn": "A surface container that groups content (with header, body, and footer slots).",
+      "a11yEn": "An interactive card (--interactive) should be wrapped in a keyboard-accessible element (a/button) or given an appropriate role and tabindex, with visible focus."
+    },
+    {
+      "name": "Tag",
+      "class": "qf-tag",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "라벨이나 카테고리를 나타내는 칩입니다(카운트, 상태용 Badge 와 구분되는 텍스트 라벨).",
+      "variants": ["qf-tag--accent", "qf-tag--outline", "qf-tag__remove"],
+      "requiredTokens": [
+        "--bg-hover",
+        "--text-secondary",
+        "--accent-subtle",
+        "--accent-on-subtle",
+        "--r-sm",
+        "--s-3",
+        "--fs-12"
+      ],
+      "a11y": "제거 버튼(qf-tag__remove)에는 aria-label(예: 디자인 태그 제거)을 둡니다. 색만으로 의미를 전하지 않고 라벨 텍스트를 함께 둡니다.",
+      "exampleHtml": "<span class=\"qf-tag qf-tag--accent\">Design<button class=\"qf-tag__remove\" aria-label=\"Remove Design tag\">×</button></span>",
+      "purposeEn": "A chip that represents a label or category (a text label, distinct from Badge which is used for counts and status).",
+      "a11yEn": "Give the remove button (qf-tag__remove) an aria-label (e.g., Remove design tag). Pair label text with color so meaning is never conveyed by color alone."
+    },
+    {
+      "name": "Stat",
+      "class": "qf-stat",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "대시보드 지표(KPI)를 큰 값, 라벨, 추세 델타로 표시합니다.",
+      "variants": [
+        "qf-stat__label",
+        "qf-stat__value",
+        "qf-stat__delta",
+        "qf-stat__delta--up",
+        "qf-stat__delta--down"
+      ],
+      "requiredTokens": [
+        "--text-strong",
+        "--text-muted",
+        "--fs-32",
+        "--fs-13",
+        "--tracking-tight",
+        "--ok-600",
+        "--danger-400"
+      ],
+      "a11y": "추세는 색뿐 아니라 화살표/부호(▲▼ 또는 +/-)와 텍스트로 전달해 색 단독 의존을 피합니다. 값에는 단위/의미를 함께 둡니다.",
+      "exampleHtml": "<div class=\"qf-stat\"><span class=\"qf-stat__label\">Monthly active users</span><span class=\"qf-stat__value\">12,840</span><span class=\"qf-stat__delta qf-stat__delta--up\">▲ 8.2%</span></div>",
+      "examples": [
+        {
+          "label": "Increase",
+          "html": "<div class=\"qf-stat\"><span class=\"qf-stat__label\">Monthly active users</span><span class=\"qf-stat__value\">12,840</span><span class=\"qf-stat__delta qf-stat__delta--up\">▲ 8.2%</span></div>"
+        },
+        {
+          "label": "Decrease",
+          "html": "<div class=\"qf-stat\"><span class=\"qf-stat__label\">Churn rate</span><span class=\"qf-stat__value\">3.1%</span><span class=\"qf-stat__delta qf-stat__delta--down\">▼ 1.4%</span></div>"
+        },
+        {
+          "label": "No delta",
+          "html": "<div class=\"qf-stat\"><span class=\"qf-stat__label\">Pending tasks</span><span class=\"qf-stat__value\">27</span></div>"
+        }
+      ],
+      "purposeEn": "Displays a dashboard metric (KPI) with a large value, a label, and a trend delta.",
+      "a11yEn": "Trend is conveyed not just by color but with an arrow/sign (▲▼ or +/-) and text, avoiding reliance on color alone. Pair the value with its unit and meaning."
+    },
+    {
+      "name": "Sparkline",
+      "class": "qf-sparkline",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "시계열 추세를 작은 영역에 보여주는 미니 차트입니다. 데이터→points/path 는 소비처가 생성하고 DS 는 토큰 기반 스타일(선, 영역 색)을 제공합니다.",
+      "variants": [
+        "qf-sparkline__line",
+        "qf-sparkline__area",
+        "qf-sparkline--ok",
+        "qf-sparkline--warn",
+        "qf-sparkline--danger"
+      ],
+      "requiredTokens": ["--accent", "--ok-400", "--warn-400", "--danger-400"],
+      "a11y": "장식이 아니면 role=img + aria-label 로 추세 요약(예: \"최근 24시간 처리량, 상승\")을 제공하고, 색뿐 아니라 수치 라벨을 함께 둡니다.",
+      "exampleHtml": "<span class=\"qf-sparkline qf-sparkline--ok\"><svg viewBox=\"0 0 100 32\" preserveAspectRatio=\"none\" role=\"img\" aria-label=\"Recent throughput trend, rising\"><polyline class=\"qf-sparkline__area\" points=\"0,28 12,24 24,26 36,18 48,20 60,12 72,14 84,6 100,8 100,32 0,32\"></polyline><polyline class=\"qf-sparkline__line\" points=\"0,28 12,24 24,26 36,18 48,20 60,12 72,14 84,6 100,8\"></polyline></svg></span>",
+      "purposeEn": "A mini chart that shows a time-series trend within a small area. The consumer generates points/path from the data, and the DS provides token-based styling (line and area colors).",
+      "a11yEn": "Unless decorative, provide a trend summary via role=img + aria-label (e.g., \"Throughput over the last 24 hours, rising\"), and pair color with numeric labels."
+    },
+    {
+      "name": "Spinner",
+      "class": "qf-spinner",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "작업이 진행 중임을 나타내는 회전 로더입니다.",
+      "variants": ["qf-spinner--sm", "qf-spinner--lg"],
+      "requiredTokens": ["--bg-selected", "--accent", "--r-pill"],
+      "a11y": "role=status 와 aria-label(예: 불러오는 중)로 진행을 알립니다. prefers-reduced-motion 은 tokens.css 전역 가드가 존중합니다.",
+      "exampleHtml": "<span class=\"qf-spinner\" role=\"status\" aria-label=\"Loading\"></span>",
+      "purposeEn": "A spinning loader that indicates work is in progress.",
+      "a11yEn": "Announce progress with role=status and an aria-label (e.g., Loading). prefers-reduced-motion is honored by the global guard in tokens.css."
+    },
+    {
+      "name": "Progress",
+      "class": "qf-progress",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "작업 진행률을 막대로 표시합니다.",
+      "variants": [
+        "qf-progress__bar",
+        "qf-progress--success",
+        "qf-progress--danger",
+        "qf-progress--indeterminate"
+      ],
+      "requiredTokens": [
+        "--bg-hover",
+        "--accent",
+        "--ok-400",
+        "--danger-400",
+        "--r-pill",
+        "--s-2",
+        "--dur-base"
+      ],
+      "a11y": "role=progressbar 와 aria-valuenow/valuemin/valuemax 로 값을 전달합니다. 진행률 미정 상태는 aria-busy=true 또는 값 속성 생략으로 표현합니다.",
+      "exampleHtml": "<div class=\"qf-progress\" role=\"progressbar\" aria-valuenow=\"60\" aria-valuemin=\"0\" aria-valuemax=\"100\"><span class=\"qf-progress__bar\" style=\"width: 60%\"></span></div>",
+      "purposeEn": "Displays task progress as a bar.",
+      "a11yEn": "Convey the value with role=progressbar and aria-valuenow/valuemin/valuemax. Express an indeterminate state with aria-busy=true or by omitting the value attributes."
+    },
+    {
+      "name": "Radial",
+      "class": "qf-radial",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "용량, 사용률 등 단일 값을 방사형(게이지)으로 보여줍니다. --qf-radial-value(0~100) 를 인라인 style 로 전달합니다.",
+      "variants": ["qf-radial__value", "qf-radial--ok", "qf-radial--warn", "qf-radial--danger"],
+      "requiredTokens": [
+        "--accent",
+        "--bg-hover",
+        "--bg-elevated",
+        "--text-strong",
+        "--ok-400",
+        "--warn-400",
+        "--danger-400",
+        "--fs-18"
+      ],
+      "a11y": "role=progressbar + aria-valuenow/min/max 로 값을 전달하고, 중앙 수치 텍스트로 색 단독 의존을 피합니다.",
+      "exampleHtml": "<div class=\"qf-radial qf-radial--warn\" style=\"--qf-radial-value:72\" role=\"progressbar\" aria-valuenow=\"72\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-label=\"Disk usage\"><span class=\"qf-radial__value\">72%</span></div>",
+      "purposeEn": "Shows a single value such as capacity or utilization as a radial gauge. Pass --qf-radial-value (0–100) via inline style.",
+      "a11yEn": "Convey the value with role=progressbar + aria-valuenow/min/max, and use the centered numeric text to avoid reliance on color alone."
+    },
+    {
+      "name": "Select",
+      "class": "qf-select",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "네이티브 select 를 디자인에 맞춰 감싸는 드롭다운 선택 필드입니다.",
+      "variants": [],
+      "requiredTokens": [
+        "--bg-input",
+        "--border",
+        "--text",
+        "--r-lg",
+        "--s-4",
+        "--s-8",
+        "--text-muted",
+        "--ring-accent"
+      ],
+      "a11y": "내부는 네이티브 select 라 키보드/스크린리더 동작을 그대로 보존합니다. label 을 for/id 로 연결하고, 오류는 aria-invalid=true 로 표시합니다.",
+      "exampleHtml": "<span class=\"qf-select\"><select aria-label=\"Country\"><option>Korea</option><option>Japan</option></select></span>",
+      "purposeEn": "A dropdown select field that wraps a native select to match the design.",
+      "a11yEn": "Because the core is a native select, keyboard and screen reader behavior is preserved as-is. Associate the label via for/id, and indicate errors with aria-invalid=true."
+    },
+    {
+      "name": "Radio",
+      "class": "qf-radio",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "단일 선택 라디오 버튼과 라벨을 한 행으로 묶습니다.",
+      "variants": ["qf-radio__input", "qf-radio__label"],
+      "requiredTokens": ["--s-3", "--s-5", "--accent", "--fs-13", "--text-secondary"],
+      "a11y": "같은 name 으로 그룹을 묶고 qf-choice-list 로 감쌉니다. 네이티브 input 위에 accent-color 만 얹어 포커스 가시를 보존합니다.",
+      "exampleHtml": "<div class=\"qf-stack\" style=\"gap:var(--s-2)\"><label class=\"qf-radio\"><input class=\"qf-radio__input\" type=\"radio\" name=\"plan\" checked><span class=\"qf-radio__label\">Free</span></label><label class=\"qf-radio\"><input class=\"qf-radio__input\" type=\"radio\" name=\"plan\"><span class=\"qf-radio__label\">Pro</span></label><label class=\"qf-radio\"><input class=\"qf-radio__input\" type=\"radio\" name=\"plan\"><span class=\"qf-radio__label\">Team</span></label></div>",
+      "purposeEn": "Pairs a single-select radio button with its label on one row.",
+      "a11yEn": "Group options under the same name and wrap them in qf-choice-list. Only accent-color is layered onto the native input to preserve focus visibility."
+    },
+    {
+      "name": "ChoiceList",
+      "class": "qf-choice-list",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "체크박스나 라디오 그룹을 제목과 함께 묶는 컨테이너입니다.",
+      "variants": ["qf-choice-list__legend"],
+      "requiredTokens": ["--s-3", "--s-1", "--fs-12", "--text-secondary", "--tracking-caps"],
+      "a11y": "fieldset 으로 만들고 legend(qf-choice-list__legend)로 그룹 제목을 전달합니다. 단일 선택은 radio, 다중 선택은 checkbox 를 씁니다.",
+      "exampleHtml": "<fieldset class=\"qf-choice-list\"><legend class=\"qf-choice-list__legend\">Notifications</legend><label class=\"qf-checkbox\"><input class=\"qf-checkbox__input\" type=\"checkbox\" checked><span class=\"qf-checkbox__label\">Email</span></label><label class=\"qf-checkbox\"><input class=\"qf-checkbox__input\" type=\"checkbox\"><span class=\"qf-checkbox__label\">Push</span></label><label class=\"qf-checkbox\"><input class=\"qf-checkbox__input\" type=\"checkbox\"><span class=\"qf-checkbox__label\">SMS</span></label></fieldset>",
+      "purposeEn": "A container that groups a set of checkboxes or radios together with a title.",
+      "a11yEn": "Build it as a fieldset and convey the group title with legend (qf-choice-list__legend). Use radio for single selection and checkbox for multiple selection."
+    },
+    {
+      "name": "FormLayout",
+      "class": "qf-form",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "폼 필드를 세로로 배치하고 가로 행과 액션열을 제공하는 레이아웃입니다.",
+      "variants": ["qf-form__row", "qf-form__actions"],
+      "requiredTokens": ["--s-5", "--s-4", "--s-3", "--grid-cell-min"],
+      "a11y": "form 요소에 적용하고 각 필드는 qf-field 로 라벨/힌트/에러를 연결합니다. __row 는 좁은 폭에서 자동 줄바꿈됩니다.",
+      "exampleHtml": "<form class=\"qf-form\"><div class=\"qf-form__row\"><label class=\"qf-field\"><span class=\"qf-field__label\">Name</span><input class=\"qf-input\"></label></div><div class=\"qf-form__actions\"><button class=\"qf-btn qf-btn--primary\">Save</button></div></form>",
+      "purposeEn": "A layout that arranges form fields vertically and provides horizontal rows and an action row.",
+      "a11yEn": "Apply it to a form element, and associate each field's label/hint/error via qf-field. __row wraps automatically at narrow widths."
+    },
+    {
+      "name": "Link",
+      "class": "qf-link",
+      "layer": "generic",
+      "category": "Actions",
+      "purpose": "본문 안의 인라인 텍스트 링크입니다.",
+      "variants": ["qf-link--muted"],
+      "requiredTokens": ["--link", "--link-hover", "--r-xs", "--text-secondary"],
+      "a11y": "실제 a[href] 로 만들어 키보드/스크린리더 탐색을 보존하고, hover 밑줄과 충분한 대비로 색 단독 의존을 피합니다. 포커스 ring 이 보입니다.",
+      "exampleHtml": "<a class=\"qf-link\" href=\"/docs\">View docs</a>",
+      "purposeEn": "An inline text link within body content.",
+      "a11yEn": "Built as a real a[href] to preserve keyboard and screen reader navigation, with a hover underline and sufficient contrast so meaning is not carried by color alone. The focus ring is visible."
+    },
+    {
+      "name": "ButtonGroup",
+      "class": "qf-btn-group",
+      "layer": "generic",
+      "category": "Actions",
+      "purpose": "인접한 버튼들을 한 덩어리로 결합한 그룹입니다(분할 액션, 세그먼트).",
+      "variants": [],
+      "requiredTokens": ["--r-md"],
+      "a11y": "role=group 과 aria-label 로 묶음의 의미를 전달합니다. 토글 세그먼트면 각 버튼에 aria-pressed 를 둡니다.",
+      "exampleHtml": "<div class=\"qf-btn-group\" role=\"group\" aria-label=\"Sort\"><button class=\"qf-btn qf-btn--secondary\" aria-pressed=\"true\">List</button><button class=\"qf-btn qf-btn--secondary\">Grid</button></div>",
+      "purposeEn": "A group that joins adjacent buttons into a single unit (split actions, segments).",
+      "a11yEn": "Convey the unit's meaning with role=group and aria-label. For toggle segments, set aria-pressed on each button."
+    },
+    {
+      "name": "CopyButton",
+      "class": "qf-copy-btn",
+      "layer": "generic",
+      "category": "Actions",
+      "purpose": "id, 경로, URL 등을 클립보드에 복사하는 독립 버튼입니다. 복사 완료는 data-copied=true 로 상태를 표시합니다(토글은 소비처).",
+      "variants": [],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--text-secondary",
+        "--bg-hover",
+        "--ok-400",
+        "--r-sm",
+        "--font-mono"
+      ],
+      "a11y": "아이콘 옆 텍스트(복사/복사됨)로 동작과 결과를 전달하고, 완료는 색뿐 아니라 텍스트, aria-live 로 알립니다.",
+      "exampleHtml": "<button class=\"qf-copy-btn\" type=\"button\"><svg class=\"qf-icon qf-icon--sm\" aria-hidden=\"true\"><use href=\"#qf-i-copy\"/></svg>Copy</button>",
+      "purposeEn": "A standalone button that copies an id, path, URL, or similar to the clipboard. Copy completion is reflected via data-copied=true (the consumer handles the toggle).",
+      "a11yEn": "Convey the action and result with text next to the icon (Copy/Copied), and announce completion not just with color but with text and aria-live."
+    },
+    {
+      "name": "Table",
+      "class": "qf-table",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "행과 열로 데이터를 보여주는 표입니다. 정렬 캐럿(aria-sort), sticky 헤더, 행 선택, 툴바 affordance 를 제공합니다(정렬/선택 로직은 소비처).",
+      "variants": [
+        "qf-table-wrap",
+        "qf-table--striped",
+        "qf-table__th--sortable",
+        "qf-table__sort",
+        "qf-table--sticky",
+        "qf-table__toolbar",
+        "qf-table__toolbar-title",
+        "qf-table__toolbar-spacer"
+      ],
+      "requiredTokens": [
+        "--divider",
+        "--s-3",
+        "--s-4",
+        "--text-muted",
+        "--text",
+        "--bg-hover",
+        "--fs-14",
+        "--accent",
+        "--accent-bg",
+        "--bg-panel",
+        "--z-sticky"
+      ],
+      "a11y": "thead/th(scope=col)/tbody 구조로 헤더 관계를 전달하고, 표 용도는 caption 또는 aria-label 로 설명합니다. 좁은 폭은 qf-table-wrap 으로 가로 스크롤합니다.",
+      "exampleHtml": "<div class=\"qf-table-wrap\"><div class=\"qf-table__toolbar\"><span class=\"qf-table__toolbar-title\">Jobs</span><span class=\"qf-table__toolbar-spacer\"></span><button class=\"qf-btn qf-btn--secondary qf-btn--sm\">Retry</button></div><table class=\"qf-table qf-table--sticky\"><thead><tr><th><input type=\"checkbox\" class=\"qf-checkbox__input\" aria-label=\"Select all\"></th><th class=\"qf-table__th--sortable\" aria-sort=\"ascending\"><span class=\"qf-table__sort\">Name</span></th><th class=\"qf-table__th--sortable\"><span class=\"qf-table__sort\">Status</span></th></tr></thead><tbody><tr class=\"is-selected\"><td><input type=\"checkbox\" class=\"qf-checkbox__input\" checked aria-label=\"Select row\"></td><td>sync-skulk</td><td>Running</td></tr><tr><td><input type=\"checkbox\" class=\"qf-checkbox__input\" aria-label=\"Select row\"></td><td>backfill</td><td>Queued</td></tr></tbody></table></div>",
+      "purposeEn": "A table that presents data in rows and columns, offering a sort caret (aria-sort), a sticky header, row selection, and toolbar affordances (the consumer handles sort and selection logic).",
+      "a11yEn": "Convey header relationships with a thead/th(scope=col)/tbody structure, and describe the table's purpose with a caption or aria-label. At narrow widths, qf-table-wrap enables horizontal scrolling."
+    },
+    {
+      "name": "DescriptionList",
+      "class": "qf-dl",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "용어와 설명(키-값) 쌍을 정렬해 보여주는 목록입니다.",
+      "variants": [],
+      "requiredTokens": ["--s-2", "--s-5", "--text-muted", "--text", "--fs-13", "--fs-14"],
+      "a11y": "dl/dt/dd 시맨틱으로 키-값 관계를 전달합니다. 시각적 2열 정렬은 grid 가 담당하고 의미는 마크업이 보존합니다.",
+      "exampleHtml": "<dl class=\"qf-dl\"><dt>Plan</dt><dd>Pro</dd><dt>Joined</dt><dd>2026-01-01</dd></dl>",
+      "purposeEn": "A list that presents term-and-description (key-value) pairs in an aligned layout.",
+      "a11yEn": "Convey key-value relationships with dl/dt/dd semantics. The grid handles the visual two-column alignment while the markup preserves the meaning."
+    },
+    {
+      "name": "AvatarGroup",
+      "class": "qf-avatar-group",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "여러 아바타를 겹쳐 쌓아 참여자를 압축 표시합니다.",
+      "variants": [],
+      "requiredTokens": ["--avatar-ring", "--r-pill", "--s-3"],
+      "a11y": "각 아바타 이미지에 alt(사용자명)를 제공하고, 그룹 전체 의미(예: 참여자 5명)는 aria-label 로 보충합니다. ring 은 --avatar-ring(표면) 으로 표면과 분리됩니다.",
+      "exampleHtml": "<span class=\"qf-avatar-group\" aria-label=\"5 participants\"><span class=\"qf-avatar qf-avatar--sm\">M</span><span class=\"qf-avatar qf-avatar--sm\">H</span><span class=\"qf-avatar qf-avatar--sm\">J</span><span class=\"qf-avatar qf-avatar--sm\">+2</span></span>",
+      "purposeEn": "Stacks multiple avatars in an overlapping cluster to compactly represent a set of participants.",
+      "a11yEn": "Provide alt text (the user's name) on each avatar image, and supplement the group's overall meaning (e.g. \"5 participants\") with aria-label. The ring is separated from the surface via --avatar-ring (surface)."
+    },
+    {
+      "name": "Breadcrumb",
+      "class": "qf-breadcrumb",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "현재 위치까지의 경로를 보여주는 이동 경로 내비게이션입니다.",
+      "variants": ["qf-breadcrumb__item", "qf-breadcrumb__sep"],
+      "requiredTokens": ["--s-2", "--link", "--text-muted", "--fs-13"],
+      "a11y": "nav[aria-label=경로] 안의 ol 로 만들고, 현재 페이지 항목에 aria-current=page 를 둡니다. 구분 기호(__sep)는 aria-hidden 으로 장식 처리합니다.",
+      "exampleHtml": "<nav aria-label=\"Breadcrumb\"><ol class=\"qf-breadcrumb\"><li><a class=\"qf-breadcrumb__item\" href=\"/\">Home</a></li><li class=\"qf-breadcrumb__sep\" aria-hidden=\"true\">/</li><li><a class=\"qf-breadcrumb__item\" aria-current=\"page\">Settings</a></li></ol></nav>",
+      "purposeEn": "A breadcrumb trail that shows the path to the current location.",
+      "a11yEn": "Build it as an ol inside nav[aria-label=\"breadcrumb\"], and set aria-current=\"page\" on the current page's item. Mark the separator (__sep) as decorative with aria-hidden."
+    },
+    {
+      "name": "Pagination",
+      "class": "qf-pagination",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "페이지 사이를 이동하는 페이지네이션입니다.",
+      "variants": ["qf-pagination__item"],
+      "requiredTokens": [
+        "--s-1",
+        "--r-sm",
+        "--text-secondary",
+        "--bg-hover",
+        "--bg-selected",
+        "--text-strong",
+        "--fs-14"
+      ],
+      "a11y": "nav[aria-label=페이지] 로 감싸고 현재 페이지에 aria-current=page 를 둡니다. 이전/다음 버튼에는 aria-label 을 주고, 불가 상태는 disabled 로 알립니다.",
+      "exampleHtml": "<nav aria-label=\"Pagination\"><ul class=\"qf-pagination\"><li><button class=\"qf-pagination__item\" aria-label=\"Previous\">‹</button></li><li><button class=\"qf-pagination__item\" aria-current=\"page\">1</button></li><li><button class=\"qf-pagination__item\">2</button></li></ul></nav>",
+      "purposeEn": "Pagination controls for moving between pages.",
+      "a11yEn": "Wrap it in nav[aria-label=\"pagination\"] and set aria-current=\"page\" on the current page. Give the previous/next buttons an aria-label, and signal unavailable states with disabled."
+    },
+    {
+      "name": "Accordion",
+      "class": "qf-accordion",
+      "layer": "generic",
+      "category": "Disclosure",
+      "purpose": "제목을 눌러 내용을 펼치고 접는 디스클로저 목록입니다.",
+      "variants": ["qf-accordion__item", "qf-accordion__trigger", "qf-accordion__panel"],
+      "requiredTokens": [
+        "--border",
+        "--divider",
+        "--r-lg",
+        "--s-4",
+        "--s-5",
+        "--text-strong",
+        "--bg-hover"
+      ],
+      "a11y": "네이티브 details/summary 기반이라 키보드 토글과 펼침 상태 전달이 기본 제공됩니다. summary(qf-accordion__trigger)에 의미 있는 제목 텍스트를 둡니다.",
+      "exampleHtml": "<div class=\"qf-accordion\"><details class=\"qf-accordion__item\" open><summary class=\"qf-accordion__trigger\">Shipping policy</summary><div class=\"qf-accordion__panel\">Ships within 3 days.</div></details></div>",
+      "purposeEn": "A disclosure list whose sections expand and collapse when you click their header.",
+      "a11yEn": "Built on native details/summary, so keyboard toggling and expanded-state communication come for free. Put meaningful header text in the summary (qf-accordion__trigger)."
+    },
+    {
+      "name": "Popover",
+      "class": "qf-popover",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "트리거 기준으로 떠 있는 임의 콘텐츠 패널입니다(메뉴와 달리 자유 콘텐츠).",
+      "variants": [],
+      "requiredTokens": [
+        "--bg-floating",
+        "--border",
+        "--r-lg",
+        "--elev-3",
+        "--s-4",
+        "--z-dropdown"
+      ],
+      "a11y": "트리거에 aria-haspopup/aria-expanded 를 두고 패널과 aria-controls 로 연결합니다. Esc 로 닫고 포커스를 트리거로 복원하며, 열릴 때 포커스를 패널로 옮깁니다.",
+      "exampleHtml": "<div class=\"qf-popover\" role=\"dialog\" aria-label=\"Filter\"><p>This is floating content.</p></div>",
+      "purposeEn": "A floating panel of arbitrary content anchored to a trigger (free-form content, unlike a menu).",
+      "a11yEn": "Set aria-haspopup/aria-expanded on the trigger and link it to the panel with aria-controls. Close on Esc and restore focus to the trigger, and move focus into the panel when it opens."
+    },
+    {
+      "name": "Drawer",
+      "class": "qf-drawer",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "화면 측면에서 슬라이드되는 패널입니다(우측 기본, 좌측 변형).",
+      "variants": [
+        "qf-drawer-backdrop",
+        "qf-drawer--left",
+        "qf-drawer__header",
+        "qf-drawer__title",
+        "qf-drawer__body",
+        "qf-drawer__footer"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--border",
+        "--elev-4",
+        "--z-modal",
+        "--z-modal-bg",
+        "--scrim",
+        "--s-6",
+        "--divider"
+      ],
+      "a11y": "role=dialog 와 aria-modal=true 로 알리고 포커스를 패널 안에 가둡니다. Esc 와 backdrop 클릭으로 닫고, 열기 전 포커스를 복원합니다.",
+      "exampleHtml": "<div class=\"qf-drawer-backdrop\"></div><aside class=\"qf-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Settings\"><div class=\"qf-drawer__header\"><h2 class=\"qf-drawer__title\">Settings</h2></div><div class=\"qf-drawer__body\">Content</div></aside>",
+      "purposeEn": "A panel that slides in from the edge of the screen (right by default, with a left variant).",
+      "a11yEn": "Announce it with role=\"dialog\" and aria-modal=\"true\", and trap focus inside the panel. Close on Esc and backdrop click, and restore focus to where it was before opening."
+    },
+    {
+      "name": "AppShell",
+      "class": "qf-app-shell",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "헤더, 사이드바, 본문, 우측 보조 패널을 배치하는 범용 앱 셸입니다. 어떤 영역을 넣느냐로 1, 2, 3단과 헤더 유무가 자동 결정됩니다(별도 모디파이어 불필요). 컨테이너 쿼리로 셸 폭이 좁아지면(모바일) 사이드바, aside가 접혀 단일 컬럼이 됩니다. 폭은 --sidenav-w, --aside-w로 조절합니다.",
+      "variants": [
+        "qf-app-shell__navbar",
+        "qf-app-shell__sidenav",
+        "qf-app-shell__main",
+        "qf-app-shell__aside",
+        "qf-app-shell--locked",
+        "qf-scroll-region"
+      ],
+      "requiredTokens": ["--sidenav-w", "--aside-w", "--shell-vh"],
+      "a11y": "레이아웃 컨테이너입니다. 내부에 landmark(header, nav, main)를 두어 보조기술이 영역을 인식하게 합니다. 사이드바 폭은 --sidenav-w 로 조절합니다.",
+      "exampleHtml": "<div class=\"qf-app-shell\"><header class=\"qf-app-shell__navbar\"><nav class=\"qf-navbar\"><span class=\"qf-navbar__brand\">Acme</span><span class=\"qf-navbar__spacer\"></span><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\">Reports</a></nav></header><nav class=\"qf-app-shell__sidenav qf-sidenav\"><div class=\"qf-sidenav__section\">Menu</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Dashboard</a><a class=\"qf-sidenav__item\">Members</a><a class=\"qf-sidenav__item\">Settings</a></nav><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>A general app shell that lays out a header, sidebar, and main content. Columns derive from which regions you include.</p></main></div>",
+      "wideExamples": true,
+      "variantsAsChips": true,
+      "examples": [
+        {
+          "label": "1 column, with header",
+          "html": "<div class=\"qf-app-shell\"><header class=\"qf-app-shell__navbar\"><nav class=\"qf-navbar\"><span class=\"qf-navbar__brand\">Acme</span><span class=\"qf-navbar__spacer\"></span><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\">Reports</a></nav></header><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>Header plus content — include only the navbar and main.</p></main></div>"
+        },
+        {
+          "label": "1 column, no header",
+          "html": "<div class=\"qf-app-shell\"><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>Just the content area — include only main.</p></main></div>"
+        },
+        {
+          "label": "2 columns, with header",
+          "html": "<div class=\"qf-app-shell\"><header class=\"qf-app-shell__navbar\"><nav class=\"qf-navbar\"><span class=\"qf-navbar__brand\">Acme</span><span class=\"qf-navbar__spacer\"></span><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\">Reports</a></nav></header><nav class=\"qf-app-shell__sidenav qf-sidenav\"><div class=\"qf-sidenav__section\">Menu</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Dashboard</a><a class=\"qf-sidenav__item\">Members</a><a class=\"qf-sidenav__item\">Settings</a></nav><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>Sidebar plus content under a header — the default layout.</p></main></div>"
+        },
+        {
+          "label": "2 columns, no header",
+          "html": "<div class=\"qf-app-shell\"><nav class=\"qf-app-shell__sidenav qf-sidenav\"><div class=\"qf-sidenav__section\">Menu</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Dashboard</a><a class=\"qf-sidenav__item\">Members</a><a class=\"qf-sidenav__item\">Settings</a></nav><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>Sidebar plus content, with no top header.</p></main></div>"
+        },
+        {
+          "label": "3 columns, with header",
+          "html": "<div class=\"qf-app-shell\"><header class=\"qf-app-shell__navbar\"><nav class=\"qf-navbar\"><span class=\"qf-navbar__brand\">Acme</span><span class=\"qf-navbar__spacer\"></span><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\">Reports</a></nav></header><nav class=\"qf-app-shell__sidenav qf-sidenav\"><div class=\"qf-sidenav__section\">Menu</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Dashboard</a><a class=\"qf-sidenav__item\">Members</a><a class=\"qf-sidenav__item\">Settings</a></nav><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>Sidebar, content, and a right aside — a three-column workspace.</p></main><aside class=\"qf-app-shell__aside\"><div class=\"qf-eyebrow\">Activity</div><p>Recent updates and contextual details appear here.</p></aside></div>"
+        },
+        {
+          "label": "3 columns, no header",
+          "html": "<div class=\"qf-app-shell\"><nav class=\"qf-app-shell__sidenav qf-sidenav\"><div class=\"qf-sidenav__section\">Menu</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Dashboard</a><a class=\"qf-sidenav__item\">Members</a><a class=\"qf-sidenav__item\">Settings</a></nav><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>Three columns without a header bar.</p></main><aside class=\"qf-app-shell__aside\"><div class=\"qf-eyebrow\">Activity</div><p>Recent updates and contextual details appear here.</p></aside></div>"
+        },
+        {
+          "label": "Mobile (≤600px — sidebar & aside collapse)",
+          "html": "<div style=\"max-width:380px;margin-inline:auto;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden\"><div class=\"qf-app-shell\"><header class=\"qf-app-shell__navbar\"><nav class=\"qf-navbar\"><span class=\"qf-navbar__brand\">Acme</span><span class=\"qf-navbar__spacer\"></span><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\">Reports</a></nav></header><nav class=\"qf-app-shell__sidenav qf-sidenav\"><div class=\"qf-sidenav__section\">Menu</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Dashboard</a><a class=\"qf-sidenav__item\">Members</a><a class=\"qf-sidenav__item\">Settings</a></nav><main class=\"qf-app-shell__main\"><h1>Dashboard</h1><p>The same three-column markup: at a narrow width the sidebar and aside collapse to a single column. The app surfaces them via a drawer or tab bar.</p></main><aside class=\"qf-app-shell__aside\"><div class=\"qf-eyebrow\">Activity</div><p>Recent updates and contextual details appear here.</p></aside></div></div>"
+        }
+      ],
+      "purposeEn": "A general app shell that lays out a header, sidebar, main content, and an optional right aside. Columns and the header derive from which regions you include — one, two, or three columns, with or without a header, no modifier needed. A container query collapses the sidebar and aside to a single column when the shell gets narrow (mobile). Tune widths with --sidenav-w and --aside-w.",
+      "a11yEn": "This is a layout container. Place landmarks (header, nav, main) inside it so assistive technology can recognize each region. Control the sidebar width with --sidenav-w.",
+      "deprecated": ["qf-app-shell--no-sidenav"]
+    },
+    {
+      "name": "Navbar",
+      "class": "qf-navbar",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "브랜드, 내비 링크, 액션을 담는 상단 앱 바입니다.",
+      "variants": ["qf-navbar__brand", "qf-navbar__nav", "qf-navbar__link", "qf-navbar__spacer"],
+      "requiredTokens": [
+        "--h-navbar",
+        "--bg-panel",
+        "--divider",
+        "--s-5",
+        "--text-strong",
+        "--bg-hover",
+        "--bg-selected"
+      ],
+      "a11y": "header > nav[aria-label] 로 감싸고, 현재 위치 링크에 aria-current=page 를 둡니다. 링크는 a[href], 키보드 포커스 가시.",
+      "exampleHtml": "<nav class=\"qf-navbar\" aria-label=\"Main menu\"><span class=\"qf-navbar__brand\">Acme</span><div class=\"qf-navbar__nav\"><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\" href=\"/r\">Reports</a></div><span class=\"qf-navbar__spacer\"></span><button class=\"qf-btn qf-btn--primary qf-btn--sm\">New</button></nav>",
+      "purposeEn": "A top app bar that holds branding, navigation links, and actions.",
+      "a11yEn": "Wrap it in header > nav[aria-label] and set aria-current=\"page\" on the link for the current location. Use a[href] for links, with a visible keyboard focus."
+    },
+    {
+      "name": "SideNav",
+      "class": "qf-sidenav",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "섹션과 항목으로 구성된 범용 세로 내비게이션입니다(채팅 채널 목록과 무관).",
+      "variants": ["qf-sidenav__section", "qf-sidenav__item"],
+      "requiredTokens": [
+        "--bg-panel",
+        "--divider",
+        "--s-3",
+        "--r-sm",
+        "--text-secondary",
+        "--bg-hover",
+        "--bg-selected",
+        "--text-muted"
+      ],
+      "a11y": "nav[aria-label] 로 감싸고, 현재 항목에 aria-current=page 를 둡니다. 섹션 제목(qf-sidenav__section)으로 그룹을 구분합니다.",
+      "exampleHtml": "<nav class=\"qf-sidenav\" aria-label=\"Sections\"><div class=\"qf-sidenav__section\">Workspace</div><a class=\"qf-sidenav__item\" aria-current=\"page\">Overview</a><a class=\"qf-sidenav__item\" href=\"/m\">Members</a></nav>",
+      "purposeEn": "A general-purpose vertical navigation organized into sections and items (unrelated to a chat channel list).",
+      "a11yEn": "Wrap it in nav[aria-label] and set aria-current=\"page\" on the current item. Distinguish groups with section headings (qf-sidenav__section)."
+    },
+    {
+      "name": "PageHeader",
+      "class": "qf-page-header",
+      "layer": "generic",
+      "category": "Layout",
+      "purpose": "페이지 제목, 부제, 액션을 한 줄로 묶는 페이지 헤더입니다.",
+      "variants": ["qf-page-header__title", "qf-page-header__subtitle", "qf-page-header__actions"],
+      "requiredTokens": ["--s-7", "--fs-24", "--text-strong", "--text-muted", "--tracking-tight"],
+      "a11y": "제목은 h1(또는 페이지 계층에 맞는 heading)으로 두어 문서 구조를 전달합니다. 액션 묶음은 시각/DOM 순서를 일치시킵니다.",
+      "exampleHtml": "<div class=\"qf-page-header\"><div><h1 class=\"qf-page-header__title\">Members</h1><p class=\"qf-page-header__subtitle\">12 members</p></div><div class=\"qf-page-header__actions\"><button class=\"qf-btn qf-btn--primary\">Invite</button></div></div>",
+      "purposeEn": "A page header that groups the page title, subtitle, and actions into a single row.",
+      "a11yEn": "Make the title an h1 (or a heading appropriate to the page hierarchy) to convey document structure. Keep the action group's visual order in sync with its DOM order."
+    },
+    {
+      "name": "Search",
+      "class": "qf-search",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "아이콘과 클리어 버튼을 갖춘 검색 입력 필드입니다.",
+      "variants": ["qf-search__icon", "qf-search__input", "qf-search__clear"],
+      "requiredTokens": [
+        "--bg-input",
+        "--border",
+        "--accent",
+        "--r-lg",
+        "--s-4",
+        "--text",
+        "--text-muted"
+      ],
+      "a11y": "input[type=search] 에 aria-label 또는 연결된 label 을 둡니다. 아이콘은 aria-hidden, 클리어 버튼에는 aria-label(예: 검색어 지우기).",
+      "exampleHtml": "<div class=\"qf-search\"><span class=\"qf-search__icon\" aria-hidden=\"true\"><svg class=\"qf-icon qf-icon--sm\"><use href=\"#qf-i-search\"/></svg></span><input class=\"qf-search__input\" type=\"search\" aria-label=\"Search\" placeholder=\"Search\"><button class=\"qf-search__clear\" aria-label=\"Clear search\">×</button></div>",
+      "purposeEn": "A search input field with an icon and a clear button.",
+      "a11yEn": "Give the input[type=\"search\"] an aria-label or an associated label. Mark the icon aria-hidden, and give the clear button an aria-label (e.g. \"Clear search\")."
+    },
+    {
+      "name": "Slider",
+      "class": "qf-slider",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "범위 값을 선택하는 슬라이더입니다.",
+      "variants": [],
+      "requiredTokens": ["--s-2", "--r-pill", "--bg-hover", "--accent", "--ring-focus"],
+      "a11y": "네이티브 input[type=range] 라 키보드 조작과 값 전달이 기본 제공됩니다. label 을 연결하고 필요 시 aria-valuetext 로 단위를 보충합니다.",
+      "exampleHtml": "<input class=\"qf-slider\" type=\"range\" min=\"0\" max=\"100\" value=\"40\" aria-label=\"Volume\">",
+      "purposeEn": "A slider for selecting a value from a range.",
+      "a11yEn": "Because it's a native input[type=\"range\"], keyboard operation and value communication come for free. Associate a label, and use aria-valuetext to supplement units when needed."
+    },
+    {
+      "name": "NumberInput",
+      "class": "qf-number-input",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "증감 버튼이 있는 숫자 입력 필드입니다.",
+      "variants": ["qf-number-input__field", "qf-number-input__btn"],
+      "requiredTokens": [
+        "--bg-input",
+        "--border",
+        "--r-lg",
+        "--text",
+        "--font-mono",
+        "--bg-hover",
+        "--text-secondary"
+      ],
+      "a11y": "field 는 input[type=number, inputmode=numeric] 에 label 연결. 증감 버튼에는 aria-label(예: 1 증가/감소)을 두고, 값은 input 이 권위를 가집니다.",
+      "exampleHtml": "<div class=\"qf-number-input\"><button class=\"qf-number-input__btn\" aria-label=\"Decrease\">−</button><input class=\"qf-number-input__field\" type=\"number\" value=\"1\" aria-label=\"Quantity\"><button class=\"qf-number-input__btn\" aria-label=\"Increase\">+</button></div>",
+      "purposeEn": "A numeric input field with increment and decrement buttons.",
+      "a11yEn": "The field is an input[type=\"number\", inputmode=\"numeric\"] with an associated label. Give the stepper buttons an aria-label (e.g. \"Increment\" / \"Decrement\"), and let the input remain the source of truth for the value."
+    },
+    {
+      "name": "FileDrop",
+      "class": "qf-file-drop",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "파일을 끌어다 놓거나 클릭해 올리는 범용 업로드 영역입니다.",
+      "variants": ["qf-file-drop--active", "qf-file-drop__title"],
+      "requiredTokens": [
+        "--border-strong",
+        "--r-lg",
+        "--bg-input",
+        "--text-muted",
+        "--accent",
+        "--accent-bg",
+        "--text-strong",
+        "--s-8"
+      ],
+      "a11y": "실제 input[type=file] 을 영역에 연결(label 또는 클릭 위임)해 키보드 접근을 보존합니다. 드래그 상태는 --active 와 함께 텍스트로도 안내합니다.",
+      "exampleHtml": "<label class=\"qf-file-drop\"><span class=\"qf-file-drop__title\">Drop files here</span><span>or click to browse</span><input type=\"file\" hidden></label>",
+      "purposeEn": "A general-purpose upload zone for dropping files via drag-and-drop or clicking to browse.",
+      "a11yEn": "Connect a real input[type=\"file\"] to the zone (via label or click delegation) to preserve keyboard access. Convey the drag state with text in addition to --active."
+    },
+    {
+      "name": "Steps",
+      "class": "qf-steps",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "다단계 흐름의 진행 단계를 표시합니다.",
+      "variants": ["qf-steps__step", "qf-steps__marker", "qf-steps__bar", "qf-steps__step--done"],
+      "requiredTokens": [
+        "--s-2",
+        "--r-pill",
+        "--bg-hover",
+        "--accent",
+        "--text-onAccent",
+        "--ok-400",
+        "--divider",
+        "--text-muted"
+      ],
+      "a11y": "ol 로 순서를 전달하고 현재 단계에 aria-current=step 을 둡니다. 완료/현재 상태를 색뿐 아니라 마커 숫자, 텍스트로 함께 전달합니다.",
+      "exampleHtml": "<ol class=\"qf-steps\"><li class=\"qf-steps__step qf-steps__step--done\"><span class=\"qf-steps__marker\">✓</span>Account</li><li class=\"qf-steps__bar\" aria-hidden=\"true\"></li><li class=\"qf-steps__step\" aria-current=\"step\"><span class=\"qf-steps__marker\">2</span>Profile</li></ol>",
+      "purposeEn": "Displays the progress steps of a multi-step flow.",
+      "a11yEn": "Convey order with an ol and set aria-current=\"step\" on the current step. Communicate the completed/current state with marker numbers and text, not color alone."
+    },
+    {
+      "name": "List",
+      "class": "qf-list",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "구분선이 있는 범용 세로 목록입니다(설정 행, 항목 리스트).",
+      "variants": [
+        "qf-list__item",
+        "qf-list__text",
+        "qf-list__trailing",
+        "qf-list__item--interactive"
+      ],
+      "requiredTokens": ["--s-3", "--s-4", "--divider", "--text", "--bg-hover", "--text-muted"],
+      "a11y": "ul/li 로 만들고, 상호작용 항목(--interactive)은 a/button 으로 두어 키보드 접근과 포커스 가시를 보존합니다.",
+      "exampleHtml": "<ul class=\"qf-list\"><li class=\"qf-list__item\"><span class=\"qf-list__text\">Notifications</span><span class=\"qf-list__trailing\">On</span></li><li class=\"qf-list__item\"><span class=\"qf-list__text\">Language</span><span class=\"qf-list__trailing\">English</span></li></ul>",
+      "purposeEn": "A general-purpose vertical list with dividers (settings rows, item lists).",
+      "a11yEn": "Build it with ul/li, and make interactive items (--interactive) an a/button to preserve keyboard access and visible focus."
+    },
+    {
+      "name": "Message",
+      "class": "qf-message",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "아바타, 작성자, 본문을 한 행으로 묶는 채팅 메시지 행입니다.",
+      "variants": [
+        "qf-message--head",
+        "qf-message--cont",
+        "qf-message--mention",
+        "qf-message__avatar",
+        "qf-message__meta",
+        "qf-message__author",
+        "qf-message__time",
+        "qf-message__gutter-time",
+        "qf-message__body",
+        "qf-message__toolbar"
+      ],
+      "requiredTokens": [
+        "--s-2",
+        "--s-7",
+        "--s-8",
+        "--s-4",
+        "--mention-bg",
+        "--accent",
+        "--text",
+        "--text-strong"
+      ],
+      "a11y": "mention 행은 색상 외에 좌측 accent 바와 텍스트로도 멘션을 전달해 색 단독 의존을 피합니다. 작성자, 시간 대비는 AA 4.5:1을 지킵니다. 본문 링크는 평상시 밑줄이 없고 링크색만으로는 본문과 대비가 3:1 미만이라(WCAG 1.4.1), 소비처에서 링크에 상시 밑줄을 주거나 대비 3:1 이상 링크색을 쓰기를 권장합니다.",
+      "exampleHtml": "<article class=\"qf-message qf-message--head\"><img class=\"qf-message__avatar\" src=\"u.png\" alt=\"James Carter\"><div class=\"qf-message__meta\"><span class=\"qf-message__author\">James Carter</span><time class=\"qf-message__time\">2:30 PM</time></div><div class=\"qf-message__body\">Hey there!</div></article>",
+      "purposeEn": "A chat message row that groups the avatar, author, and body into a single line.",
+      "a11yEn": "Mention rows convey the mention with a left accent bar and text in addition to color, avoiding reliance on color alone. The author and timestamp meet AA 4.5:1 contrast. Body links are not underlined by default, and link color alone has less than 3:1 contrast against the body text (WCAG 1.4.1), so consumers are encouraged to give links a persistent underline or to use a link color with at least 3:1 contrast."
+    },
+    {
+      "name": "MessageQuickReact",
+      "class": "qf-msg-quickreact",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "메시지 hover 툴바 안에서 자주 쓰는 이모지 반응과 더보기를 한 줄로 제공합니다.",
+      "variants": ["qf-msg-quickreact__slot", "qf-msg-quickreact__more"],
+      "requiredTokens": [
+        "--r-sm",
+        "--fs-15",
+        "--text-secondary",
+        "--text-muted",
+        "--bg-hover",
+        "--bg-selected",
+        "--accent",
+        "--dur-fast"
+      ],
+      "a11y": "각 슬롯은 button 요소로 키보드 포커스와 활성화가 가능하며, 이모지에는 aria-label로 의미를 텍스트로 전달합니다. 더보기 슬롯에도 aria-label을 부여합니다.",
+      "exampleHtml": "<div class=\"qf-msg-quickreact\"><button class=\"qf-msg-quickreact__slot\" aria-label=\"Like reaction\">👍</button><button class=\"qf-msg-quickreact__slot qf-msg-quickreact__more\" aria-label=\"More reactions\">+</button></div>",
+      "purposeEn": "Offers frequently used emoji reactions plus a \"more\" affordance in a single row inside the message hover toolbar.",
+      "a11yEn": "Each slot is a button element so it can receive keyboard focus and be activated, and each emoji conveys its meaning as text via aria-label. Give the \"more\" slot an aria-label as well."
+    },
+    {
+      "name": "Mention",
+      "class": "qf-mention",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "본문 안에서 사용자나 역할을 가리키는 인라인 멘션 pill입니다.",
+      "variants": ["qf-mention"],
+      "requiredTokens": [
+        "--mention-bg",
+        "--mention-bgHov",
+        "--accent-on-subtle",
+        "--accent-solid-hover",
+        "--r-xs"
+      ],
+      "a11y": "멘션 대상은 색상에 더해 @이름 텍스트로 항상 명시해 색 단독 의존을 피합니다. 클릭 동작이 있으면 button이나 link role과 접근 가능한 이름을 부여합니다.",
+      "exampleHtml": "<span class=\"qf-mention\" role=\"link\" tabindex=\"0\">@James Carter</span>",
+      "purposeEn": "An inline mention pill that references a user or role within the message body.",
+      "a11yEn": "Always state the mention target as @name text in addition to color, avoiding reliance on color alone. If it has a click action, give it a button or link role and an accessible name."
+    },
+    {
+      "name": "Reactions",
+      "class": "qf-reaction",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "메시지에 달린 이모지 반응을 개수와 함께 보여주는 pill입니다.",
+      "variants": ["qf-reactions", "qf-reaction--me", "qf-reaction--add"],
+      "requiredTokens": [
+        "--r-lg",
+        "--bg-hover",
+        "--bg-selected",
+        "--accent",
+        "--accent-subtle",
+        "--border-strong",
+        "--text-secondary",
+        "--fs-12"
+      ],
+      "a11y": "각 반응은 button으로 토글하며, 내가 누른 반응은 색뿐 아니라 aria-pressed로 상태를 전달합니다. 반응 추가 버튼은 aria-label로 용도를 명시합니다.",
+      "exampleHtml": "<div class=\"qf-reactions\"><button class=\"qf-reaction qf-reaction--me\" aria-pressed=\"true\">👍 3</button><button class=\"qf-reaction qf-reaction--add\" aria-label=\"Add reaction\">＋</button></div>",
+      "purposeEn": "Pills that show the emoji reactions on a message along with their counts.",
+      "a11yEn": "Each reaction toggles via a button, and reactions you've added convey their state with aria-pressed, not color alone. Give the add-reaction button an aria-label that states its purpose."
+    },
+    {
+      "name": "ReplyBar",
+      "class": "qf-replybar",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "메시지 위에 원본 답장 대상을 화살표와 작성자로 표시하는 줄입니다.",
+      "variants": ["qf-replybar__arrow", "qf-replybar__author"],
+      "requiredTokens": [
+        "--s-2",
+        "--s-8",
+        "--fs-13",
+        "--text-muted",
+        "--text-secondary",
+        "--border-strong"
+      ],
+      "a11y": "답장 관계는 화살표 모양뿐 아니라 작성자 이름과 본문 미리보기 텍스트로 전달합니다. 클릭으로 원본 이동 시 접근 가능한 이름을 제공합니다.",
+      "exampleHtml": "<div class=\"qf-replybar\"><span class=\"qf-replybar__arrow\" aria-hidden=\"true\"></span>Replying to <span class=\"qf-replybar__author\">James Carter</span></div>",
+      "purposeEn": "A line above a message that indicates the original reply target with an arrow and the author.",
+      "a11yEn": "Convey the reply relationship with the author's name and a body preview text, not the arrow shape alone. When clicking jumps to the original, provide an accessible name."
+    },
+    {
+      "name": "Embed",
+      "class": "qf-embed",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "링크, 이미지, 동영상, 봇 메시지 미리보기를 담는 임베드 카드입니다.",
+      "variants": [
+        "qf-embed--image",
+        "qf-embed--video",
+        "qf-embed--bot",
+        "qf-embed__site",
+        "qf-embed__title",
+        "qf-embed__thumb",
+        "qf-embed__play",
+        "qf-embed__actions",
+        "qf-embed__dismiss"
+      ],
+      "requiredTokens": [
+        "--s-4",
+        "--bg-panel",
+        "--accent",
+        "--r-md",
+        "--link",
+        "--info-400",
+        "--text-muted",
+        "--text-secondary"
+      ],
+      "a11y": "썸네일 이미지에는 의미 있는 alt를 제공하고, 재생, 닫기 버튼은 button과 aria-label로 용도를 전달합니다. 닫기 버튼은 focus-visible 시 항상 보이게 합니다.",
+      "exampleHtml": "<div class=\"qf-embed\"><span class=\"qf-embed__site\">EXAMPLE.COM</span><a class=\"qf-embed__title\" href=\"/x\">Title</a><p class=\"qf-embed__desc\">A short description.</p><button class=\"qf-embed__dismiss\" aria-label=\"Dismiss embed\">✕</button></div>",
+      "purposeEn": "An embed card that holds previews for links, images, videos, and bot messages.",
+      "a11yEn": "Provide meaningful alt text on thumbnail images, and convey the purpose of the play and close buttons with button and aria-label. Keep the close button always visible on focus-visible."
+    },
+    {
+      "name": "ThreadChip",
+      "class": "qf-thread-chip",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "메시지 아래에 달린 스레드 답글 요약을 보여주고 패널을 여는 칩입니다.",
+      "variants": [
+        "qf-thread-chip__avatars",
+        "qf-thread-chip__count",
+        "qf-thread-chip__last",
+        "qf-thread-chip__cta"
+      ],
+      "requiredTokens": [
+        "--bg-panel",
+        "--bg-elevated",
+        "--accent",
+        "--text-secondary",
+        "--r-md",
+        "--s-2",
+        "--dur-fast",
+        "--ease-standard"
+      ],
+      "a11y": "버튼 또는 링크로 만들어 스레드 패널을 열고, 답글 수를 색뿐 아니라 텍스트로도 전달합니다. 키보드 포커스 ring 이 보여야 하고 호버 색 변화에만 의존하지 않습니다.",
+      "exampleHtml": "<button class=\"qf-thread-chip\" aria-label=\"View 3 thread replies\"><span class=\"qf-thread-chip__count\">3</span><span class=\"qf-thread-chip__cta\">View replies</span></button>",
+      "purposeEn": "A chip below a message that summarizes the thread replies and opens the thread panel.",
+      "a11yEn": "Make it a button or link that opens the thread panel, and convey the reply count as text, not color alone. The keyboard focus ring must be visible, and don't rely on a hover color change alone."
+    },
+    {
+      "name": "ThreadPanel",
+      "class": "qf-thread-panel",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "우측에 붙는 스레드 사이드 패널의 컨테이너입니다.",
+      "variants": [
+        "qf-thread-panel__header",
+        "qf-thread-panel__icon",
+        "qf-thread-panel__title",
+        "qf-thread-panel__sub",
+        "qf-thread-panel__close"
+      ],
+      "requiredTokens": [
+        "--bg-chat",
+        "--divider",
+        "--text-strong",
+        "--text-muted",
+        "--fs-15",
+        "--h-topbar",
+        "--s-5",
+        "--elev-1"
+      ],
+      "a11y": "패널은 complementary 또는 dialog 역할로 알리고, 닫기 버튼에는 aria-label 을 둡니다. 닫기 버튼은 키보드로 도달, 포커스 가시여야 합니다.",
+      "exampleHtml": "<aside class=\"qf-thread-panel\" role=\"complementary\" aria-label=\"Thread\"><header class=\"qf-thread-panel__header\"><h2 class=\"qf-thread-panel__title\">Thread</h2><button class=\"qf-thread-panel__close\" aria-label=\"Close thread\">×</button></header></aside>",
+      "purposeEn": "The container for the thread side panel that docks on the right.",
+      "a11yEn": "Announce the panel with a complementary or dialog role, and give the close button an aria-label. The close button must be reachable by keyboard with visible focus."
+    },
+    {
+      "name": "ThreadOrigin",
+      "class": "qf-thread-origin",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "스레드 패널 상단에 고정되는 원본 부모 메시지 카드입니다.",
+      "variants": [
+        "qf-thread-origin__meta",
+        "qf-thread-origin__author",
+        "qf-thread-origin__time",
+        "qf-thread-origin__body"
+      ],
+      "requiredTokens": [
+        "--bg-panel",
+        "--divider",
+        "--accent",
+        "--text-strong",
+        "--text",
+        "--r-md",
+        "--s-4",
+        "--fs-14"
+      ],
+      "a11y": "원본 메시지임을 텍스트로 분명히 하고, 왼쪽 accent 막대는 장식이므로 의미는 작성자, 시간 텍스트로 함께 전달합니다.",
+      "exampleHtml": "<article class=\"qf-thread-origin\"><div class=\"qf-thread-origin__meta\"><span class=\"qf-thread-origin__author\">Mia</span><time class=\"qf-thread-origin__time\">2:14 PM</time></div><p class=\"qf-thread-origin__body\">This is the original message.</p></article>",
+      "purposeEn": "The original parent message card that's pinned to the top of the thread panel.",
+      "a11yEn": "Make it clear in text that this is the original message, and since the left accent bar is decorative, convey its meaning with the author and timestamp text as well."
+    },
+    {
+      "name": "ThreadBody",
+      "class": "qf-thread-body",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "스레드 답글 목록을 담아 세로로 스크롤하는 영역입니다.",
+      "variants": [],
+      "requiredTokens": ["--s-3"],
+      "a11y": "답글 목록은 list 또는 log 역할로 알리고, 새 답글이 도착하면 스크린 리더가 인지하도록 적절한 라이브 영역 처리를 권장합니다. 키보드 스크롤이 가능해야 합니다.",
+      "exampleHtml": "<div class=\"qf-thread-body\" role=\"log\" aria-label=\"Thread replies\" tabindex=\"0\"></div>",
+      "purposeEn": "A vertically scrolling region that holds the list of thread replies.",
+      "a11yEn": "Announce the reply list with a list or log role, and use appropriate live-region handling so screen readers are aware when a new reply arrives. Keyboard scrolling must be possible."
+    },
+    {
+      "name": "ThreadDivider",
+      "class": "qf-thread-divider",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "스레드 내부에서 날짜 경계를 나누는 구분선입니다.",
+      "variants": [],
+      "requiredTokens": [
+        "--divider",
+        "--text-muted",
+        "--fs-11",
+        "--s-4",
+        "--s-5",
+        "--tracking-caps"
+      ],
+      "a11y": "단순 시각 구분이 아니라 separator 역할과 날짜 텍스트로 경계 의미를 전달합니다. 양옆 선은 장식 의사 요소입니다.",
+      "exampleHtml": "<div class=\"qf-thread-divider\" role=\"separator\">June 16, 2026</div>",
+      "purposeEn": "A divider that marks date boundaries within a thread.",
+      "a11yEn": "Convey the boundary's meaning with a separator role and date text, not just a visual divider. The lines on either side are decorative pseudo-elements."
+    },
+    {
+      "name": "ThreadMessage",
+      "class": "qf-thread-msg",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "스레드 패널 안에서 보이는 컴팩트한 답글 메시지입니다.",
+      "variants": [
+        "qf-thread-msg--head",
+        "qf-thread-msg--cont",
+        "qf-thread-msg__avatar",
+        "qf-thread-msg__meta",
+        "qf-thread-msg__author",
+        "qf-thread-msg__time",
+        "qf-thread-msg__body"
+      ],
+      "requiredTokens": [
+        "--text-strong",
+        "--text",
+        "--text-muted",
+        "--fs-14",
+        "--fs-chat",
+        "--lh-normal",
+        "--s-5",
+        "--s-2"
+      ],
+      "a11y": "연속 메시지는 qf-thread-msg--cont 로 아바타, 메타를 숨겨도 작성자 정보는 그룹 첫 메시지나 aria 로 유지합니다. 호버 배경에만 의존하지 않습니다.",
+      "exampleHtml": "<div class=\"qf-thread-msg qf-thread-msg--head\"><div class=\"qf-thread-msg__meta\"><span class=\"qf-thread-msg__author\">Skye</span><time class=\"qf-thread-msg__time\">2:15 PM</time></div><p class=\"qf-thread-msg__body\">Here's my reply.</p></div>",
+      "purposeEn": "A compact reply message displayed inside the thread panel.",
+      "a11yEn": "Consecutive messages use qf-thread-msg--cont to hide the avatar and metadata, but author information is still conveyed via the group's first message or aria. Do not rely on hover background alone."
+    },
+    {
+      "name": "ThreadComposer",
+      "class": "qf-thread-composer",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "스레드 패널 하단에서 답글을 작성하는 컴팩트 입력 영역입니다.",
+      "variants": ["qf-thread-composer__options", "qf-thread-composer__checkbox"],
+      "requiredTokens": [
+        "--divider",
+        "--accent",
+        "--text-muted",
+        "--fs-12",
+        "--s-5",
+        "--s-3",
+        "--s-4",
+        "--s-2"
+      ],
+      "a11y": "입력 필드와 체크박스에 연결된 label 을 두고, 체크박스는 키보드로 토글, 포커스 가시여야 합니다. 모바일 터치 영역은 44px 를 권장합니다.",
+      "exampleHtml": "<form class=\"qf-thread-composer\"><label class=\"qf-thread-composer__checkbox\"><input type=\"checkbox\"> Also send to channel</label></form>",
+      "purposeEn": "A compact input area at the bottom of the thread panel for composing replies.",
+      "a11yEn": "Associate a label with the input field and the checkbox; the checkbox must be toggleable by keyboard and have visible focus. A 44px touch target is recommended on mobile."
+    },
+    {
+      "name": "ThreadFollowup",
+      "class": "qf-thread-followup",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "메시지 아래에 답글 수와 참여자를 표시하는 스레드 시작 표시줄입니다.",
+      "variants": [
+        "qf-thread-followup__dot",
+        "qf-thread-followup__last",
+        "qf-thread-followup__avatars",
+        "qf-thread-followup__count"
+      ],
+      "requiredTokens": [
+        "--text-muted",
+        "--accent",
+        "--accent-hover",
+        "--bg-chat",
+        "--fs-12",
+        "--r-pill",
+        "--s-8",
+        "--s-2"
+      ],
+      "a11y": "버튼 또는 링크로 스레드를 열고, 답글 수는 accent 색뿐 아니라 텍스트로 함께 전달합니다. 점, 아바타는 장식이며 키보드 포커스가 보여야 합니다.",
+      "exampleHtml": "<button class=\"qf-thread-followup\" aria-label=\"View 5 replies\"><span class=\"qf-thread-followup__count\">5</span> replies</button>",
+      "purposeEn": "A thread starter bar shown beneath a message that displays the reply count and participants.",
+      "a11yEn": "Open the thread with a button or link, and convey the reply count as text in addition to the accent color. Dots and avatars are decorative; keyboard focus must be visible."
+    },
+    {
+      "name": "ServerList",
+      "class": "qf-serverlist",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "세로 서버 레일에 서버 아이콘 버튼을 모아 보여주는 좌측 네비게이션입니다.",
+      "variants": ["qf-server-btn", "qf-server-btn__unread"],
+      "requiredTokens": ["--w-serverlist", "--bg-app", "--s-4", "--s-3", "--r-xl", "--accent"],
+      "a11y": "서버 버튼은 선택 상태를 aria-selected로 알리고 선택, 호버 시 좌측 필 인디케이터로 색 외 형태도 함께 전달합니다. 키보드 포커스가 보이며 읽지 않음 배지는 텍스트 수치를 노출합니다.",
+      "exampleHtml": "<nav class=\"qf-serverlist\" aria-label=\"Servers\"><button class=\"qf-server-btn\" aria-selected=\"true\">Q</button></nav>",
+      "purposeEn": "A left-hand navigation rail that groups server icon buttons in a vertical server rail.",
+      "a11yEn": "Server buttons announce their selection state via aria-selected, and a left pill indicator on select/hover conveys shape in addition to color. Keyboard focus is visible, and unread badges expose a text count."
+    },
+    {
+      "name": "ChannelList",
+      "class": "qf-channellist",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "현재 서버의 카테고리와 채널 목록을 보여주는 사이드바입니다.",
+      "variants": [
+        "qf-channellist__head",
+        "qf-channellist__body",
+        "qf-channel--unread",
+        "qf-channel__prefix",
+        "qf-channel__suffix",
+        "qf-category",
+        "qf-channel"
+      ],
+      "requiredTokens": [
+        "--w-channellist",
+        "--bg-panel",
+        "--divider",
+        "--s-5",
+        "--s-4",
+        "--r-sm",
+        "--bg-selected"
+      ],
+      "a11y": "채널 행은 aria-selected로 현재 채널을 알리고, 읽지 않음은 색과 굵기, 좌측 필을 함께 써 색 단독 의존을 피합니다. 키보드 포커스 ring이 보입니다.",
+      "exampleHtml": "<div class=\"qf-channellist\"><div class=\"qf-channellist__body\"><div class=\"qf-channel\" aria-selected=\"true\"><span class=\"qf-channel__prefix\">#</span>general</div></div></div>",
+      "purposeEn": "A sidebar that shows the current server's categories and channel list.",
+      "a11yEn": "Channel rows announce the current channel via aria-selected, and unread state combines color, weight, and a left pill to avoid relying on color alone. The keyboard focus ring is visible."
+    },
+    {
+      "name": "ChannelTopbar",
+      "class": "qf-topbar",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "현재 채널 제목과 주제를 표시하는 상단 바입니다.",
+      "variants": ["qf-topbar__title", "qf-topbar__topic"],
+      "requiredTokens": [
+        "--h-topbar",
+        "--s-5",
+        "--bg-chat",
+        "--divider",
+        "--text-strong",
+        "--text-muted",
+        "--elev-1"
+      ],
+      "a11y": "제목과 주제를 텍스트로 함께 노출해 맥락을 명확히 전합니다. 주제 구분은 좌측 보더와 색차로 표현하되 의미는 텍스트로 전달합니다.",
+      "exampleHtml": "<header class=\"qf-topbar\"><span class=\"qf-topbar__title\"># general</span><span class=\"qf-topbar__topic\">Team announcements channel</span></header>",
+      "purposeEn": "A top bar that displays the current channel's title and topic.",
+      "a11yEn": "Expose both the title and topic as text to clearly convey context. The topic separator is rendered with a left border and color contrast, but its meaning is carried by the text."
+    },
+    {
+      "name": "MemberList",
+      "class": "qf-memberlist",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "채널 참여 멤버를 역할 그룹별로 보여주는 우측 사이드바입니다.",
+      "variants": [
+        "qf-memberlist__group",
+        "qf-member__name",
+        "qf-member__role-owner",
+        "qf-member__role-mod"
+      ],
+      "requiredTokens": [
+        "--w-memberlist",
+        "--bg-panel",
+        "--s-4",
+        "--s-3",
+        "--r-sm",
+        "--text-muted",
+        "--bg-hover"
+      ],
+      "a11y": "역할 그룹 헤더를 텍스트로 노출하고 멤버 이름은 줄임 처리해도 전체 값을 접근성 텍스트로 전합니다. 행 호버, 포커스가 보입니다.",
+      "exampleHtml": "<aside class=\"qf-memberlist\" aria-label=\"Members\"><div class=\"qf-memberlist__group\">Online</div><div class=\"qf-member\"><span class=\"qf-member__name\">Minsu</span></div></aside>",
+      "purposeEn": "A right-hand sidebar that shows channel members grouped by role.",
+      "a11yEn": "Expose role group headers as text, and even when member names are truncated, convey the full value as accessible text. Row hover and focus are visible."
+    },
+    {
+      "name": "TypingIndicator",
+      "class": "qf-typing",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "상대가 입력 중임을 점 애니메이션과 텍스트로 알리는 표시줄입니다.",
+      "variants": ["qf-typing__dots"],
+      "requiredTokens": [
+        "--s-5",
+        "--h-typingbar",
+        "--s-2",
+        "--fs-13",
+        "--font-sans",
+        "--text-muted"
+      ],
+      "a11y": "입력 상태를 점 애니메이션만이 아니라 텍스트로도 전하며, 상태 영역은 aria-live로 보조기술에 변경을 알리길 권장합니다.",
+      "exampleHtml": "<div class=\"qf-typing\" aria-live=\"polite\"><span class=\"qf-typing__dots\"><span></span><span></span><span></span></span>Minsu is typing</div>",
+      "purposeEn": "A status bar that signals someone is typing using a dot animation and text.",
+      "a11yEn": "Convey the typing state with text as well as the dot animation, and use aria-live on the status region so assistive technology is notified of changes."
+    },
+    {
+      "name": "VoiceBadge",
+      "class": "qf-voice",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "음성 채널 연결 상태를 작은 배지로 나타냅니다.",
+      "variants": [],
+      "requiredTokens": ["--ok-400", "--r-xs", "--fs-11", "--font-sans"],
+      "a11y": "색 외에 텍스트 라벨을 함께 표시해 음성 연결 의미를 색 단독에 의존하지 않고 전합니다. 텍스트 대비 AA를 유지합니다.",
+      "exampleHtml": "<span class=\"qf-voice\">Voice connected</span>",
+      "purposeEn": "A small badge that indicates the voice channel connection state.",
+      "a11yEn": "Show a text label alongside color so the voice connection meaning does not rely on color alone. Maintain AA 4.5:1 text contrast."
+    },
+    {
+      "name": "DropLine",
+      "class": "qf-dropline",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "드래그한 채널, 카테고리가 놓일 위치를 가리키는 얇은 삽입 표시선입니다.",
+      "variants": [],
+      "requiredTokens": ["--s-3", "--r-pill", "--accent"],
+      "a11y": "드래그 앤 드롭 보조 시각 표시이며 키보드 재정렬 시에는 위치 변경을 텍스트, aria-live로 함께 안내하길 권장합니다.",
+      "exampleHtml": "<div class=\"qf-dropline\" aria-hidden=\"true\"></div>",
+      "purposeEn": "A thin insertion marker that indicates where a dragged channel or category will be dropped.",
+      "a11yEn": "This is a supplementary visual cue for drag and drop; for keyboard reordering, also announce the position change via text and aria-live."
+    },
+    {
+      "name": "RoleChip",
+      "class": "qf-role-chip",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "멤버의 역할을 색 점과 역할명으로 함께 보여주는 칩입니다.",
+      "variants": [
+        "qf-role-chip__dot",
+        "qf-role-chip--admin",
+        "qf-role-chip--mod",
+        "qf-role-chip--online",
+        "qf-role-chip--bot"
+      ],
+      "requiredTokens": [
+        "--s-2",
+        "--s-3",
+        "--accent-subtle",
+        "--r-pill",
+        "--fs-12",
+        "--accent",
+        "--text-secondary"
+      ],
+      "a11y": "역할 색 점과 함께 역할명 텍스트를 노출해 색 단독 의존을 피합니다. 텍스트 대비 AA를 유지합니다.",
+      "exampleHtml": "<span class=\"qf-role-chip qf-role-chip--admin\"><span class=\"qf-role-chip__dot\"></span>Admin</span>",
+      "purposeEn": "A chip that shows a member's role using a colored dot together with the role name.",
+      "a11yEn": "Expose the role name text alongside the colored role dot to avoid relying on color alone. Maintain AA 4.5:1 text contrast."
+    },
+    {
+      "name": "Composer",
+      "class": "qf-composer",
+      "layer": "generic",
+      "category": "Forms",
+      "purpose": "focus-within 필 안에 자동확장 textarea와 인라인 액션(전송 등)을 묶는 컴포저입니다. 선행 슬롯(__lead)과 크기 변형(--sm/--lg)을 지원합니다. 리치 텍스트 포맷바(__formatbar, --rich)는 챗 확장입니다.",
+      "variants": [
+        "qf-composer--rich",
+        "qf-composer__formatbar",
+        "qf-composer__format-btn",
+        "qf-composer__format-sep",
+        "qf-composer__row",
+        "qf-composer__attach",
+        "qf-composer__input",
+        "qf-composer__actions",
+        "qf-composer__send",
+        "qf-composer__hint",
+        "qf-composer__hint-count--over",
+        "qf-composer__lead",
+        "qf-composer--sm",
+        "qf-composer--lg"
+      ],
+      "requiredTokens": [
+        "--bg-input",
+        "--border",
+        "--accent",
+        "--r-lg",
+        "--s-3",
+        "--s-5",
+        "--text",
+        "--text-onAccent",
+        "--composer-max-h",
+        "--composer-font-min",
+        "--s-10"
+      ],
+      "a11y": "focus-within 시 accent 보더로 강조하므로 내부 textarea 는 자체 outline 을 끕니다. 포맷 버튼은 aria-pressed 로 토글 상태를 전합니다. 전송 버튼은 입력이 비면 disabled 로 두고, 힌트 글자수 초과는 색만이 아니라 텍스트로도 알립니다.",
+      "exampleHtml": "<div class=\"qf-composer\"><div class=\"qf-composer__row\"><button class=\"qf-composer__attach\" aria-label=\"Attach\"><svg class=\"qf-icon\" aria-hidden=\"true\"><use href=\"#qf-i-plus\"/></svg></button><textarea class=\"qf-composer__input\" rows=\"1\" aria-label=\"Message\" placeholder=\"Type a message\"></textarea><button class=\"qf-composer__send\" aria-label=\"Send\"><svg class=\"qf-icon\" aria-hidden=\"true\"><use href=\"#qf-i-send\"/></svg></button></div></div>",
+      "purposeEn": "A composer that wraps an auto-expanding textarea and inline actions (send, etc.) in a focus-within pill, with a leading slot (__lead) and size variants (--sm/--lg). The rich-text format bar (__formatbar, --rich) is a chat-layer extension.",
+      "a11yEn": "Because focus-within highlights the field with an accent border, the inner textarea disables its own outline. Formatting buttons convey their toggle state via aria-pressed. Keep the send button disabled when the input is empty, and signal a hint character-count overflow with text as well as color."
+    },
+    {
+      "name": "Autocomplete",
+      "class": "qf-autocomplete",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "컴포저 위로 떠오르는 드롭업으로, 멘션, 채널, 이모지 후보를 같은 골격으로 제안합니다.",
+      "variants": [
+        "qf-autocomplete__header",
+        "qf-autocomplete__item",
+        "qf-autocomplete__avatar",
+        "qf-autocomplete__label",
+        "qf-autocomplete__sub",
+        "qf-autocomplete__meta",
+        "qf-autocomplete__meta-dot--online",
+        "qf-autocomplete__item--mention",
+        "qf-autocomplete__item--channel",
+        "qf-autocomplete__item--emoji",
+        "qf-autocomplete__shortcode"
+      ],
+      "requiredTokens": [
+        "--bg-floating",
+        "--border",
+        "--r-lg",
+        "--elev-3",
+        "--z-dropdown",
+        "--bg-selected",
+        "--accent",
+        "--s-2"
+      ],
+      "a11y": "항목은 role=option, 컨테이너는 role=listbox 를 가정하며, 키보드 선택 항목은 aria-selected=true 로 표시하고 좌측 accent 바를 함께 두어 색 단독 의존을 피합니다. 상태 dot 은 텍스트 라벨과 함께 의미를 전합니다.",
+      "exampleHtml": "<ul class=\"qf-autocomplete\" role=\"listbox\" aria-label=\"Mention suggestions\"><li class=\"qf-autocomplete__item qf-autocomplete__item--mention\" role=\"option\" aria-selected=\"true\"><span class=\"qf-autocomplete__avatar\"></span><span class=\"qf-autocomplete__label\">Skye</span></li></ul>",
+      "purposeEn": "A drop-up that floats above the composer and suggests mention, channel, and emoji candidates using a shared skeleton.",
+      "a11yEn": "Items assume role=option and the container assumes role=listbox; the keyboard-selected item is marked with aria-selected=true and paired with a left accent bar to avoid relying on color alone. The status dot conveys meaning together with a text label."
+    },
+    {
+      "name": "SlashMenu",
+      "class": "qf-slash-menu",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "슬래시 커맨드 전용 드롭업으로, 좌측 아이콘, 모노스페이스 커맨드명, 설명을 위계 있게 보여줍니다.",
+      "variants": [
+        "qf-slash-menu__item",
+        "qf-slash-menu__icon",
+        "qf-slash-menu__text",
+        "qf-slash-menu__cmd",
+        "qf-slash-menu__arg",
+        "qf-slash-menu__desc",
+        "qf-slash-menu__kbd"
+      ],
+      "requiredTokens": [
+        "--bg-selected",
+        "--accent",
+        "--accent-subtle",
+        "--r-sm",
+        "--s-3",
+        "--mention-bg",
+        "--text-strong",
+        "--text-secondary"
+      ],
+      "a11y": "항목은 role=option 으로 두고 키보드 선택 항목에 aria-selected=true 와 좌측 accent 바를 함께 표시해 색 외 단서를 보장합니다. 단축키 힌트는 텍스트로 제공합니다.",
+      "exampleHtml": "<ul class=\"qf-autocomplete qf-slash-menu\" role=\"listbox\" aria-label=\"Slash commands\"><li class=\"qf-slash-menu__item\" role=\"option\" aria-selected=\"true\"><span class=\"qf-slash-menu__icon\">/</span><span class=\"qf-slash-menu__text\"><span class=\"qf-slash-menu__cmd\">/giphy</span></span></li></ul>",
+      "purposeEn": "A drop-up dedicated to slash commands that presents a left icon, monospace command name, and description in a clear hierarchy.",
+      "a11yEn": "Give items role=option, and mark the keyboard-selected item with both aria-selected=true and a left accent bar to guarantee a cue beyond color. Provide shortcut hints as text."
+    },
+    {
+      "name": "StatusPicker",
+      "class": "qf-status-picker",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "온라인, 자리비움, 방해금지, 오프라인과 커스텀 상태를 고르는 팝오버입니다.",
+      "variants": [
+        "qf-status-picker__item",
+        "qf-status-picker__dot--online",
+        "qf-status-picker__dot--idle",
+        "qf-status-picker__dot--dnd",
+        "qf-status-picker__dot--offline",
+        "qf-status-picker__label",
+        "qf-status-picker__desc",
+        "qf-status-picker__sep",
+        "qf-status-picker__custom",
+        "qf-status-picker__emoji",
+        "qf-status-picker__custom-input"
+      ],
+      "requiredTokens": [
+        "--bg-floating",
+        "--border",
+        "--r-lg",
+        "--elev-3",
+        "--bg-selected",
+        "--status-online",
+        "--s-3",
+        "--sz-status-dot-sm"
+      ],
+      "a11y": "항목은 role=option 으로, 선택은 aria-selected=true 로 표시합니다. 상태 dot 은 색만으로 구분하지 않도록 라벨, 설명 텍스트와 함께 의미를 전하며, 커스텀 입력은 halo 를 끄는 대신 컨테이너 포커스로 보완합니다.",
+      "exampleHtml": "<ul class=\"qf-status-picker\" role=\"listbox\" aria-label=\"Select status\"><li class=\"qf-status-picker__item\" role=\"option\" aria-selected=\"true\"><span class=\"qf-status-picker__dot qf-status-picker__dot--online\"></span><span class=\"qf-status-picker__label\">Online</span></li></ul>",
+      "purposeEn": "A popover for choosing online, away, do-not-disturb, offline, and custom statuses.",
+      "a11yEn": "Items use role=option and selection is marked with aria-selected=true. The status dot conveys meaning together with label and description text so it is not distinguished by color alone, and the custom input disables its halo, compensating with container focus instead."
+    },
+    {
+      "name": "Hovercard",
+      "class": "qf-hovercard",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "유저 프로필을 띄우는 카드로, 배너에 걸친 아바타와 이름, 상태, 역할, 소개를 보여줍니다.",
+      "variants": [
+        "qf-hovercard__banner",
+        "qf-hovercard__banner--plain",
+        "qf-hovercard__body",
+        "qf-hovercard__avatar",
+        "qf-hovercard__name",
+        "qf-hovercard__handle",
+        "qf-hovercard__status",
+        "qf-hovercard__status-dot",
+        "qf-hovercard__roles",
+        "qf-hovercard__about",
+        "qf-hovercard__actions"
+      ],
+      "requiredTokens": [
+        "--bg-floating",
+        "--border",
+        "--r-xl",
+        "--elev-4",
+        "--accent",
+        "--s-5",
+        "--status-online",
+        "--text-strong"
+      ],
+      "a11y": "카드는 role=dialog 또는 호버 트리거에 aria-describedby 로 연결합니다. 상태 dot 은 인접한 상태 텍스트와 함께 의미를 전하며, 액션 버튼은 qf-btn 으로 키보드 포커스 ring 을 갖춥니다.",
+      "exampleHtml": "<div class=\"qf-hovercard\" role=\"dialog\" aria-label=\"Profile\"><div class=\"qf-hovercard__banner\"></div><div class=\"qf-hovercard__body\"><div class=\"qf-hovercard__name\">Skye</div></div></div>",
+      "purposeEn": "A card that surfaces a user profile, showing an avatar overlapping a banner along with the name, status, roles, and bio.",
+      "a11yEn": "The card uses role=dialog or is linked to its hover trigger via aria-describedby. The status dot conveys meaning together with the adjacent status text, and action buttons use qf-btn so they have a visible keyboard focus ring."
+    },
+    {
+      "name": "SearchOverlay",
+      "class": "qf-search-overlay",
+      "layer": "chat",
+      "category": "Chat",
+      "purpose": "검색바, 필터칩, 결과 목록을 한 카드에 담아 메시지를 찾는 오버레이입니다.",
+      "variants": [
+        "qf-search-overlay__bar",
+        "qf-search-overlay__input",
+        "qf-search-overlay__filters",
+        "qf-search-overlay__chip",
+        "qf-search-overlay__chip-key",
+        "qf-search-overlay__results",
+        "qf-search-overlay__result",
+        "qf-search-overlay__result-ctx",
+        "qf-search-overlay__result-preview",
+        "qf-search-overlay__jump"
+      ],
+      "requiredTokens": [
+        "--bg-floating",
+        "--border",
+        "--r-xl",
+        "--elev-4",
+        "--divider",
+        "--accent-subtle",
+        "--accent",
+        "--mention-bg"
+      ],
+      "a11y": "오버레이는 role=dialog 와 aria-label 을 두고, 검색 입력은 aria-label 로 명명합니다. 필터칩은 aria-pressed 로 활성 상태를 알리며, 검색어 강조 mark 는 색과 배경을 함께 써 본문과 구분합니다.",
+      "exampleHtml": "<div class=\"qf-search-overlay\" role=\"dialog\" aria-label=\"Search\"><div class=\"qf-search-overlay__bar\"><input class=\"qf-search-overlay__input\" aria-label=\"Search term\" placeholder=\"Search\"></div><div class=\"qf-search-overlay__results\"></div></div>",
+      "purposeEn": "An overlay for finding messages that combines a search bar, filter chips, and a results list in a single card.",
+      "a11yEn": "The overlay has role=dialog and an aria-label, and the search input is named with aria-label. Filter chips announce their active state via aria-pressed, and the search-term highlight mark uses both color and background to distinguish it from body text."
+    },
+    {
+      "name": "MobileSafeArea",
+      "class": "qf-m-safe-top",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "기기 노치, 홈 인디케이터를 피하도록 안전 영역 여백을 적용합니다.",
+      "variants": ["qf-m-safe-bottom"],
+      "requiredTokens": [
+        "--m-statusbar",
+        "--m-tabbar-h",
+        "--m-gutter",
+        "--s-3",
+        "--m-keyboard-pad"
+      ],
+      "a11y": "env(safe-area-inset-*) 기반 여백으로 콘텐츠가 시스템 UI에 가려지지 않게 합니다. 시각 의미 전달 요소가 아니므로 별도 ARIA는 필요하지 않습니다.",
+      "exampleHtml": "<div class=\"qf-m-safe-top\">Reserves padding for the top safe area.</div>",
+      "purposeEn": "Applies safe-area padding so content avoids the device notch and home indicator.",
+      "a11yEn": "Padding based on env(safe-area-inset-*) keeps content from being obscured by system UI. This element conveys no visual meaning, so no separate ARIA is needed."
+    },
+    {
+      "name": "MobileScreen",
+      "class": "qf-m-screen",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "상단바, 본문, 탭바로 구성되는 모바일 화면 셸의 루트 컨테이너입니다.",
+      "variants": ["qf-m-screen--bare", "qf-m-screen--app"],
+      "requiredTokens": [
+        "--bg-chat",
+        "--m-statusbar",
+        "--w-drawer-left",
+        "--w-memberlist",
+        "--s-3",
+        "--divider"
+      ],
+      "a11y": "화면 전체 구조 컨테이너로 내부에 topbar, body, tabbar를 순서대로 배치합니다. 실제 앱 화면에는 qf-m-screen--app으로 동적 뷰포트 높이와 안전 영역을 적용합니다.",
+      "exampleHtml": "<div class=\"qf-m-screen qf-m-screen--app\"><header class=\"qf-m-topbar\"></header><div class=\"qf-m-body\"></div></div>",
+      "purposeEn": "The root container of the mobile screen shell, composed of a topbar, body, and tab bar.",
+      "a11yEn": "As the full-screen structural container, it lays out topbar, body, and tabbar in order. For real app screens, apply qf-m-screen--app to use dynamic viewport height and the safe area."
+    },
+    {
+      "name": "MobileTopbar",
+      "class": "qf-m-topbar",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "모바일 화면 상단의 뒤로가기, 제목, 액션을 담는 상단바입니다.",
+      "variants": [
+        "qf-m-topbar__back",
+        "qf-m-topbar__action",
+        "qf-m-topbar__title",
+        "qf-m-topbar__subtitle",
+        "qf-m-topbar__actions"
+      ],
+      "requiredTokens": [
+        "--m-topbar-h",
+        "--m-touch",
+        "--bg-chat",
+        "--divider",
+        "--text-strong",
+        "--r-md"
+      ],
+      "a11y": "뒤로가기와 액션 버튼은 44px 터치 영역을 보장합니다. 아이콘만 있는 버튼에는 aria-label로 의미를 전달하고, 활성 상태는 bg-hover로 표시합니다.",
+      "exampleHtml": "<header class=\"qf-m-topbar\"><button class=\"qf-m-topbar__back\" aria-label=\"Back\">←</button><div class=\"qf-m-topbar__title\">Title</div></header>",
+      "purposeEn": "A top bar at the top of the mobile screen that holds the back button, title, and actions.",
+      "a11yEn": "The back button and action buttons guarantee a 44px touch target. Give icon-only buttons meaning via aria-label, and indicate the active state with bg-hover."
+    },
+    {
+      "name": "MobileTabBar",
+      "class": "qf-m-tabbar",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "모바일 1차 내비게이션을 담는 하단 고정 탭바입니다.",
+      "variants": [
+        "qf-m-tab",
+        "qf-m-tab__icon",
+        "qf-m-tab__label",
+        "qf-m-tab__pill",
+        "qf-m-tab__badge",
+        "qf-m-tab__badge--mention",
+        "qf-m-tab__dot"
+      ],
+      "requiredTokens": [
+        "--m-tabbar-h",
+        "--bg-app",
+        "--divider",
+        "--accent",
+        "--z-tabbar",
+        "--badge-unread-bg"
+      ],
+      "a11y": "role=tablist과 각 탭의 aria-selected로 선택 상태를 전달합니다. 선택 탭은 색상에 더해 pill 형태와 아이콘 확대로 이중 인코딩해 색 단독 의존을 피합니다. 읽지 않음(violet)과 멘션(danger) 배지는 색만으로는 구분되므로(WCAG 1.4.1), aria-label로 '멘션 N건', '읽지 않음 N건'처럼 의미를 텍스트로도 전달하세요.",
+      "exampleHtml": "<nav class=\"qf-m-tabbar\" role=\"tablist\"><button class=\"qf-m-tab\" role=\"tab\" aria-selected=\"true\"><span class=\"qf-m-tab__icon\">🏠</span><span class=\"qf-m-tab__label\">Home</span><span class=\"qf-m-tab__pill\"></span></button></nav>",
+      "purposeEn": "A fixed bottom tab bar that holds the mobile primary navigation.",
+      "a11yEn": "Convey selection state with role=tablist and each tab's aria-selected. The selected tab is dual-encoded with a pill shape and an enlarged icon in addition to color, avoiding reliance on color alone. Because the unread (violet) and mention (danger) badges are distinguished only by color (WCAG 1.4.1), also convey their meaning as text via aria-label, e.g. \"N mentions\" or \"N unread\"."
+    },
+    {
+      "name": "MobileBody",
+      "class": "qf-m-body",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "상단바와 탭바 사이에서 세로 스크롤되는 본문 영역입니다.",
+      "variants": [],
+      "requiredTokens": ["--bg-chat", "--m-gutter", "--divider", "--text", "--s-3"],
+      "a11y": "overscroll-behavior로 스크롤 체이닝을 막아 화면 셸의 의도치 않은 스크롤을 방지합니다. 본문 구조 컨테이너로 내부 콘텐츠의 의미 마크업을 따릅니다.",
+      "exampleHtml": "<div class=\"qf-m-body\"><div class=\"qf-m-row\"></div></div>",
+      "purposeEn": "A vertically scrolling body area between the topbar and tab bar.",
+      "a11yEn": "overscroll-behavior prevents scroll chaining, avoiding unintended scrolling of the screen shell. As a structural body container, it follows the semantic markup of its inner content."
+    },
+    {
+      "name": "MobileListRow",
+      "class": "qf-m-row",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "다이렉트 메시지, 목록, 검색 결과를 표시하는 탭 가능한 리스트 행입니다.",
+      "variants": [
+        "qf-m-row--unread",
+        "qf-m-row__primary",
+        "qf-m-row__secondary",
+        "qf-m-row__aside",
+        "qf-m-row__time"
+      ],
+      "requiredTokens": [
+        "--m-gutter",
+        "--bg-hover",
+        "--divider",
+        "--text-strong",
+        "--text-muted",
+        "--fs-15"
+      ],
+      "a11y": "최소 높이 64px로 충분한 터치 영역을 제공합니다. button 요소로 쓸 때 배경, 테두리를 초기화해 화면 배경에 밀착시킵니다. 읽지 않음은 qf-m-row--unread로 글자 굵기와 색을 함께 강조합니다.",
+      "exampleHtml": "<button class=\"qf-m-row qf-m-row--unread\"><div class=\"qf-m-row__primary\">Alex Carter</div><div class=\"qf-m-row__secondary\">You have a new message.</div></button>",
+      "purposeEn": "A tappable list row for displaying direct messages, lists, and search results.",
+      "a11yEn": "A minimum height of 64px provides a generous touch target. When used as a button element, reset its background and border so it sits flush against the screen background. Unread state uses qf-m-row--unread to emphasize both font weight and color."
+    },
+    {
+      "name": "MobileSection",
+      "class": "qf-m-section",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "리스트 안에서 그룹을 구분하는 섹션 머리글입니다.",
+      "variants": ["qf-m-section__action"],
+      "requiredTokens": [
+        "--s-5",
+        "--m-gutter",
+        "--text-muted",
+        "--tracking-caps",
+        "--link",
+        "--fs-12"
+      ],
+      "a11y": "머리글 텍스트는 대문자 letter-spacing로 표시하고, 액션은 accent 대신 테마 인식 --link 색을 써서 패널 위 본문 텍스트 대비 AA를 충족합니다. 의미상 머리글 요소로 마크업하기를 권합니다.",
+      "exampleHtml": "<h2 class=\"qf-m-section\">Direct Messages<a class=\"qf-m-section__action\" href=\"#\">See all</a></h2>",
+      "purposeEn": "A section header that separates groups within a list.",
+      "a11yEn": "Render the header text in uppercase with letter-spacing, and use the theme-aware --link color (instead of accent) for actions so they meet AA 4.5:1 contrast against body text over the panel. Marking it up as a semantic heading element is recommended."
+    },
+    {
+      "name": "MobileSearch",
+      "class": "qf-m-search",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "상단바에 인라인으로 배치하는 검색 입력 필드입니다.",
+      "variants": ["qf-m-search__input"],
+      "requiredTokens": ["--bg-panel", "--r-lg", "--m-gutter", "--text-muted", "--s-2", "--fs-14"],
+      "a11y": "입력 요소에는 aria-label 또는 연결된 라벨로 용도를 전달합니다. placeholder는 보조 정보로만 사용하고 단독 라벨로 의존하지 않습니다.",
+      "exampleHtml": "<div class=\"qf-m-search\"><input class=\"qf-m-search__input\" type=\"search\" aria-label=\"Search\" placeholder=\"Search\"></div>",
+      "purposeEn": "A search input field placed inline in the topbar.",
+      "a11yEn": "Convey the input's purpose with aria-label or an associated label. Use the placeholder only as supplementary information and do not rely on it as the sole label."
+    },
+    {
+      "name": "MobileSheet",
+      "class": "qf-m-sheet",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "화면 하단에서 올라오는 액션, 옵션용 바텀 시트입니다.",
+      "variants": [
+        "qf-m-sheet__grab",
+        "qf-m-sheet__title",
+        "qf-m-sheet__item",
+        "qf-m-sheet__item--danger",
+        "qf-m-sheet__icon",
+        "qf-m-sheet__divider",
+        "qf-m-sheet-backdrop"
+      ],
+      "requiredTokens": [
+        "--bg-elevated",
+        "--m-sheet-r",
+        "--elev-4",
+        "--m-gutter",
+        "--m-touch",
+        "--bg-hover"
+      ],
+      "a11y": "role=dialog과 aria-modal로 시트를 모달로 알리고, 항목은 최소 높이 44px를 보장합니다. 위험 항목은 danger 색과 함께 텍스트로도 의미를 전달합니다. 백드롭 탭으로 닫힙니다.",
+      "exampleHtml": "<div class=\"qf-m-sheet\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Options\"><div class=\"qf-m-sheet__grab\"></div><button class=\"qf-m-sheet__item\">Share</button></div>",
+      "purposeEn": "A bottom sheet that rises from the bottom of the screen for actions and options.",
+      "a11yEn": "Announce the sheet as modal with role=dialog and aria-modal, and guarantee a minimum height of 44px for items. Destructive items convey their meaning as text in addition to the danger color. It dismisses on a backdrop tap."
+    },
+    {
+      "name": "MobileSegment",
+      "class": "qf-m-segment",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "필터, 보기 전환을 위한 분절 선택 컨트롤입니다.",
+      "variants": ["qf-m-segment__btn"],
+      "requiredTokens": [
+        "--bg-panel",
+        "--r-lg",
+        "--s-3",
+        "--m-gutter",
+        "--bg-elevated",
+        "--elev-1"
+      ],
+      "a11y": "role=tablist과 각 버튼의 aria-selected로 선택을 전달합니다. 선택 항목은 배경 채움과 그림자로 강조해 색 단독 의존을 피하고, 각 버튼은 텍스트 라벨을 갖습니다.",
+      "exampleHtml": "<div class=\"qf-m-segment\" role=\"tablist\"><button class=\"qf-m-segment__btn\" role=\"tab\" aria-selected=\"true\">All</button><button class=\"qf-m-segment__btn\" role=\"tab\" aria-selected=\"false\">Requests</button></div>",
+      "purposeEn": "A segmented control for switching filters and views.",
+      "a11yEn": "Convey selection with role=tablist and each button's aria-selected. The selected item is emphasized with a filled background and shadow to avoid relying on color alone, and each button has a text label."
+    },
+    {
+      "name": "MobileEmptyState",
+      "class": "qf-m-empty",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "내용이 없을 때 안내 제목과 설명을 보여주는 빈 상태 영역입니다.",
+      "variants": ["qf-m-empty__title", "qf-m-empty__body"],
+      "requiredTokens": ["--s-11", "--s-7", "--s-4", "--text-muted", "--text-strong", "--fs-16"],
+      "a11y": "제목과 본문 텍스트로 상황을 명확히 설명합니다. 장식 아이콘에는 aria-hidden을 적용하고 핵심 안내는 텍스트로 전달합니다.",
+      "exampleHtml": "<div class=\"qf-m-empty\"><div class=\"qf-m-empty__title\">No messages yet</div><p class=\"qf-m-empty__body\">Start a conversation.</p></div>",
+      "purposeEn": "An empty-state region that shows a title and description when there is no content to display.",
+      "a11yEn": "Use the title and body text to clearly explain the situation. Apply aria-hidden to decorative icons and convey the essential message as text."
+    },
+    {
+      "name": "MobileFab",
+      "class": "qf-m-fab",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "화면 우하단에 떠 있는 주요 액션용 플로팅 버튼입니다.",
+      "variants": ["qf-m-fab--search"],
+      "requiredTokens": ["--m-gutter", "--m-tabbar-h", "--r-pill", "--accent", "--elev-3", "--s-3"],
+      "a11y": "56px 크기로 44px 터치 기준을 넘으며, 아이콘만 있으므로 aria-label로 동작을 전달합니다. 탭바와 안전 영역 위에 배치되어 가려지지 않습니다.",
+      "exampleHtml": "<button class=\"qf-m-fab\" aria-label=\"New message\">＋</button>",
+      "purposeEn": "A floating action button anchored to the bottom-right of the screen for the primary action.",
+      "a11yEn": "At 56px it exceeds the 44px touch-target minimum, and since it is icon-only, convey its action with aria-label. It sits above the tab bar and the safe area so it is never obscured."
+    },
+    {
+      "name": "MobilePullToRefresh",
+      "class": "qf-m-ptr",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "리스트 상단에서 당겨 새로고침할 때 표시하는 스피너 영역입니다.",
+      "variants": ["qf-m-ptr__spin"],
+      "requiredTokens": ["--s-3", "--text-muted", "--divider", "--accent", "--fs-12", "--bg-chat"],
+      "a11y": "새로고침 진행은 aria-live 영역이나 상태 텍스트로 함께 알려 스피너 애니메이션에만 의존하지 않게 합니다. prefers-reduced-motion 환경을 고려합니다.",
+      "exampleHtml": "<div class=\"qf-m-ptr\" role=\"status\" aria-live=\"polite\"><span class=\"qf-m-ptr__spin\" aria-hidden=\"true\"></span>Refreshing</div>",
+      "purposeEn": "A spinner region shown when the user pulls down from the top of a list to refresh.",
+      "a11yEn": "Announce refresh progress through an aria-live region or status text as well, so it does not rely on the spinner animation alone. Honor prefers-reduced-motion environments."
+    },
+    {
+      "name": "MobileDrawerScrim",
+      "class": "qf-m-drawer-scrim",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "드로어가 열렸을 때 본문 위에 깔려 탭하면 닫는 어두운 막입니다.",
+      "variants": ["qf-m-panels--show-left", "qf-m-panels--show-right"],
+      "requiredTokens": [
+        "--scrim",
+        "--m-panel-dur",
+        "--m-panel-ease",
+        "--z-drawer",
+        "--w-drawer-left",
+        "--w-memberlist"
+      ],
+      "a11y": "드로어 열림 시에만 pointer-events가 활성화되어 막 탭으로 닫을 수 있습니다. 키보드 사용자를 위해 Escape 닫기도 함께 제공하기를 권합니다.",
+      "exampleHtml": "<div class=\"qf-m-panels qf-m-panels--show-left\"><div class=\"qf-m-drawer-scrim\"></div></div>",
+      "purposeEn": "A dark overlay that covers the main content while a drawer is open and dismisses it on tap.",
+      "a11yEn": "pointer-events is enabled only while the drawer is open, so tapping the scrim closes it. For keyboard users, also provide Escape to close."
+    },
+    {
+      "name": "MobileFilterChip",
+      "class": "qf-m-filter-chip",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "활동, 검색 상단에서 결과를 거르는 가로 스크롤 필터 칩입니다.",
+      "variants": ["qf-m-filter-chip--solid", "qf-m-filter-chip__count", "qf-m-filter-bar"],
+      "requiredTokens": [
+        "--m-touch",
+        "--bg-panel",
+        "--r-pill",
+        "--accent",
+        "--accent-subtle",
+        "--text-secondary"
+      ],
+      "a11y": "최소 높이 44px로 터치 영역을 보장하고, 선택 상태는 aria-selected와 테두리로도 전달해 색 단독 의존을 피합니다. 선택 라벨에 --accent(a-500)를 쓰는 기본 변형은 본문 크기 텍스트 대비가 AA 4.5:1 미만일 수 있으니, 라벨 가독이 중요하면 더 진한 violet(a-600)의 솔리드 변형(qf-m-filter-chip--solid)을 쓰세요.",
+      "exampleHtml": "<button class=\"qf-m-filter-chip\" aria-selected=\"true\">Mentions<span class=\"qf-m-filter-chip__count\">3</span></button>",
+      "purposeEn": "A horizontally scrolling filter chip that narrows results at the top of activity and search views.",
+      "a11yEn": "A minimum height of 44px guarantees the touch target, and the selected state is conveyed by aria-selected and a border as well, avoiding reliance on color alone. The default variant uses --accent (a-500) for the selected label, whose contrast may fall below AA 4.5:1 at body text size, so if label legibility matters, use the darker violet (a-600) solid variant (qf-m-filter-chip--solid)."
+    },
+    {
+      "name": "MobileChannelRow",
+      "class": "qf-m-channel",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "서버 드로어 안의 채널 목록 한 행입니다.",
+      "variants": ["qf-m-channel--unread", "qf-m-channel__suffix"],
+      "requiredTokens": [
+        "--s-3",
+        "--bg-hover",
+        "--bg-selected",
+        "--text-muted",
+        "--text-strong",
+        "--fs-15"
+      ],
+      "a11y": "최소 높이 44px로 터치 영역을 확보합니다. 선택 상태는 aria-selected=true로 알리고, 읽지 않음은 색뿐 아니라 굵은 글꼴로도 구분합니다.",
+      "exampleHtml": "<button class=\"qf-m-channel\" aria-selected=\"true\">general</button>",
+      "purposeEn": "A single row in the channel list inside the server drawer.",
+      "a11yEn": "A minimum height of 44px secures the touch target. The selected state is announced with aria-selected=true, and unread items are distinguished by bold weight as well as color."
+    },
+    {
+      "name": "MobileComposer",
+      "class": "qf-m-composer",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "채팅 입력창과 더하기, 보내기 버튼을 묶은 모바일 작성 영역입니다.",
+      "variants": [
+        "qf-m-composer__plus",
+        "qf-m-composer__input",
+        "qf-m-composer__send",
+        "qf-m-composer__accessory",
+        "qf-m-composer__accessory-btn"
+      ],
+      "requiredTokens": ["--s-3", "--s-2", "--bg-chat", "--bg-input", "--accent", "--m-touch"],
+      "a11y": "버튼은 44px 터치 영역을 지키고 입력은 포커스 시 accent 보더로 가시화합니다. 보낼 수 없을 때는 send 버튼에 disabled를 부여합니다.",
+      "exampleHtml": "<form class=\"qf-m-composer\"><button class=\"qf-m-composer__plus\" aria-label=\"Attach\">+</button><textarea class=\"qf-m-composer__input\" aria-label=\"Message input\"></textarea><button class=\"qf-m-composer__send\" aria-label=\"Send\">↑</button></form>",
+      "purposeEn": "A mobile composition area that groups the chat input with the add and send buttons.",
+      "a11yEn": "Buttons maintain a 44px touch target, and the input is made visible on focus with an accent border. When sending is not possible, apply disabled to the send button."
+    },
+    {
+      "name": "MobileMessage",
+      "class": "qf-m-msg",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "호버 툴바 없이 조밀하게 표시하는 모바일 메시지 행입니다.",
+      "variants": [
+        "qf-m-msg--head",
+        "qf-m-msg--cont",
+        "qf-m-msg__avatar",
+        "qf-m-msg__meta",
+        "qf-m-msg__author",
+        "qf-m-msg__time",
+        "qf-m-msg__body"
+      ],
+      "requiredTokens": [
+        "--m-gutter",
+        "--s-4",
+        "--fs-15",
+        "--fs-chat",
+        "--lh-snug",
+        "--text-strong",
+        "--text"
+      ],
+      "a11y": "연속 메시지는 qf-m-msg--cont로 아바타와 메타를 시각 생략하되 작성자 정보는 직전 head 메시지로 전달됩니다. 본문은 채팅 폰트 크기 설정을 존중합니다.",
+      "exampleHtml": "<div class=\"qf-m-msg qf-m-msg--head\"><img class=\"qf-m-msg__avatar\" src=\"\" alt=\"Alex Carter\"><div><div class=\"qf-m-msg__meta\"><span class=\"qf-m-msg__author\">Alex Carter</span><time class=\"qf-m-msg__time\">3:14 PM</time></div><div class=\"qf-m-msg__body\">Hey there</div></div></div>",
+      "purposeEn": "A compact mobile message row rendered without a hover toolbar.",
+      "a11yEn": "Consecutive messages use qf-m-msg--cont to visually omit the avatar and metadata, while author information is conveyed by the preceding head message. The body respects the chat font-size setting."
+    },
+    {
+      "name": "MobileSwipeReply",
+      "class": "qf-m-swipe",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "메시지를 옆으로 밀 때 드러나는 답장 힌트 아이콘입니다.",
+      "variants": ["qf-m-swipe"],
+      "requiredTokens": [
+        "--s-4",
+        "--m-swipe-icon-size",
+        "--r-pill",
+        "--accent",
+        "--text-onAccent",
+        "--dur-fast"
+      ],
+      "a11y": "스와이프 제스처의 보조 힌트이며 같은 동작은 메시지 메뉴 등 버튼 경로로도 제공해 제스처 단독 의존을 피합니다. 기본은 pointer-events:none으로 숨겨집니다.",
+      "exampleHtml": "<span class=\"qf-m-swipe\" aria-hidden=\"true\">↩</span>",
+      "purposeEn": "A reply hint icon revealed when a message is swiped sideways.",
+      "a11yEn": "It is a supplementary hint for the swipe gesture; the same action is also available through a button path such as the message menu, avoiding reliance on the gesture alone. By default it is hidden with pointer-events:none."
+    },
+    {
+      "name": "MobileReactionRow",
+      "class": "qf-m-react-row",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "빠른 반응 이모지를 가로 스크롤로 고르는 칩 행입니다.",
+      "variants": ["qf-m-react-chip", "qf-m-react-chip--more"],
+      "requiredTokens": [
+        "--s-4",
+        "--m-gutter",
+        "--m-touch",
+        "--r-pill",
+        "--bg-panel",
+        "--bg-hover"
+      ],
+      "a11y": "각 칩은 44px 터치 영역을 갖습니다. 더보기 칩은 추가 이모지 선택을 여는 용도로 aria-label을 부여하세요.",
+      "exampleHtml": "<div class=\"qf-m-react-row\" role=\"group\" aria-label=\"Quick reactions\"><button class=\"qf-m-react-chip\">👍</button><button class=\"qf-m-react-chip qf-m-react-chip--more\" aria-label=\"More\">+</button></div>",
+      "purposeEn": "A row of chips for picking quick-reaction emoji via horizontal scroll.",
+      "a11yEn": "Each chip has a 44px touch target. Give the more chip an aria-label indicating that it opens additional emoji selection."
+    },
+    {
+      "name": "MobileVoice",
+      "class": "qf-m-voice",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "채널 안 음성, 통화 참여자 그리드와 제어 버튼을 담는 카드입니다.",
+      "variants": [
+        "qf-m-voice__head",
+        "qf-m-voice__live",
+        "qf-m-voice__grid",
+        "qf-m-voice__tile",
+        "qf-m-voice__tile--speaking",
+        "qf-m-voice__tile-muted",
+        "qf-m-voice__controls",
+        "qf-m-voice__ctrl",
+        "qf-m-voice__ctrl--leave"
+      ],
+      "requiredTokens": [
+        "--s-4",
+        "--s-5",
+        "--m-gutter",
+        "--r-xl",
+        "--bg-elevated",
+        "--border",
+        "--ok-400"
+      ],
+      "a11y": "제어 버튼은 48px로 터치 영역을 확보하고 나가기는 위험 색과 함께 aria-label로 동작을 알립니다. 말하는 중 상태는 테두리 강조와 함께 텍스트로도 전달하세요.",
+      "exampleHtml": "<section class=\"qf-m-voice\" aria-label=\"Voice channel\"><div class=\"qf-m-voice__controls\"><button class=\"qf-m-voice__ctrl\" aria-label=\"Mute\">🎤</button><button class=\"qf-m-voice__ctrl qf-m-voice__ctrl--leave\" aria-label=\"Leave\">✕</button></div></section>",
+      "purposeEn": "A card holding the participant grid and control buttons for an in-channel voice or video call.",
+      "a11yEn": "Control buttons secure a 48px touch target, and the leave button conveys its action with aria-label alongside a danger color. Convey the speaking state with text as well as a border emphasis."
+    },
+    {
+      "name": "MobileNotification",
+      "class": "qf-m-notif",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "활동 탭의 알림 한 건을 보여 주는 목록 항목입니다.",
+      "variants": [
+        "qf-m-notif--unread",
+        "qf-m-notif__avatar",
+        "qf-m-notif__head",
+        "qf-m-notif__actor",
+        "qf-m-notif__verb",
+        "qf-m-notif__time",
+        "qf-m-notif__preview"
+      ],
+      "requiredTokens": [
+        "--m-gutter",
+        "--s-2",
+        "--accent",
+        "--text-strong",
+        "--text-secondary",
+        "--text-muted",
+        "--fs-14"
+      ],
+      "a11y": "읽지 않음은 좌측 accent 막대와 배경으로 구분하되 텍스트 라벨로도 알려 색 단독 의존을 피합니다.",
+      "exampleHtml": "<a class=\"qf-m-notif qf-m-notif--unread\" href=\"#\"><img class=\"qf-m-notif__avatar\" src=\"\" alt=\"Alex Carter\"><div><div class=\"qf-m-notif__head\"><span class=\"qf-m-notif__actor\">Alex Carter</span><span class=\"qf-m-notif__verb\">mentioned you</span><time class=\"qf-m-notif__time\">5m</time></div><p class=\"qf-m-notif__preview\">Can you take a look?</p></div></a>",
+      "purposeEn": "A list item that shows a single notification in the activity tab.",
+      "a11yEn": "Unread items are distinguished by a left accent bar and background, but are also indicated with a text label to avoid reliance on color alone."
+    },
+    {
+      "name": "MobileOverlappingPanels",
+      "class": "qf-m-panels",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "좌측 채널, 중앙 채팅, 우측 멤버 3패널을 겹쳐 슬라이드하는 모바일 셸입니다.",
+      "variants": [
+        "qf-m-panels--show-left",
+        "qf-m-panels--show-right",
+        "qf-m-panels--show-center",
+        "qf-m-panels--dragging",
+        "qf-m-panels--snapping",
+        "qf-m-panel-left",
+        "qf-m-panel-center",
+        "qf-m-panel-right"
+      ],
+      "requiredTokens": [
+        "--m-panel-dur",
+        "--m-panel-ease",
+        "--w-drawer-left",
+        "--w-memberlist",
+        "--bg-panel",
+        "--bg-chat",
+        "--z-drawer"
+      ],
+      "a11y": "드래그 제스처로 패널을 여닫되 scrim 탭과 버튼 등 비제스처 경로도 함께 제공합니다. 드로어가 열리면 가려진 패널의 초점 이동을 막아 주세요.",
+      "exampleHtml": "<div class=\"qf-m-panels qf-m-panels--show-left\"><aside class=\"qf-m-panel-left\"></aside><main class=\"qf-m-panel-center\"></main><aside class=\"qf-m-panel-right\"></aside></div>",
+      "purposeEn": "A mobile shell that slides the three panels — channels on the left, chat in the center, members on the right — over one another.",
+      "a11yEn": "Open and close panels with drag gestures, but also provide non-gesture paths such as a scrim tap and buttons. When a drawer is open, prevent focus from moving into the panels it covers."
+    },
+    {
+      "name": "MobileServerHeader",
+      "class": "qf-m-server-header",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "좌측 패널 채널 목록 상단의 서버명과 메뉴, 액션 버튼 행입니다.",
+      "variants": [
+        "qf-m-server-header__name",
+        "qf-m-server-header__chevron",
+        "qf-m-server-header__action"
+      ],
+      "requiredTokens": [
+        "--s-2",
+        "--m-gutter",
+        "--m-topbar-h",
+        "--m-touch",
+        "--bg-panel",
+        "--divider",
+        "--text-strong"
+      ],
+      "a11y": "전체 헤더는 서버 메뉴 시트를 여는 버튼이며, 우측 액션은 44px 히트박스를 유지합니다. chevron 등 아이콘 버튼에는 aria-label을 부여하세요.",
+      "exampleHtml": "<button class=\"qf-m-server-header\"><span class=\"qf-m-server-header__name\">Our Server</span><span class=\"qf-m-server-header__chevron\" aria-hidden=\"true\">▾</span></button>",
+      "purposeEn": "The row at the top of the left panel's channel list showing the server name, menu, and action buttons.",
+      "a11yEn": "The entire header is a button that opens the server menu sheet, and the right-side actions keep a 44px hit box. Give icon buttons such as the chevron an aria-label."
+    },
+    {
+      "name": "MobileUnreadDivider",
+      "class": "qf-m-unread-divider",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "읽지 않은 메시지 경계를 표시하는 구분선과 라벨입니다.",
+      "variants": ["qf-m-unread-divider__label", "qf-m-unread-divider__pill"],
+      "requiredTokens": [
+        "--s-3",
+        "--m-gutter",
+        "--unread-divider-accent",
+        "--badge-unread-bg",
+        "--text-onAccent",
+        "--r-pill",
+        "--fs-11"
+      ],
+      "a11y": "색 선뿐 아니라 읽지 않음 라벨 텍스트로도 경계를 알립니다. role=separator와 함께 안내 텍스트를 제공하세요.",
+      "exampleHtml": "<div class=\"qf-m-unread-divider\" role=\"separator\"><span class=\"qf-m-unread-divider__label\">Unread</span><span class=\"qf-m-unread-divider__pill\">3</span></div>",
+      "purposeEn": "A divider line and label that marks the boundary of unread messages.",
+      "a11yEn": "Indicate the boundary with the unread label text as well as the colored line. Provide guidance text along with role=separator."
+    },
+    {
+      "name": "MobileJumpButton",
+      "class": "qf-m-jump-btn",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "목록 맨 아래로 이동하는 알약형 떠 있는 버튼입니다.",
+      "variants": ["qf-m-jump-btn__badge"],
+      "requiredTokens": [
+        "--m-gutter",
+        "--m-touch",
+        "--r-pill",
+        "--bg-elevated",
+        "--border",
+        "--elev-3",
+        "--badge-unread-bg"
+      ],
+      "a11y": "최소 44px 높이를 지키고 aria-label로 맨 아래 이동임을 알립니다. 배지의 읽지 않음 수는 텍스트로 전달됩니다.",
+      "exampleHtml": "<button class=\"qf-m-jump-btn\" aria-label=\"Jump to bottom\">↓<span class=\"qf-m-jump-btn__badge\">5</span></button>",
+      "purposeEn": "A pill-shaped floating button that jumps to the bottom of the list.",
+      "a11yEn": "It keeps a minimum height of 44px and uses aria-label to indicate that it jumps to the bottom. The unread count in the badge is conveyed as text."
+    },
+    {
+      "name": "MobileReactToast",
+      "class": "qf-m-react-toast",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "두 번 탭으로 빠르게 반응했을 때 하단 중앙에 등장하는 알림 버블입니다.",
+      "variants": ["qf-m-react-toast__emoji"],
+      "requiredTokens": [
+        "--m-composer-h",
+        "--m-tabbar-h",
+        "--s-2",
+        "--s-4",
+        "--r-pill",
+        "--bg-elevated",
+        "--z-toast"
+      ],
+      "a11y": "동작 결과를 알리는 일시 토스트이므로 role=status로 보조 기술에 변화를 전달합니다. 스프링 등장 모션은 reduce-motion 환경을 존중하세요.",
+      "exampleHtml": "<div class=\"qf-m-react-toast\" role=\"status\"><span class=\"qf-m-react-toast__emoji\">👍</span> Reaction added</div>",
+      "purposeEn": "A notification bubble that appears at the bottom center after a double-tap quick reaction.",
+      "a11yEn": "As a transient toast that reports the result of an action, it uses role=status to convey the change to assistive technology. Honor reduce-motion environments for the spring entrance animation."
+    },
+    {
+      "name": "MobileImageGrid",
+      "class": "qf-m-img-grid",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "메시지에 첨부된 여러 이미지를 격자로 배치하는 컨테이너입니다.",
+      "variants": [
+        "qf-m-img-grid--1",
+        "qf-m-img-grid--3",
+        "qf-m-img-grid--4",
+        "qf-m-img-grid__tile",
+        "qf-m-img-grid__more"
+      ],
+      "requiredTokens": [
+        "--s-1",
+        "--r-md",
+        "--bg-panel",
+        "--bg-floating",
+        "--text-strong",
+        "--fs-20"
+      ],
+      "a11y": "각 이미지에는 의미 있는 alt를 제공하고, 추가 매수 오버레이는 더 많은 이미지가 있음을 텍스트로 알립니다.",
+      "exampleHtml": "<div class=\"qf-m-img-grid qf-m-img-grid--4\"><div class=\"qf-m-img-grid__tile\"><img src=\"\" alt=\"Photo 1\"></div><div class=\"qf-m-img-grid__tile\"><img src=\"\" alt=\"Photo 2\"><span class=\"qf-m-img-grid__more\">+3</span></div></div>",
+      "purposeEn": "A container that arranges multiple images attached to a message in a grid.",
+      "a11yEn": "Provide meaningful alt text for each image, and have the overflow-count overlay indicate as text that more images are available."
+    },
+    {
+      "name": "MobileTile",
+      "class": "qf-m-tile",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "홈 상단 퀵 타일 한 장으로 Catch Up, Threads 등 진입점을 보여 줍니다.",
+      "variants": [
+        "qf-m-tile--unread",
+        "qf-m-tile__icon",
+        "qf-m-tile__label",
+        "qf-m-tile__count",
+        "qf-m-tile-row"
+      ],
+      "requiredTokens": [
+        "--s-3",
+        "--s-4",
+        "--m-tile-h",
+        "--r-lg",
+        "--bg-panel",
+        "--accent",
+        "--text-strong"
+      ],
+      "a11y": "읽지 않음은 accent 보더와 함께 카운트 텍스트로 알려 색 단독 의존을 피합니다. 타일은 버튼으로 키보드 접근이 가능합니다.",
+      "exampleHtml": "<button class=\"qf-m-tile qf-m-tile--unread\"><span class=\"qf-m-tile__icon\" aria-hidden=\"true\">🧵</span><span class=\"qf-m-tile__label\">Threads</span><span class=\"qf-m-tile__count\">3</span></button>",
+      "purposeEn": "A single quick tile at the top of the home view, surfacing entry points such as Catch Up and Threads.",
+      "a11yEn": "Unread items are indicated with count text alongside an accent border to avoid reliance on color alone. Tiles are buttons and keyboard-accessible."
+    },
+    {
+      "name": "MobileYou",
+      "class": "qf-m-you-header",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "프로필 탭 상단의 아바타, 이름, 상태, 핸들을 보여 주는 헤더입니다.",
+      "variants": [
+        "qf-m-you-header--idle",
+        "qf-m-you-header--dnd",
+        "qf-m-you-header--offline",
+        "qf-m-you-header__name",
+        "qf-m-you-header__handle",
+        "qf-m-you-header__state",
+        "qf-m-you-header__meta",
+        "qf-m-you-status",
+        "qf-m-you-section",
+        "qf-m-you-card"
+      ],
+      "requiredTokens": [
+        "--s-4",
+        "--s-6",
+        "--m-gutter",
+        "--fs-20",
+        "--text-strong",
+        "--text-muted",
+        "--status-online",
+        "--sz-status-dot"
+      ],
+      "a11y": "상태 점은 색만으로 의미를 주지 않도록 상태 텍스트를 함께 표기합니다. 이름과 핸들은 말줄임 처리되며 전체 값을 접근 가능하게 노출하세요.",
+      "exampleHtml": "<header class=\"qf-m-you-header qf-m-you-header--dnd\"><img src=\"\" alt=\"My profile\"><div class=\"qf-m-you-header__meta\"><div class=\"qf-m-you-header__name\">Alex Carter</div><div class=\"qf-m-you-header__state\">Do Not Disturb</div></div></header>",
+      "purposeEn": "A header at the top of the profile tab showing the avatar, name, status, and handle.",
+      "a11yEn": "The status dot is accompanied by status text so it does not convey meaning by color alone. The name and handle are truncated with an ellipsis, so expose their full values accessibly."
+    },
+    {
+      "name": "MobileThreadInbox",
+      "class": "qf-m-thread-inbox",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "스레드 인박스 목록 항목으로 채널 맥락과 답글 미리보기, 읽지 않음 수를 보여 줍니다.",
+      "variants": [
+        "qf-m-thread-inbox__item",
+        "qf-m-thread-inbox__item--unread",
+        "qf-m-thread-inbox__avatars",
+        "qf-m-thread-inbox__context",
+        "qf-m-thread-inbox__preview",
+        "qf-m-thread-inbox__count",
+        "qf-m-thread-inbox__body"
+      ],
+      "requiredTokens": [
+        "--s-3",
+        "--m-gutter",
+        "--m-dm-row-h",
+        "--badge-unread-bg",
+        "--text-onAccent",
+        "--divider",
+        "--text-secondary"
+      ],
+      "a11y": "항목은 버튼으로 64px 높이를 유지합니다. 읽지 않음은 텍스트 색 강조와 카운트 텍스트로 함께 전달합니다.",
+      "exampleHtml": "<button class=\"qf-m-thread-inbox__item qf-m-thread-inbox__item--unread\"><span class=\"qf-m-thread-inbox__avatars\"></span><span class=\"qf-m-thread-inbox__body\"><span class=\"qf-m-thread-inbox__context\"># general</span><span class=\"qf-m-thread-inbox__preview\">New replies</span></span><span class=\"qf-m-thread-inbox__count\">2</span></button>",
+      "purposeEn": "A thread inbox list item that shows the channel context, a reply preview, and the unread count.",
+      "a11yEn": "Each item is a button that keeps a 64px height. Unread state is conveyed with both emphasized text color and count text."
+    },
+    {
+      "name": "MobileChannelBrowser",
+      "class": "qf-m-channel-browser",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "서버 채널 둘러보기 목록 항목으로 채널명, 설명, 멤버수와 참여 버튼을 제공합니다.",
+      "variants": [
+        "qf-m-channel-browser__item",
+        "qf-m-channel-browser__name",
+        "qf-m-channel-browser__desc",
+        "qf-m-channel-browser__members",
+        "qf-m-channel-browser__join"
+      ],
+      "requiredTokens": [
+        "--s-3",
+        "--m-gutter",
+        "--m-touch",
+        "--accent",
+        "--accent-press",
+        "--text-strong",
+        "--text-muted",
+        "--r-md"
+      ],
+      "a11y": "참여 버튼은 44px 히트박스를 지키고 이미 참여한 상태는 aria-pressed=true로 알립니다. 채널명 앞 # 표시 외에 의미는 텍스트로 전달합니다.",
+      "exampleHtml": "<div class=\"qf-m-channel-browser__item\"><span class=\"qf-m-channel-browser__name\">general</span><span class=\"qf-m-channel-browser__desc\">Open chat</span><button class=\"qf-m-channel-browser__join\">Join</button></div>",
+      "purposeEn": "A server channel browser list item that provides the channel name, description, member count, and a join button.",
+      "a11yEn": "The join button keeps a 44px hit box, and the already-joined state is announced with aria-pressed=true. Beyond the leading # on the channel name, meaning is conveyed as text."
+    },
+    {
+      "name": "MobileEmojiDrawer",
+      "class": "qf-m-emoji-drawer",
+      "layer": "mobile",
+      "category": "Mobile",
+      "purpose": "하단에서 올라오는 이모지 선택 드로어로 검색, 카테고리 탭, 격자 셀을 담습니다.",
+      "variants": [
+        "qf-m-emoji-drawer__grab",
+        "qf-m-emoji-drawer__search",
+        "qf-m-emoji-drawer__tabs",
+        "qf-m-emoji-drawer__tab",
+        "qf-m-emoji-drawer__grid",
+        "qf-m-emoji-drawer__row",
+        "qf-m-emoji-drawer__cell",
+        "qf-m-emoji-drawer__category-label"
+      ],
+      "requiredTokens": [
+        "--m-sheet-r",
+        "--m-touch",
+        "--m-gutter",
+        "--bg-elevated",
+        "--bg-input",
+        "--accent",
+        "--text-muted"
+      ],
+      "a11y": "카테고리 탭과 이모지 셀은 44px 터치 영역을 지킵니다. 선택된 탭은 aria-selected=true로 알리고 각 이모지 셀에는 이름 aria-label을 부여하세요.",
+      "exampleHtml": "<div class=\"qf-m-emoji-drawer\" role=\"dialog\" aria-label=\"Pick an emoji\"><span class=\"qf-m-emoji-drawer__grab\"></span><div class=\"qf-m-emoji-drawer__tabs\" role=\"tablist\"><button class=\"qf-m-emoji-drawer__tab\" role=\"tab\" aria-selected=\"true\">😀</button></div><div class=\"qf-m-emoji-drawer__grid\"><div class=\"qf-m-emoji-drawer__row\"><button class=\"qf-m-emoji-drawer__cell\" aria-label=\"Grinning face\">😀</button></div></div></div>",
+      "purposeEn": "An emoji picker drawer that slides up from the bottom, holding a search field, category tabs, and grid cells.",
+      "a11yEn": "Category tabs and emoji cells keep a 44px touch target. Announce the selected tab with aria-selected=true and give each emoji cell a name via aria-label."
+    },
+    {
+      "name": "MediaCard",
+      "class": "qf-media-card",
+      "layer": "generic",
+      "category": "Media",
+      "purpose": "종횡비 고정 미디어 슬롯(레터박스)에 오버레이 배지, 토글을 얹는 썸네일 카드입니다. 비디오, 이미지, 포스터 그리드에 씁니다.",
+      "purposeEn": "A thumbnail card with an aspect-ratio-locked media slot (letterbox) plus overlay badges and toggles — for video, image, and poster grids.",
+      "variants": [
+        "qf-media-card__media",
+        "qf-media-card__overlay",
+        "qf-media-card__overlay--start",
+        "qf-media-card__overlay--end",
+        "qf-media-card__body",
+        "qf-media-card__title",
+        "qf-media-card__meta",
+        "qf-media-card__skeleton",
+        "qf-media-card__fallback",
+        "qf-media-card--2x3",
+        "qf-media-card--auto",
+        "qf-media-card--interactive",
+        "qf-media-card--error"
+      ],
+      "requiredTokens": [
+        "--bg-media",
+        "--media-overlay-scrim",
+        "--aspect-16x9",
+        "--aspect-2x3",
+        "--r-lg",
+        "--border",
+        "--border-strong",
+        "--bg-panel",
+        "--elev-3",
+        "--ring-accent",
+        "--s-2",
+        "--s-3",
+        "--fs-13",
+        "--fs-12",
+        "--text",
+        "--text-muted",
+        "--dur-fast",
+        "--ease-standard"
+      ],
+      "a11y": "활성화 가능한 미디어 슬롯은 role=button, tabindex=0, Enter/Space, aria-label 로 동작을 전달합니다. 오버레이 토글은 실제 button + aria-pressed + 44px, 배지 텍스트는 스크림 위에서 4.5:1, 스켈레톤은 aria-busy, 잘린 제목은 title 속성을 둡니다.",
+      "a11yEn": "Make activatable media slots operable with role=button, tabindex=0, Enter/Space, and aria-label. Overlay toggles are real buttons with aria-pressed and a 44px target; badge text keeps 4.5:1 over the scrim; skeletons set aria-busy; truncated titles carry a title attribute.",
+      "variantsAsChips": true,
+      "exampleHtml": "<div class=\"qf-media-card qf-media-card--interactive\" style=\"max-width:260px\"><div class=\"qf-media-card__media\"><div class=\"qf-media-card__overlay qf-media-card__overlay--start\"><span class=\"qf-badge\">12:34</span></div><div class=\"qf-media-card__overlay qf-media-card__overlay--end\"><button class=\"qf-btn qf-btn--icon qf-btn--ghost\" aria-label=\"Favorite\" aria-pressed=\"false\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-star\"/></svg></button></div></div><div class=\"qf-media-card__body\"><div class=\"qf-media-card__title qf-clamp\">Sunset over the harbor, extended cut</div><div class=\"qf-media-card__meta\"><span>1080p</span><span>248 MB</span><span>2 days ago</span></div></div></div>",
+      "examples": [
+        {
+          "label": "Poster (--2x3)",
+          "html": "<div class=\"qf-media-card qf-media-card--2x3 qf-media-card--interactive\" style=\"max-width:180px\"><div class=\"qf-media-card__media\"><div class=\"qf-media-card__overlay qf-media-card__overlay--end\"><span class=\"qf-badge qf-badge--accent\">NEW</span></div></div><div class=\"qf-media-card__body\"><div class=\"qf-media-card__title qf-clamp\">The Lighthouse</div><div class=\"qf-media-card__meta\"><span>2019</span><span>Drama</span></div></div></div>"
+        },
+        {
+          "label": "Loading (--loading + qf-skel)",
+          "html": "<div class=\"qf-media-card\" style=\"max-width:260px\"><div class=\"qf-media-card__media\"><div class=\"qf-media-card__skeleton qf-skel\" aria-busy=\"true\"></div></div><div class=\"qf-media-card__body\"><div class=\"qf-skel\" style=\"height:var(--s-4);width:80%\"></div><div class=\"qf-skel\" style=\"height:var(--s-3);width:50%\"></div></div></div>"
+        },
+        {
+          "label": "Error (--error + __fallback)",
+          "html": "<div class=\"qf-media-card qf-media-card--error\" style=\"max-width:260px\"><div class=\"qf-media-card__media\"><div class=\"qf-media-card__fallback\"><svg class=\"qf-icon qf-icon--lg\" aria-hidden=\"true\"><use href=\"#qf-i-image\"/></svg><span>Couldn't load preview</span><button class=\"qf-btn qf-btn--secondary qf-btn--sm\" type=\"button\">Retry</button></div></div><div class=\"qf-media-card__body\"><div class=\"qf-media-card__title qf-clamp\">Broken asset</div></div></div>"
+        }
+      ]
+    },
+    {
+      "name": "Clamp",
+      "class": "qf-clamp",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "텍스트를 N줄에서 말줄임하는 유틸리티입니다. 카드 제목, 설명을 균일하게 자릅니다.",
+      "purposeEn": "A utility that truncates text to N lines with an ellipsis — keeps card titles and descriptions uniform.",
+      "variants": ["qf-clamp--1", "qf-clamp--3", "qf-clamp--reserve"],
+      "requiredTokens": ["--lh-snug"],
+      "a11y": "시각적 절단만이며 전체 텍스트는 접근성 트리에 유지합니다(클램프 노드에 aria-hidden 금지). 잘릴 수 있으면 title 이나 qf-tooltip 을 함께 제공합니다.",
+      "a11yEn": "Visual truncation only — the full text stays in the accessibility tree (never aria-hidden the clamp node). When text may be cut, pair it with a title attribute or qf-tooltip.",
+      "exampleHtml": "<p class=\"qf-clamp\" style=\"max-width:320px;margin:0\">This is a longer description that clamps to two lines with an ellipsis when it overflows its container width, keeping cards uniform.</p>",
+      "examples": [
+        {
+          "label": "3 lines (--3)",
+          "html": "<p class=\"qf-clamp qf-clamp--3\" style=\"max-width:320px;margin:0\">This variant clamps to three lines instead of two. Useful for denser cards where a little more context fits before the ellipsis truncates the remaining overflow text.</p>"
+        },
+        {
+          "label": "1 line (--1)",
+          "html": "<p class=\"qf-clamp qf-clamp--1\" style=\"max-width:320px;margin:0\">A single-line clamp behaves like a truncating ellipsis on overflow.</p>"
+        }
+      ]
+    },
+    {
+      "name": "MediaOverlay",
+      "class": "qf-media-overlay",
+      "layer": "generic",
+      "category": "Media",
+      "purpose": "영상이나 이미지 스테이지 위에 떠서 컨트롤과 상태를 보여주는 글래스 크롬입니다. 테마와 무관하게 항상 밝고, safe-area를 피하며, pointer-events 패스스루로 네이티브 컨트롤을 가리지 않습니다.",
+      "purposeEn": "Glass control and status chrome that floats over a video or image stage. Stays light regardless of theme, avoids the safe area, and passes pointer events through so it never blocks native controls.",
+      "variants": [
+        "qf-media-overlay__top",
+        "qf-media-overlay__bottom",
+        "qf-media-overlay__pill",
+        "qf-media-overlay__pill--button",
+        "qf-media-overlay__pill--danger",
+        "qf-media-overlay__hud",
+        "qf-media-overlay__hud--error",
+        "qf-media-overlay__title",
+        "qf-media-overlay__body"
+      ],
+      "requiredTokens": [
+        "--on-media-text",
+        "--on-media-text-muted",
+        "--on-media-glass-bg",
+        "--on-media-glass-bg-strong",
+        "--on-media-border",
+        "--on-media-border-hover",
+        "--on-media-danger-text",
+        "--on-media-danger-border",
+        "--safe-top",
+        "--safe-bottom",
+        "--z-media-overlay",
+        "--r-pill",
+        "--r-lg",
+        "--ring-focus",
+        "--scrim-blur",
+        "--fs-13",
+        "--fs-15"
+      ],
+      "a11y": "__pill--button은 실제 button + 영상 위에서 보이는 포커스 링 + 44px 입니다. __hud는 버퍼링 시 role=status, aria-live=polite, 에러 시 role=alert 를 둡니다. 컨테이너 pointer-events:none이 포커스를 가두거나 네이티브 컨트롤 키보드 접근을 막지 않아야 합니다.",
+      "a11yEn": "__pill--button is a real button with a focus ring visible over video and a 44px target. __hud uses role=status + aria-live=polite while buffering and role=alert on error. The container's pointer-events:none must not trap focus or block keyboard access to native controls.",
+      "exampleHtml": "<div style=\"position:relative;aspect-ratio:var(--aspect-16x9);max-width:440px;background:var(--bg-media);border-radius:var(--r-lg);overflow:hidden\"><div class=\"qf-media-overlay\"><div class=\"qf-media-overlay__top\"><span class=\"qf-media-overlay__pill\">LIVE</span><span style=\"flex:1\"></span><button class=\"qf-media-overlay__pill qf-media-overlay__pill--button\" aria-label=\"Settings\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-settings\"/></svg></button></div><div class=\"qf-media-overlay__bottom\"><button class=\"qf-media-overlay__pill qf-media-overlay__pill--button\" aria-label=\"Play\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-video\"/></svg></button><span class=\"qf-media-overlay__pill\">12:34 / 48:02</span></div></div></div>",
+      "examples": [
+        {
+          "label": "Buffering HUD (role=status)",
+          "html": "<div style=\"position:relative;aspect-ratio:var(--aspect-16x9);max-width:440px;background:var(--bg-media);border-radius:var(--r-lg);overflow:hidden\"><div class=\"qf-media-overlay\"><div class=\"qf-media-overlay__hud\" role=\"status\" aria-live=\"polite\"><span class=\"qf-spinner\" aria-hidden=\"true\"></span><span class=\"qf-media-overlay__title\">Buffering…</span><span class=\"qf-media-overlay__body\">Reconnecting to stream</span></div></div></div>"
+        },
+        {
+          "label": "Error HUD (role=alert)",
+          "html": "<div style=\"position:relative;aspect-ratio:var(--aspect-16x9);max-width:440px;background:var(--bg-media);border-radius:var(--r-lg);overflow:hidden\"><div class=\"qf-media-overlay\"><div class=\"qf-media-overlay__hud qf-media-overlay__hud--error\" role=\"alert\"><span class=\"qf-media-overlay__title\">Playback failed</span><span class=\"qf-media-overlay__body\">The video could not be loaded.</span><button class=\"qf-media-overlay__pill qf-media-overlay__pill--button qf-media-overlay__pill--danger\" type=\"button\">Retry</button></div></div></div>"
+        }
+      ]
+    },
+    {
+      "name": "Lightbox",
+      "class": "qf-lightbox",
+      "layer": "generic",
+      "category": "Overlays",
+      "purpose": "크롬 없는 풀스크린 contain-fit 미디어 뷰어(줌) 또는 풀블리드 스크롤 컨택트 시트입니다. 다이얼로그(qf-modal)와 달리 패널 크롬 없이 미디어만 담습니다.",
+      "purposeEn": "A chrome-free fullscreen contain-fit media viewer (zoom) or a full-bleed scrolling contact sheet. Unlike a dialog (qf-modal), it holds only media — no panel chrome.",
+      "variants": [
+        "qf-lightbox__close",
+        "qf-lightbox__stage",
+        "qf-lightbox__media",
+        "qf-lightbox__sheet",
+        "qf-lightbox__frame",
+        "qf-lightbox__caption",
+        "qf-lightbox--dim",
+        "qf-lightbox--sheet"
+      ],
+      "requiredTokens": [
+        "--scrim",
+        "--scrim-strong",
+        "--scrim-blur",
+        "--z-modal",
+        "--on-media-glass-bg",
+        "--on-media-border",
+        "--on-media-text",
+        "--r-md",
+        "--safe-top",
+        "--ring-focus",
+        "--s-8"
+      ],
+      "variantsAsChips": true,
+      "a11y": "role=dialog + aria-modal=true + aria-label. 포커스를 가두고 열 때 닫기 버튼으로 포커스 이동, 닫을 때 트리거로 복원. Esc와 스크림 클릭으로 닫고(미디어 클릭은 stopPropagation), 닫기 버튼은 44px, prefers-reduced-motion을 존중합니다.",
+      "a11yEn": "role=dialog + aria-modal=true + aria-label. Trap focus, move focus to the close button on open, and restore it to the trigger on close. Close on Esc and scrim click (stop propagation on media clicks); the close button is 44px; respect prefers-reduced-motion.",
+      "exampleHtml": "<div class=\"qf-lightbox\"><button class=\"qf-lightbox__close\" aria-label=\"Close\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-x\"/></svg></button><div class=\"qf-lightbox__stage\"><div class=\"qf-lightbox__media\" style=\"width:260px;aspect-ratio:3 / 2;background:var(--bg-media)\"></div></div></div>",
+      "examples": [
+        {
+          "label": "Contact sheet (--sheet)",
+          "html": "<div class=\"qf-lightbox qf-lightbox--sheet\"><button class=\"qf-lightbox__close\" aria-label=\"Close\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-x\"/></svg></button><div class=\"qf-lightbox__sheet\"><div class=\"qf-lightbox__frame\" style=\"width:240px;aspect-ratio:16 / 9;background:var(--bg-media);border-radius:var(--r-md)\"></div><div class=\"qf-lightbox__frame\" style=\"width:240px;aspect-ratio:16 / 9;background:var(--bg-media);border-radius:var(--r-md)\"></div></div></div>"
+        }
+      ]
+    },
+    {
+      "name": "TypingDots",
+      "class": "qf-typing-dots",
+      "layer": "generic",
+      "category": "Feedback",
+      "purpose": "standalone 3점 staggered bounce로 '생성 중'/입력 중을 표시합니다. spinner(작업 중), progress(정량)와 의미가 다릅니다.",
+      "purposeEn": "A three-dot staggered bounce that signals 'generating' or 'typing' — semantically distinct from a spinner (working) or progress (quantified).",
+      "variants": [
+        "qf-typing-dots__dot",
+        "qf-typing-dots--onAccent",
+        "qf-typing-dots--sm",
+        "qf-typing-dots--lg"
+      ],
+      "requiredTokens": [
+        "--size-typing-dot",
+        "--motion-typing",
+        "--text-muted",
+        "--accent",
+        "--s-1",
+        "--r-pill",
+        "--ease-standard"
+      ],
+      "a11y": "루트에 role=status, aria-live=polite, 접근명(예: aria-label='생성 중')을 두고 점은 aria-hidden 입니다. prefers-reduced-motion 에서 bounce를 opacity 페이드로 대체하고 scale(0)로 얼려 안 보이게 두지 않습니다.",
+      "a11yEn": "Give the root role=status, aria-live=polite, and an accessible name (e.g. aria-label='Generating'); the dots are aria-hidden. Under prefers-reduced-motion, replace the bounce with an opacity fade — never freeze it at scale(0).",
+      "exampleHtml": "<span class=\"qf-typing-dots\" role=\"status\" aria-label=\"Generating\"><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span></span>",
+      "examples": [
+        {
+          "label": "On accent surface (--onAccent)",
+          "html": "<span style=\"display:inline-flex;padding:var(--s-3) var(--s-4);background:var(--accent-subtle);border-radius:var(--r-lg)\"><span class=\"qf-typing-dots qf-typing-dots--onAccent\" role=\"status\" aria-label=\"Generating\"><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span></span></span>"
+        },
+        {
+          "label": "Large (--lg)",
+          "html": "<span class=\"qf-typing-dots qf-typing-dots--lg\" role=\"status\" aria-label=\"Generating\"><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span><span class=\"qf-typing-dots__dot\" aria-hidden=\"true\"></span></span>"
+        }
+      ]
+    },
+    {
+      "name": "SortToggle",
+      "class": "qf-sort-toggle",
+      "layer": "generic",
+      "category": "Display",
+      "purpose": "오름차순↔내림차순↔off를 순환하는 3상태 정렬 토글입니다. 테이블 헤더(th[aria-sort]) 또는 버튼으로 쓰며 방향을 글리프로 표시합니다.",
+      "purposeEn": "A three-state sort toggle that cycles ascending↔descending↔off — used as a table header (th[aria-sort]) or a button, with a direction glyph.",
+      "variants": ["qf-sort-toggle__indicator", "qf-sort-toggle--lg"],
+      "requiredTokens": [
+        "--text-secondary",
+        "--text-strong",
+        "--accent",
+        "--bg-hover",
+        "--sort-indicator-size",
+        "--ring-accent",
+        "--r-sm",
+        "--s-1",
+        "--s-2",
+        "--fs-13"
+      ],
+      "a11y": "테이블 헤더는 th[aria-sort='ascending|descending|none'], 독립 버튼은 role=button + 접근명입니다. Enter/Space로 순환하고 방향은 색이 아니라 aria-sort/글리프로 전달하며 헤더는 44px 탭 타깃을 유지합니다.",
+      "a11yEn": "Table headers use th[aria-sort='ascending|descending|none']; standalone buttons use role=button with an accessible name. Cycle with Enter/Space, convey direction via aria-sort/glyph (not color alone), and keep headers at a 44px tap target.",
+      "exampleHtml": "<button class=\"qf-sort-toggle is-active\" type=\"button\" data-direction=\"asc\" aria-label=\"Sort by name, ascending\"><span>Name</span><span class=\"qf-sort-toggle__indicator\" aria-hidden=\"true\">▲</span></button>",
+      "examples": [
+        {
+          "label": "Descending (active)",
+          "html": "<button class=\"qf-sort-toggle is-active\" type=\"button\" data-direction=\"desc\" aria-label=\"Sort by size, descending\"><span>Size</span><span class=\"qf-sort-toggle__indicator\" aria-hidden=\"true\">▼</span></button>"
+        },
+        {
+          "label": "Off (inactive)",
+          "html": "<button class=\"qf-sort-toggle\" type=\"button\" data-direction=\"none\" aria-label=\"Sort by date\"><span>Modified</span><span class=\"qf-sort-toggle__indicator\" aria-hidden=\"true\">▲</span></button>"
+        }
+      ]
+    },
+    {
+      "name": "Chart",
+      "class": "qf-chart",
+      "layer": "generic",
+      "category": "Charts",
+      "purpose": "멀티시리즈 시계열 라인/영역 차트입니다. 좌표(points/path)와 눈금 값은 소비처가 데이터에서 계산하고(sparkline 과 동일 계약), DS 는 축, 그리드, 시리즈, 호버 가이드, 값 툴팁의 토큰 기반 스타일을 제공합니다. 시리즈 색은 부모 그룹에 style=\"color:var(--viz-N)\"(1~8) 로 지정합니다.",
+      "purposeEn": "A multi-series time-series line/area chart. The consumer computes coordinates (points/path) and tick values from the data (same contract as Sparkline); the DS provides token-based styling for axes, grid, series, hover guide, and value tooltip. Set series color on the parent group via style=\"color:var(--viz-N)\" (1–8).",
+      "variants": [
+        "qf-chart__svg",
+        "qf-chart__grid",
+        "qf-chart__axis",
+        "qf-chart__label",
+        "qf-chart__series",
+        "qf-chart__area",
+        "qf-chart__dot",
+        "qf-chart__guide",
+        "qf-chart__tooltip",
+        "qf-chart__state",
+        "qf-chart--loading",
+        "qf-chart--empty"
+      ],
+      "variantsAsChips": true,
+      "requiredTokens": [
+        "--viz-1",
+        "--viz-2",
+        "--viz-3",
+        "--chart-grid",
+        "--chart-axis",
+        "--chart-label",
+        "--chart-tooltip-bg",
+        "--chart-tooltip-text",
+        "--border",
+        "--bg-panel"
+      ],
+      "a11y": "svg 에 role=\"img\" + aria-label 로 추세를 요약합니다(예: \"최근 24시간 다운로드 대 실패, 상승\"). 호버 가이드/툴팁은 포인터 보조 수단이며, 색 단독 의존을 피하도록 범례와 수치 라벨을 함께 둡니다. 키보드/스크린리더 사용자에게는 동일 데이터의 표 대체본 제공을 권장합니다.",
+      "a11yEn": "Summarize the trend with role=\"img\" + aria-label on the svg (e.g., \"Downloads vs failures over the last 24h, rising\"). The hover guide/tooltip is a pointer affordance; pair color with a legend and numeric labels to avoid color-only reliance. Offer an equivalent data table for keyboard/screen-reader users.",
+      "exampleHtml": "<div class=\"qf-chart\" style=\"--chart-h:200px\"><svg class=\"qf-chart__svg\" viewBox=\"0 0 320 200\" role=\"img\" aria-label=\"Downloads vs failures over 24h, both rising\"><g class=\"qf-chart__grid\"><line x1=\"36\" y1=\"20\" x2=\"312\" y2=\"20\"></line><line x1=\"36\" y1=\"60\" x2=\"312\" y2=\"60\"></line><line x1=\"36\" y1=\"100\" x2=\"312\" y2=\"100\"></line><line x1=\"36\" y1=\"140\" x2=\"312\" y2=\"140\"></line></g><text class=\"qf-chart__label qf-chart__label--y\" x=\"30\" y=\"20\">300</text><text class=\"qf-chart__label qf-chart__label--y\" x=\"30\" y=\"60\">200</text><text class=\"qf-chart__label qf-chart__label--y\" x=\"30\" y=\"100\">100</text><text class=\"qf-chart__label qf-chart__label--y\" x=\"30\" y=\"140\">0</text><line class=\"qf-chart__axis\" x1=\"36\" y1=\"20\" x2=\"36\" y2=\"140\"></line><line class=\"qf-chart__axis\" x1=\"36\" y1=\"140\" x2=\"312\" y2=\"140\"></line><g style=\"color:var(--viz-1)\"><polygon class=\"qf-chart__area\" points=\"36,120 105,96 174,104 243,64 312,48 312,140 36,140\"></polygon><polyline class=\"qf-chart__series\" points=\"36,120 105,96 174,104 243,64 312,48\"></polyline></g><g style=\"color:var(--viz-3)\"><polyline class=\"qf-chart__series\" points=\"36,132 105,128 174,118 243,112 312,96\"></polyline></g><text class=\"qf-chart__label qf-chart__label--x\" x=\"36\" y=\"158\">00:00</text><text class=\"qf-chart__label qf-chart__label--x\" x=\"174\" y=\"158\">12:00</text><text class=\"qf-chart__label qf-chart__label--x\" x=\"312\" y=\"158\">24:00</text><line class=\"qf-chart__guide\" x1=\"243\" y1=\"20\" x2=\"243\" y2=\"140\"></line><circle class=\"qf-chart__dot\" cx=\"243\" cy=\"64\" r=\"3.5\" style=\"color:var(--viz-1)\"></circle></svg><div class=\"qf-chart__tooltip\" style=\"left:196px;top:24px\"><div class=\"qf-chart__tooltip-row\"><span class=\"qf-chart__tooltip-swatch\" style=\"color:var(--viz-1)\"></span>Downloaded 268</div><div class=\"qf-chart__tooltip-row\"><span class=\"qf-chart__tooltip-swatch\" style=\"color:var(--viz-3)\"></span>Failed 12</div></div><div class=\"qf-chart__state\">No data</div></div><ul class=\"qf-legend\" style=\"margin-top:var(--s-3)\"><li class=\"qf-legend__item\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-1)\"></span>Downloaded</li><li class=\"qf-legend__item\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-3)\"></span>Failed</li></ul>"
+    },
+    {
+      "name": "BarChart",
+      "class": "qf-barchart",
+      "layer": "generic",
+      "category": "Charts",
+      "purpose": "그룹 또는 스택 막대 차트입니다. 카테고리축(사이트/카테고리) + 값, 막대 좌표/높이는 소비처가 계산합니다. 그룹은 막대를 나란히, 스택은 같은 x 에 쌓아 배치합니다(둘 다 좌표로 표현). --horizontal 로 가로 막대 레이블 정렬을 전환합니다. 막대 색은 style=\"color:var(--viz-N)\".",
+      "purposeEn": "A grouped or stacked bar chart. The consumer computes bar coordinates/heights for a category axis (site/category) plus values. Groups place bars side by side; stacks pile them at the same x (both expressed via coordinates). Use --horizontal to switch label alignment for horizontal bars. Set bar color via style=\"color:var(--viz-N)\".",
+      "variants": [
+        "qf-barchart__svg",
+        "qf-barchart__grid",
+        "qf-barchart__axis",
+        "qf-barchart__label",
+        "qf-barchart__track",
+        "qf-barchart__bar",
+        "qf-barchart__value",
+        "qf-barchart--horizontal"
+      ],
+      "variantsAsChips": true,
+      "requiredTokens": [
+        "--viz-1",
+        "--viz-7",
+        "--chart-grid",
+        "--chart-axis",
+        "--chart-label",
+        "--chart-track",
+        "--text-secondary"
+      ],
+      "a11y": "svg 에 role=\"img\" + aria-label 로 비교 요약을 제공하고, 값 레이블 텍스트를 함께 둬 색 단독 의존을 피합니다. 카테고리×시리즈 분해는 범례로 보강합니다.",
+      "a11yEn": "Provide a comparison summary via role=\"img\" + aria-label, and include value-label text so the chart does not rely on color alone. Reinforce the category×series breakdown with a legend.",
+      "exampleHtml": "<div class=\"qf-barchart\" style=\"--chart-h:200px\"><svg class=\"qf-barchart__svg\" viewBox=\"0 0 320 200\" role=\"img\" aria-label=\"Downloaded vs failed by site, grouped\"><g class=\"qf-barchart__grid\"><line x1=\"40\" y1=\"40\" x2=\"312\" y2=\"40\"></line><line x1=\"40\" y1=\"100\" x2=\"312\" y2=\"100\"></line><line x1=\"40\" y1=\"160\" x2=\"312\" y2=\"160\"></line></g><line class=\"qf-barchart__axis\" x1=\"40\" y1=\"20\" x2=\"40\" y2=\"160\"></line><line class=\"qf-barchart__axis\" x1=\"40\" y1=\"160\" x2=\"312\" y2=\"160\"></line><rect class=\"qf-barchart__bar\" x=\"60\" y=\"56\" width=\"22\" height=\"104\" style=\"color:var(--viz-1)\"></rect><rect class=\"qf-barchart__bar\" x=\"86\" y=\"132\" width=\"22\" height=\"28\" style=\"color:var(--viz-7)\"></rect><rect class=\"qf-barchart__bar\" x=\"150\" y=\"40\" width=\"22\" height=\"120\" style=\"color:var(--viz-1)\"></rect><rect class=\"qf-barchart__bar\" x=\"176\" y=\"120\" width=\"22\" height=\"40\" style=\"color:var(--viz-7)\"></rect><rect class=\"qf-barchart__bar\" x=\"240\" y=\"84\" width=\"22\" height=\"76\" style=\"color:var(--viz-1)\"></rect><rect class=\"qf-barchart__bar\" x=\"266\" y=\"146\" width=\"22\" height=\"14\" style=\"color:var(--viz-7)\"></rect><text class=\"qf-barchart__label\" x=\"84\" y=\"178\">api</text><text class=\"qf-barchart__label\" x=\"174\" y=\"178\">cdn</text><text class=\"qf-barchart__label\" x=\"264\" y=\"178\">web</text></svg></div>"
+    },
+    {
+      "name": "Donut",
+      "class": "qf-donut",
+      "layer": "generic",
+      "category": "Charts",
+      "purpose": "다세그먼트 도넛 차트입니다(단일 게이지인 Radial 과 달리 N 세그먼트 분포). 각 세그먼트는 원 둘레 기준 stroke-dasharray/stroke-dashoffset 로 표현하며 길이는 소비처가 계산합니다. 중앙에 합계/라벨을 두고 분포는 범례로 보강합니다. 세그먼트 색은 style=\"color:var(--viz-N)\".",
+      "purposeEn": "A multi-segment donut chart (an N-segment distribution, unlike the single-gauge Radial). Each segment is expressed with stroke-dasharray/stroke-dashoffset against the circle circumference, with lengths computed by the consumer. Place a total/label in the center and reinforce the distribution with a legend. Set segment color via style=\"color:var(--viz-N)\".",
+      "variants": [
+        "qf-donut__svg",
+        "qf-donut__track",
+        "qf-donut__segment",
+        "qf-donut__center",
+        "qf-donut__total",
+        "qf-donut__label"
+      ],
+      "variantsAsChips": true,
+      "requiredTokens": [
+        "--viz-1",
+        "--viz-5",
+        "--viz-7",
+        "--chart-track",
+        "--text-strong",
+        "--text-muted",
+        "--fs-24"
+      ],
+      "a11y": "svg 에 role=\"img\" + aria-label 로 세그먼트 비율을 명시합니다(예: \"실패 사유: 타임아웃 60%, 인증 28%, 기타 12%\"). 중앙 합계 텍스트와 범례로 색 단독 의존을 피합니다.",
+      "a11yEn": "State the segment proportions with role=\"img\" + aria-label on the svg (e.g., \"Failure reasons: timeout 60%, auth 28%, other 12%\"). Pair the centered total text and a legend to avoid color-only reliance.",
+      "exampleHtml": "<div class=\"qf-donut\"><svg class=\"qf-donut__svg\" viewBox=\"0 0 128 128\" role=\"img\" aria-label=\"Failure reasons: timeout 60%, auth 28%, other 12%\"><circle class=\"qf-donut__track\" cx=\"64\" cy=\"64\" r=\"54\" stroke-width=\"16\"></circle><circle class=\"qf-donut__segment\" cx=\"64\" cy=\"64\" r=\"54\" stroke-width=\"16\" stroke-dasharray=\"203.58 135.71\" stroke-dashoffset=\"0\" style=\"color:var(--viz-1)\"></circle><circle class=\"qf-donut__segment\" cx=\"64\" cy=\"64\" r=\"54\" stroke-width=\"16\" stroke-dasharray=\"95 244.29\" stroke-dashoffset=\"-203.58\" style=\"color:var(--viz-5)\"></circle><circle class=\"qf-donut__segment\" cx=\"64\" cy=\"64\" r=\"54\" stroke-width=\"16\" stroke-dasharray=\"40.71 298.58\" stroke-dashoffset=\"-298.58\" style=\"color:var(--viz-7)\"></circle></svg><div class=\"qf-donut__center\"><span class=\"qf-donut__total\">412</span><span class=\"qf-donut__label\">failures</span></div></div>"
+    },
+    {
+      "name": "Heatmap",
+      "class": "qf-heatmap",
+      "layer": "generic",
+      "category": "Charts",
+      "purpose": "사이트×시간 또는 사이트×카테고리 밀도(처리량/실패) 히트맵입니다. CSS 그리드 셀로, 강도는 셀마다 --qf-heat(0~1) 를 인라인 style 로 전달하면 색이 --heat-empty 와 currentColor 사이를 보간합니다. 그리드 열 수(grid-template-columns)와 셀 값은 소비처가 지정합니다. 색은 style=\"color:var(--viz-N)\".",
+      "purposeEn": "A site×time or site×category density heatmap (throughput/failures). Cells are a CSS grid; pass per-cell intensity via inline style --qf-heat (0–1) and the color interpolates between --heat-empty and currentColor. The consumer sets the column count (grid-template-columns) and cell values. Set color via style=\"color:var(--viz-N)\".",
+      "variants": ["qf-heatmap__row", "qf-heatmap__cell", "qf-heatmap__label"],
+      "variantsAsChips": true,
+      "requiredTokens": ["--viz-2", "--heat-empty", "--text-muted"],
+      "a11y": "svg 가 아닌 그리드이므로 컨테이너에 role=\"img\" + aria-label 로 무엇의 밀도인지 요약하고, 각 셀에는 title(또는 aria-label)로 정확한 수치를 제공해 색/명도 단독 의존을 피합니다.",
+      "a11yEn": "Because this is a grid (not an svg), give the container role=\"img\" + aria-label summarizing what the density represents, and provide the exact value per cell via title (or aria-label) so it does not rely on color/brightness alone.",
+      "exampleHtml": "<div class=\"qf-heatmap\" style=\"grid-template-columns:auto repeat(6,1fr);max-width:300px\" role=\"img\" aria-label=\"Throughput density by site and 4-hour bucket\"><div class=\"qf-heatmap__row\"><span class=\"qf-heatmap__label\">api</span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.2\" title=\"api 00:00 — 21\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.5\" title=\"api 04:00 — 58\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.8\" title=\"api 08:00 — 92\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:1\" title=\"api 12:00 — 114\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.6\" title=\"api 16:00 — 67\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.3\" title=\"api 20:00 — 33\"></span></div><div class=\"qf-heatmap__row\"><span class=\"qf-heatmap__label\">cdn</span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.5\" title=\"cdn 00:00 — 54\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.7\" title=\"cdn 04:00 — 78\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.9\" title=\"cdn 08:00 — 101\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.6\" title=\"cdn 12:00 — 64\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.4\" title=\"cdn 16:00 — 41\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.2\" title=\"cdn 20:00 — 19\"></span></div><div class=\"qf-heatmap__row\"><span class=\"qf-heatmap__label\">web</span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.1\" title=\"web 00:00 — 9\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.3\" title=\"web 04:00 — 28\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.6\" title=\"web 08:00 — 63\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.8\" title=\"web 12:00 — 88\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.7\" title=\"web 16:00 — 71\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.5\" title=\"web 20:00 — 52\"></span></div><div class=\"qf-heatmap__row\"><span class=\"qf-heatmap__label\">db</span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.4\" title=\"db 00:00 — 44\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.5\" title=\"db 04:00 — 51\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.4\" title=\"db 08:00 — 47\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.6\" title=\"db 12:00 — 62\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:0.9\" title=\"db 16:00 — 103\"></span><span class=\"qf-heatmap__cell\" style=\"--qf-heat:1\" title=\"db 20:00 — 118\"></span></div></div>"
+    },
+    {
+      "name": "Legend",
+      "class": "qf-legend",
+      "layer": "generic",
+      "category": "Charts",
+      "purpose": "차트들이 공유하는 범례입니다(색칩 + 라벨 + 선택적 수치). 색칩은 style=\"color:var(--viz-N)\" 로 시리즈 색과 맞춥니다. --toggle 변형은 항목을 button[aria-pressed] 로 만들어 시리즈 표시 on/off 를 전달합니다.",
+      "purposeEn": "A legend shared by the charts (color swatch + label + optional value). Match the swatch to the series color via style=\"color:var(--viz-N)\". The --toggle variant turns items into button[aria-pressed] to convey series show/hide state.",
+      "variants": ["qf-legend__item", "qf-legend__swatch", "qf-legend__value", "qf-legend--toggle"],
+      "variantsAsChips": true,
+      "requiredTokens": [
+        "--viz-1",
+        "--viz-5",
+        "--viz-7",
+        "--text-secondary",
+        "--text-muted",
+        "--bg-hover",
+        "--text-disabled"
+      ],
+      "a11y": "비토글형은 ul/li 로 의미를 전달합니다. 토글형은 각 항목을 button + aria-pressed(true/false) 로 만들어 표시 상태를 스크린리더에 알리고, 흐려진 항목도 색 외 상태(aria-pressed)로 구분되게 합니다.",
+      "a11yEn": "Use ul/li for the non-toggle form. For the toggle form, make each item a button + aria-pressed (true/false) so screen readers announce the visibility state, and ensure dimmed items are distinguished by state (aria-pressed), not color alone.",
+      "exampleHtml": "<ul class=\"qf-legend\"><li class=\"qf-legend__item\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-1)\"></span>Downloaded <span class=\"qf-legend__value\">3,248</span></li><li class=\"qf-legend__item\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-5)\"></span>Skipped <span class=\"qf-legend__value\">412</span></li><li class=\"qf-legend__item\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-7)\"></span>Failed <span class=\"qf-legend__value\">96</span></li></ul>",
+      "examples": [
+        {
+          "label": "Toggle (show/hide series)",
+          "html": "<div class=\"qf-legend qf-legend--toggle\"><button class=\"qf-legend__item\" type=\"button\" aria-pressed=\"true\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-1)\"></span>Downloaded</button><button class=\"qf-legend__item\" type=\"button\" aria-pressed=\"true\"><span class=\"qf-legend__swatch\" style=\"color:var(--viz-5)\"></span>Skipped</button><button class=\"qf-legend__item\" type=\"button\" aria-pressed=\"false\"><span class=\"qf-legend__swatch\"></span>Failed</button></div>"
+        }
+      ]
+    }
+  ]
+}
