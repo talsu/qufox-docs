@@ -1,0 +1,101 @@
+# Pattern A — Live SSR from an in-place-updated volume.
+#
+# qufox-docs serves the content directory and re-renders on change. A sidecar
+# keeps a git repository up to date *in place* (plain `git pull`), which the
+# --poll watcher detects. Do NOT use kubernetes/git-sync here: its atomic
+# symlink swap replaces the checkout directory and is not seen by the watcher.
+#
+# Best for living docs / wikis that should update within seconds of a push.
+# For non-git content, drop the sidecar and mount your own volume at /content.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qufox-docs
+  labels: { app: qufox-docs }
+spec:
+  replicas: 1 # in-memory index per pod; scale reads with a static build (Pattern B)
+  selector:
+    matchLabels: { app: qufox-docs }
+  template:
+    metadata:
+      labels: { app: qufox-docs }
+    spec:
+      securityContext:
+        fsGroup: 1000 # make the shared volume writable by both containers
+      volumes:
+        - name: content
+          emptyDir: {}
+      initContainers:
+        - name: git-clone
+          image: alpine/git:latest
+          args:
+            - clone
+            - --depth=1
+            - --branch=main
+            - https://github.com/your-org/your-notes.git
+            - /content
+          volumeMounts:
+            - { name: content, mountPath: /content }
+      containers:
+        - name: qufox-docs
+          image: ghcr.io/talsu/qufox-docs:latest
+          args: ["serve", "/content", "--poll", "--no-live-reload"]
+          env:
+            - { name: QUFOX_SITE_URL, value: "https://notes.example.com" }
+          ports:
+            - { name: http, containerPort: 4880 }
+          readinessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 3
+          livenessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - { name: content, mountPath: /content }
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { memory: 512Mi }
+        # Keeps /content in sync in place, so the watcher picks up new commits.
+        - name: git-pull
+          image: alpine/git:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - "while true; do git -C /content pull --ff-only || true; sleep 30; done"
+          volumeMounts:
+            - { name: content, mountPath: /content }
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 64Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qufox-docs
+spec:
+  selector: { app: qufox-docs }
+  ports:
+    - { name: http, port: 80, targetPort: http }
+---
+# Optional: expose it. Adjust the ingressClassName, host, and TLS to your cluster.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qufox-docs
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: notes.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: qufox-docs
+                port: { name: http }

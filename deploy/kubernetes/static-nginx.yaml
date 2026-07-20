@@ -1,0 +1,126 @@
+# Pattern B — Git-backed static site, rebuilt in-cluster and served by nginx.
+#
+# A CronJob renders the static site into a shared volume; nginx serves it.
+# Immutable and cache-friendly — best for public sites. Here git-sync's
+# symlink model is fine, because `build` reads the checkout once per run and
+# nothing watches it.
+#
+# Requires a ReadWriteMany PVC (the CronJob writes while nginx reads). If your
+# cluster has no RWX storage, use Pattern A (live-serve.yaml) or build the site
+# in CI and bake it into an image.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qufox-site
+spec:
+  accessModes: [ReadWriteMany]
+  resources:
+    requests: { storage: 1Gi }
+  # storageClassName: your-rwx-class
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: qufox-build
+spec:
+  schedule: "*/5 * * * *" # rebuild every 5 minutes
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            fsGroup: 1000
+          volumes:
+            - name: content
+              emptyDir: {}
+            - name: site
+              persistentVolumeClaim: { claimName: qufox-site }
+          initContainers:
+            - name: git-sync
+              image: registry.k8s.io/git-sync/git-sync:v4.4.3
+              args:
+                - --repo=https://github.com/your-org/your-notes.git
+                - --ref=main
+                - --depth=1
+                - --root=/content
+                - --link=current
+                - --one-time
+              volumeMounts:
+                - { name: content, mountPath: /content }
+          containers:
+            - name: build
+              image: ghcr.io/talsu/qufox-docs:latest
+              args:
+                - build
+                - /content/current
+                - --out=/site
+              env:
+                - { name: QUFOX_SITE_URL, value: "https://docs.example.com" }
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                allowPrivilegeEscalation: false
+              volumeMounts:
+                - { name: content, mountPath: /content, readOnly: true }
+                - { name: site, mountPath: /site }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qufox-nginx
+data:
+  default.conf: |
+    server {
+      listen 8080;
+      root /usr/share/nginx/html;
+      # Resolve extensionless, trailing-slash-free URLs to their index.html.
+      location / {
+        try_files $uri $uri/ $uri/index.html =404;
+      }
+      error_page 404 /404.html;
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qufox-nginx
+  labels: { app: qufox-nginx }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: qufox-nginx }
+  template:
+    metadata:
+      labels: { app: qufox-nginx }
+    spec:
+      volumes:
+        - name: site
+          persistentVolumeClaim: { claimName: qufox-site }
+        - name: conf
+          configMap: { name: qufox-nginx }
+      containers:
+        - name: nginx
+          image: nginxinc/nginx-unprivileged:stable
+          ports:
+            - { name: http, containerPort: 8080 }
+          volumeMounts:
+            - { name: site, mountPath: /usr/share/nginx/html, readOnly: true }
+            - { name: conf, mountPath: /etc/nginx/conf.d }
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qufox-nginx
+spec:
+  selector: { app: qufox-nginx }
+  ports:
+    - { name: http, port: 80, targetPort: http }

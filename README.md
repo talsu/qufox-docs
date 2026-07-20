@@ -97,6 +97,19 @@ Tag pages, a date archive, pagination, and full-text search (a command palette
 opened with `/` or `Ctrl`/`⌘`+`K`). RSS/Atom feeds, sitemaps, and comments are
 on the roadmap.
 
+## Deployment
+
+Run the published container image `ghcr.io/talsu/qufox-docs`:
+
+```sh
+docker run -p 4880:4880 -v "$PWD/notes:/content:ro" \
+  ghcr.io/talsu/qufox-docs:latest serve /content --poll --no-live-reload
+```
+
+For **Kubernetes**, see [`deploy/kubernetes`](deploy/kubernetes/README.md): a
+live-serve Deployment for wikis and living docs, and a git-backed static build
+served by nginx for public sites.
+
 ## Roadmap
 
 - RSS/Atom + JSON Feed, `sitemap.xml`, richer SEO/OpenGraph tags
