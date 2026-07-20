@@ -1,28 +1,31 @@
 import { type Context, Hono } from "hono";
 import type { ResolvedConfig } from "../config/schema.js";
 import type { Renderer } from "../render/renderer.js";
+import type { SearchProvider } from "../search/provider.js";
 import { ArchivePage } from "../site/pages/archive.js";
 import { HomePage } from "../site/pages/home.js";
 import { NotFoundPage } from "../site/pages/not-found.js";
 import { PostPage } from "../site/pages/post.js";
+import { SearchPage } from "../site/pages/search.js";
 import { TagPage } from "../site/pages/tag.js";
 import { TagsPage } from "../site/pages/tags.js";
 import { paginate } from "../site/pagination.js";
 import { siteHref, slugFromPathname } from "../site/url.js";
 import type { SiteIndex } from "../types.js";
-import { serveEngineAsset, serveVaultAsset } from "./assets.js";
+import { serveEngineAsset, servePagefindAsset, serveVaultAsset } from "./assets.js";
 import type { LiveReloadHub } from "./livereload.js";
 
 export interface AppContext {
   config: ResolvedConfig;
   index: SiteIndex;
   renderer: Renderer;
+  search: SearchProvider;
   livereload?: LiveReloadHub | undefined;
 }
 
 /** Build the Hono app serving the site (used by `serve`; `build` renders directly). */
 export function createApp(context: AppContext): Hono {
-  const { config, index, renderer } = context;
+  const { config, index, renderer, search } = context;
   const href = siteHref(config);
   const page = { config, href };
   const pageSize = config.feed.pageSize;
@@ -59,6 +62,14 @@ export function createApp(context: AppContext): Hono {
   });
 
   app.get("/archive", (c) => listResponse(c, "archive", ArchivePage({ index, ...page })));
+  app.get("/search", (c) => listResponse(c, "search", SearchPage(page)));
+
+  // Search index (Pagefind bundle, served from memory).
+  app.get("/pagefind/*", (c) => {
+    const file = search.getFile(c.req.path.slice("/pagefind/".length));
+    if (file === undefined) return c.notFound();
+    return servePagefindAsset(c, c.req.path, file);
+  });
 
   // Assets.
   app.get("/assets/design/:file", (c) =>
