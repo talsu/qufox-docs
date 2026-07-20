@@ -14,7 +14,7 @@ beforeAll(async () => {
     contentDir: "fixtures/vault",
     env: {},
   });
-  site = await createServer(config);
+  site = await createServer(config, { watch: false });
 });
 
 describe("home page", () => {

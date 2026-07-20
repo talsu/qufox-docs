@@ -7,11 +7,13 @@ import { PostPage } from "../site/pages/post.js";
 import { createHref, slugFromPathname } from "../site/url.js";
 import type { SiteIndex } from "../types.js";
 import { serveEngineAsset, serveVaultAsset } from "./assets.js";
+import type { LiveReloadHub } from "./livereload.js";
 
 export interface AppContext {
   config: ResolvedConfig;
   index: SiteIndex;
   renderer: Renderer;
+  livereload?: LiveReloadHub | undefined;
 }
 
 /** Build the Hono app serving the site (used by `serve`; `build` renders directly). */
@@ -22,6 +24,10 @@ export function createApp(context: AppContext): Hono {
   const page = { config, href };
 
   const app = new Hono();
+
+  if (context.livereload !== undefined) {
+    app.get("/__qufox/events", context.livereload.handler);
+  }
 
   app.get("/", (c) => {
     const etag = `"home-${index.revision}"`;

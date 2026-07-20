@@ -17,6 +17,9 @@ importers:
       c12:
         specifier: ^3.3.4
         version: 3.3.4
+      chokidar:
+        specifier: ^5.0.0
+        version: 5.0.0
       citty:
         specifier: ^0.2.2
         version: 0.2.2
