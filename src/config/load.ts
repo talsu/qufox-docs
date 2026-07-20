@@ -84,6 +84,8 @@ export function readEnvConfig(env: NodeJS.ProcessEnv): QufoxUserConfig {
   if (host !== undefined) server.host = host;
   const poll = readBoolean(env, "QUFOX_POLL");
   if (poll !== undefined) server.poll = poll;
+  const liveReload = readBoolean(env, "QUFOX_LIVE_RELOAD");
+  if (liveReload !== undefined) server.liveReload = liveReload;
   if (Object.keys(server).length > 0) config.server = server;
 
   const basePath = readString(env, "QUFOX_BASE_PATH");

@@ -80,7 +80,9 @@ export async function createServer(
   }, 2000);
 
   if (watch) {
-    livereload = new LiveReloadHub();
+    // Live reload (browser auto-refresh) is optional; the watcher always runs
+    // so content re-renders and the search index rebuilds on change.
+    if (config.server.liveReload) livereload = new LiveReloadHub();
     const hub = livereload;
     watcher = createVaultWatcher(config, async (batch) => {
       try {
@@ -94,7 +96,7 @@ export async function createServer(
         ]);
         for (const slug of invalidated) site.renderer.invalidate(slug);
         rebuildSearch();
-        hub.broadcast("change", {
+        hub?.broadcast("change", {
           revision: site.index.revision,
           pages: [...invalidated].map((slug) => `/${slug}`),
           global: applied.structural,

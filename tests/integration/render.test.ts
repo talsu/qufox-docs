@@ -42,6 +42,34 @@ describe("home page", () => {
   });
 });
 
+describe("live reload toggle", () => {
+  it("injects the live-reload client by default in serve mode", async () => {
+    const server = await serveFixture();
+    const html = await (await server.app.request("/")).text();
+    expect(html).toContain("livereload.js");
+  });
+
+  it("omits the client and the SSE hub when disabled, but still watches", async () => {
+    const config = await resolveConfig({
+      cwd: repoRoot,
+      mode: "serve",
+      contentDir: "fixtures/vault",
+      env: {},
+      overrides: { server: { liveReload: false } },
+    });
+    const server = await createServer(config, { watch: true });
+    try {
+      const html = await (await server.app.request("/")).text();
+      expect(html).not.toContain("livereload.js");
+      expect(server.livereload).toBeUndefined();
+      expect(server.watcher).toBeDefined(); // content still re-renders on change
+      expect((await server.app.request("/__qufox/events")).status).toBe(404);
+    } finally {
+      await server.close();
+    }
+  });
+});
+
 describe("post pages", () => {
   it("renders a note inside qf-prose with highlighted code", async () => {
     const response = await site.app.request("/guides/setup");

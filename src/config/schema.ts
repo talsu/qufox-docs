@@ -36,6 +36,12 @@ export const configSchema = z.object({
       open: z.boolean().default(false),
       /** Poll for file changes (Docker bind mounts, network drives). */
       poll: z.boolean().default(false),
+      /**
+       * Push live-reload events to browsers (auto-refresh on content change).
+       * Disable for production serving so visitors are not refreshed mid-read;
+       * the server still re-renders changed content on the next request.
+       */
+      liveReload: z.boolean().default(true),
     })
     .prefault({}),
   theme: z

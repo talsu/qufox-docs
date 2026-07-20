@@ -54,7 +54,9 @@ export function Document(props: DocumentProps) {
         />
         <script defer src={href("assets/app/theme.js")} />
         <script defer src={href("assets/app/search.js")} />
-        {config.mode === "serve" ? <script defer src={href("assets/app/livereload.js")} /> : null}
+        {config.mode === "serve" && config.server.liveReload ? (
+          <script defer src={href("assets/app/livereload.js")} />
+        ) : null}
       </head>
       <body>
         <div class="qf-app-shell">

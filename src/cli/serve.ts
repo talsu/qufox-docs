@@ -25,6 +25,11 @@ export const serveCommand = defineCommand({
       type: "boolean",
       description: "Poll for file changes (Docker bind mounts, network drives)",
     },
+    "live-reload": {
+      type: "boolean",
+      default: true,
+      description: "Auto-refresh browsers on change (use --no-live-reload in production)",
+    },
   },
   async run({ args }) {
     try {
@@ -65,6 +70,7 @@ function serverOverrides(args: {
   open?: boolean;
   "strict-port"?: boolean;
   poll?: boolean;
+  "live-reload"?: boolean;
 }): QufoxUserConfig {
   const server: NonNullable<QufoxUserConfig["server"]> = {};
   if (args.port !== undefined) {
@@ -76,6 +82,7 @@ function serverOverrides(args: {
   if (args.open === true) server.open = true;
   if (args["strict-port"] === true) server.strictPort = true;
   if (args.poll === true) server.poll = true;
+  if (args["live-reload"] === false) server.liveReload = false;
   return Object.keys(server).length > 0 ? { server } : {};
 }
 
