@@ -125,4 +125,8 @@
   <symbol id="qf-i-fullscreen" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></symbol>
   <symbol id="qf-i-minimize" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"></path></symbol>
 
+
+  <symbol id="qf-i-bug" viewBox="0 0 24 24"><rect x="8" y="7" width="8" height="12" rx="4"></rect><path d="M8 13h8"></path><path d="M9 7.5 8 4M15 7.5 16 4"></path><path d="M8 11 4 9M8 14H4M8 17.5 4.5 20"></path><path d="M16 11l4-2M16 14h4.5M16 17.5 19.5 20"></path></symbol>
+  <symbol id="qf-i-rss" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1.4" fill="currentColor"></circle></symbol>
+
 </svg>
