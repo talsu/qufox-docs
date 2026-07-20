@@ -6,10 +6,12 @@ import { scanVault } from "./content/scan.js";
 import { applyVaultChanges, buildSiteIndex, collectInvalidations } from "./content/site-index.js";
 import { createVaultWatcher } from "./content/watcher.js";
 import { MarkdownRenderer } from "./markdown/pipeline.js";
+import { ShikiService } from "./markdown/shiki.js";
 import { Renderer } from "./render/renderer.js";
 import { createApp } from "./server/app.js";
 import { LiveReloadHub } from "./server/livereload.js";
 import { type RunningServer, startServer } from "./server/serve.js";
+import { siteHref } from "./site/url.js";
 import type { SiteIndex } from "./types.js";
 
 export interface Site {
@@ -21,11 +23,13 @@ export interface Site {
 
 /** Scan the vault and prepare the render pipeline. */
 export async function bootSite(config: ResolvedConfig): Promise<Site> {
-  const [scan, markdown] = await Promise.all([
-    scanVault(config.contentDirAbs),
-    MarkdownRenderer.create({ breaks: config.markdown.breaks }),
-  ]);
+  const [scan, shiki] = await Promise.all([scanVault(config.contentDirAbs), ShikiService.create()]);
   const index = buildSiteIndex(scan, config);
+  const markdown = new MarkdownRenderer(shiki, {
+    breaks: config.markdown.breaks,
+    index,
+    href: siteHref(config),
+  });
   return { config, index, markdown, renderer: new Renderer(markdown) };
 }
 

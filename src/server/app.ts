@@ -4,7 +4,7 @@ import type { Renderer } from "../render/renderer.js";
 import { HomePage } from "../site/pages/home.js";
 import { NotFoundPage } from "../site/pages/not-found.js";
 import { PostPage } from "../site/pages/post.js";
-import { createHref, slugFromPathname } from "../site/url.js";
+import { siteHref, slugFromPathname } from "../site/url.js";
 import type { SiteIndex } from "../types.js";
 import { serveEngineAsset, serveVaultAsset } from "./assets.js";
 import type { LiveReloadHub } from "./livereload.js";
@@ -19,8 +19,7 @@ export interface AppContext {
 /** Build the Hono app serving the site (used by `serve`; `build` renders directly). */
 export function createApp(context: AppContext): Hono {
   const { config, index, renderer } = context;
-  // The dev/live server always serves from the root; basePath applies to exports.
-  const href = createHref(config.mode === "serve" ? "/" : config.build.basePath);
+  const href = siteHref(config);
   const page = { config, href };
 
   const app = new Hono();

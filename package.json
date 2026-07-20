@@ -46,6 +46,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.4",
     "@types/hast": "^3.0.5",
+    "@types/mdast": "^4.0.4",
     "@types/node": "^26.1.1",
     "@types/picomatch": "^4.0.3",
     "tsdown": "^0.22.11",
@@ -64,6 +65,8 @@
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
     "hono": "^4.12.31",
+    "mdast-util-find-and-replace": "^3.0.2",
+    "mdast-util-to-string": "^4.0.0",
     "open": "^11.0.0",
     "picocolors": "^1.1.1",
     "picomatch": "^4.0.5",

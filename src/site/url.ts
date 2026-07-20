@@ -1,5 +1,15 @@
+import type { ResolvedConfig } from "../config/schema.js";
+
 /** URL construction — the single place basePath and encoding are applied. */
 export type Href = (path: string) => string;
+
+/**
+ * The href helper for a site: the dev/live server always serves from the root,
+ * so basePath only applies to static exports.
+ */
+export function siteHref(config: ResolvedConfig): Href {
+  return createHref(config.mode === "serve" ? "/" : config.build.basePath);
+}
 
 /**
  * Build the site's href helper. `path` is a decoded site-relative path
