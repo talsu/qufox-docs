@@ -52,7 +52,9 @@ export function createVaultWatcher(config: ResolvedConfig, onBatch: BatchHandler
         .some((segment) => segment.startsWith(".") || segment === "node_modules");
     },
     awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 100 },
-    usePolling: config.server.poll,
+    // Windows native watching (libuv fs-event) aborts the process on unicode
+    // paths under Node 24, so poll there by default; `poll` forces it anywhere.
+    usePolling: config.server.poll || process.platform === "win32",
   });
 
   watcher
