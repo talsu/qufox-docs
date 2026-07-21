@@ -151,6 +151,32 @@ describe("wikilinks and embeds (resolution)", () => {
     expect(html).toContain('src="nope.png"');
   });
 
+  it("applies an obsidian width x height hint from a markdown image alt", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["assets/fox.png"]));
+    const html = (await r.render("![a fox|300x200](assets/fox.png)", { relPath: "x.md" })).html;
+    expect(html).toContain('src="/assets/vault/assets/fox.png"');
+    expect(html).toContain('width="300"');
+    expect(html).toContain('height="200"');
+    expect(html).toContain('alt="a fox"'); // size hint stripped from alt
+  });
+
+  it("applies a width-only hint to an external markdown image", async () => {
+    const r = await makeRenderer(indexFromFiles(vault));
+    const html = (await r.render("![logo|120](https://x.com/l.png)", { relPath: "x.md" })).html;
+    expect(html).toContain('src="https://x.com/l.png"');
+    expect(html).toContain('width="120"');
+    expect(html).not.toContain("height=");
+    expect(html).toContain('alt="logo"');
+  });
+
+  it("keeps a non-numeric pipe suffix as alt text", async () => {
+    const r = await makeRenderer(indexFromFiles(vault));
+    const html = (await r.render("![see|the notes](https://x.com/a.png)", { relPath: "x.md" }))
+      .html;
+    expect(html).toContain('alt="see|the notes"');
+    expect(html).not.toContain("width=");
+  });
+
   it("marks unresolved links distinctly with no href", async () => {
     const r = await makeRenderer(indexFromFiles(vault));
     const html = (await r.render("[[does-not-exist]]", { relPath: "x.md" })).html;

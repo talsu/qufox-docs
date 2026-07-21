@@ -77,14 +77,21 @@ function resolveMarkdownLinks(tree: Root, context: RenderContext): void {
   });
 }
 
+/** Obsidian size hint at the end of an image's alt text: `|W` or `|WxH`. */
+const IMAGE_SIZE_HINT = /^(.*)\|(\d+(?:x\d+)?)$/s;
+
 /**
  * Rewrite standard Markdown images that point at a vault attachment (e.g.
  * `![alt](img/photo.png)` or `![alt](../assets/photo.png)`) to the served asset
- * URL, the same way `![[photo.png]]` embeds resolve. Absolute and external image
- * URLs, and paths that match no attachment, are left untouched.
+ * URL, the same way `![[photo.png]]` embeds resolve, and apply any Obsidian size
+ * hint (`![alt|300](url)`, `![alt|300x200](url)`) as width/height. Absolute and
+ * external image URLs, and paths that match no attachment, keep their URL; the
+ * size hint still applies to them.
  */
 function resolveMarkdownImages(tree: Root, context: RenderContext): void {
   visit(tree, "image", (node) => {
+    applyObsidianSize(node);
+
     if (node.url === "" || NON_RELATIVE.test(node.url)) return;
 
     let decoded = node.url;
@@ -97,6 +104,28 @@ function resolveMarkdownImages(tree: Root, context: RenderContext): void {
     if (attachment === null) return;
     node.url = context.href(`assets/vault/${attachment.relPath}`);
   });
+}
+
+/**
+ * Apply an Obsidian image size hint written at the end of the alt text — as in
+ * `![alt|300](url)` or `![alt|300x200](url)` — as width/height, mirroring how
+ * `![[img|300]]` embeds size their media. A `|…` suffix that is not numeric is
+ * left untouched as alt text.
+ */
+function applyObsidianSize(node: Image): void {
+  if (node.alt === null || node.alt === undefined) return;
+  const match = node.alt.match(IMAGE_SIZE_HINT);
+  if (match === null) return;
+  const { width, height } = parseSize(match[2]);
+  if (width === undefined) return;
+
+  node.alt = (match[1] ?? "").replace(/\s+$/, "");
+  const data = (node.data ?? {}) as { hProperties?: Record<string, unknown> };
+  const props = data.hProperties ?? {};
+  props.width = width;
+  if (height !== undefined) props.height = height;
+  data.hProperties = props;
+  node.data = data as typeof node.data;
 }
 
 /**
