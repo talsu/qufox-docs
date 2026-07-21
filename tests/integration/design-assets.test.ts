@@ -4,9 +4,12 @@ import { describe, expect, it } from "vitest";
 import { ASSETS_DIR, DS_VERSION } from "../../src/assets-dir.js";
 
 describe("vendored design system", () => {
-  it.each(["tokens.css", "components.css", "icons.svg", "components.json"])("ships %s", (file) => {
-    expect(statSync(join(ASSETS_DIR, "design", file)).size).toBeGreaterThan(1000);
-  });
+  it.each(["tokens.css", "components.css", "icons.css", "icons.svg", "components.json"])(
+    "ships %s",
+    (file) => {
+      expect(statSync(join(ASSETS_DIR, "design", file)).size).toBeGreaterThan(1000);
+    },
+  );
 
   it("pins a semver design-system version", () => {
     expect(DS_VERSION).toMatch(/^\d+\.\d+\.\d+$/);

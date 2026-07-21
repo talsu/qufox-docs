@@ -1,4 +1,4 @@
-/*! qufox-design v0.6.1 — components.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
+/*! qufox-design v0.6.2 — components.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
 /* qufox · component library
  * Requires tokens.css. All components are plain CSS classes,
  * framework-agnostic (work with React, Vue, vanilla HTML).
@@ -1912,6 +1912,11 @@
   transition: border-color var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard);
 }
 .qf-card--interactive:hover { border-color: var(--border-strong); background: var(--bg-elevated); }
+/* 카드/리스트가 링크가 될 때(제목·행·카드 전체를 <a> 로 감쌈) 브라우저 기본 링크색·밑줄을
+   상속으로 눌러 카드 톤을 유지하고, hover 는 accent 텍스트로 단서를 준다(예제가 정적 텍스트라
+   드러나지 않던 실제 소비 패턴). */
+.qf-card__title a, a.qf-card, .qf-list__item--interactive a { color: inherit; text-decoration: none; }
+.qf-card__title a:hover, .qf-list__item--interactive a:hover { color: var(--accent-text); }
 
 /* ───── Display: Tag · layer: generic ───── */
 /* 라벨/카테고리 칩(배지와 구분: 배지=카운트·상태, 태그=라벨). 제거 가능 변형. */
@@ -2041,6 +2046,10 @@
 /* ───── Display: Table · layer: generic ───── */
 .qf-table-wrap { width: 100%; overflow-x: auto; }
 .qf-table { width: 100%; border-collapse: collapse; font: 400 var(--fs-14) var(--font-sans); }
+/* .qf-table-wrap 로 감쌌을 때만 실제 가로 스크롤이 되도록: 테이블이 래퍼를 넘칠 수 있게 하고
+   헤더는 줄바꿈 금지(긴/다열 표에서 셀이 세로로 쌓이는 것 방지). 래퍼 없는 .qf-table 는 불변. */
+.qf-table-wrap .qf-table { width: auto; min-width: 100%; }
+.qf-table-wrap .qf-table th { white-space: nowrap; }
 .qf-table th, .qf-table td { padding: var(--s-3) var(--s-4); text-align: left; border-bottom: 1px solid var(--divider); }
 .qf-table th {
   font: 600 var(--fs-12) var(--font-sans); color: var(--text-muted);
@@ -2269,6 +2278,9 @@
 .qf-drawer__title { font: 600 var(--fs-16) var(--font-sans); color: var(--text-strong); }
 .qf-drawer__body { flex: 1; overflow-y: auto; padding: var(--s-6); }
 .qf-drawer__footer { padding: var(--s-4) var(--s-6); border-top: 1px solid var(--divider); display: flex; justify-content: flex-end; gap: var(--s-3); }
+/* [hidden] 존중 — display:flex 가 UA [hidden]{display:none} 를 덮으므로 명시 가드(소비처가
+   [hidden] 토글만으로 드로어/백드롭을 닫을 수 있게). */
+.qf-drawer[hidden], .qf-drawer-backdrop[hidden] { display: none; }
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2431,7 +2443,9 @@
    <article class="qf-prose"> 안의 표준 HTML(마크다운 산출물)을 토큰 기반으로 스타일.
    소비 앱: 마크다운 → HTML 변환 후 .qf-prose 로 감싸면 문서가 DS 톤으로 렌더된다.
    ═══════════════════════════════════════════════════════════════ */
-.qf-prose { color: var(--text); font: 400 var(--fs-15)/var(--lh-loose) var(--font-sans); max-width: var(--container-w-narrow); }
+/* 본문 measure — 기본은 가독성 폭(narrow ≈ 640px, 60~75ch). 블로그/문서처럼 더 넓게 쓰려면
+   소비처가 --qf-prose-max 로 오버라이드(예: none 또는 var(--container-w-wide)). 기본값 불변. */
+.qf-prose { color: var(--text); font: 400 var(--fs-15)/var(--lh-loose) var(--font-sans); max-width: var(--qf-prose-max, var(--container-w-narrow)); }
 .qf-prose > :first-child { margin-top: 0; }
 .qf-prose > :last-child { margin-bottom: 0; }
 .qf-prose h1, .qf-prose h2, .qf-prose h3, .qf-prose h4 { color: var(--text-strong); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); }

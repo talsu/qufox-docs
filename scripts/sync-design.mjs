@@ -12,7 +12,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const BASE = "https://design.qufox.com";
-const FILES = ["tokens.css", "components.css", "icons.svg", "components.json"];
+const FILES = ["tokens.css", "components.css", "icons.css", "icons.svg", "components.json"];
 const destDir = fileURLToPath(new URL("../src/assets/design/", import.meta.url));
 
 const manifest = await fetchJson(`${BASE}/versions.json`);

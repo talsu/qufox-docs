@@ -59,6 +59,7 @@ export function Document(props: DocumentProps) {
         <script>{raw(themeInitScript(config.theme.default, config.theme.brand))}</script>
         <link rel="stylesheet" href={`${href("assets/design/tokens.css")}?v=${DS_VERSION}`} />
         <link rel="stylesheet" href={`${href("assets/design/components.css")}?v=${DS_VERSION}`} />
+        <link rel="stylesheet" href={`${href("assets/design/icons.css")}?v=${DS_VERSION}`} />
         <link
           rel="stylesheet"
           href={`${href("assets/app/engine.css")}?v=${config.engineVersion}`}

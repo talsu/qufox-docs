@@ -420,7 +420,7 @@
       "class": "qf-prose",
       "layer": "generic",
       "category": "Display",
-      "purpose": "마크다운 등 장문 문서를 디자인 시스템 톤으로 렌더하는 본문(prose) 스타일입니다.",
+      "purpose": "마크다운 등 장문 문서를 디자인 시스템 톤으로 렌더하는 본문(prose) 스타일입니다. 본문 폭은 기본 가독성 measure(약 640px)이며, --qf-prose-max 로 오버라이드합니다(예: none, var(--container-w-wide)).",
       "variants": [],
       "requiredTokens": [
         "--text",
@@ -434,7 +434,7 @@
       ],
       "a11y": "시맨틱 HTML 계층(h1→h6 순서, ul/ol/blockquote/table 구조)을 유지하고, 링크는 밑줄로 색 외 단서를 함께 줍니다. 본문 대비 AA, 코드/표는 토큰 색을 사용합니다.",
       "exampleHtml": "<article class=\"qf-prose\"><h2>Document title</h2><p>The body uses <strong>emphasis</strong>, a <a href=\"#prose\">link</a>, and <code>inline</code> code.</p><ul><li>First item</li><li>Second item</li></ul><blockquote>Blockquotes are highlighted with the accent bar.</blockquote></article>",
-      "purposeEn": "A body (prose) style that renders long-form documents such as Markdown in the design system's tone.",
+      "purposeEn": "A body (prose) style that renders long-form documents such as Markdown in the design system's tone. The body measure defaults to a readable ~640px and is overridable via --qf-prose-max (e.g., none or var(--container-w-wide)).",
       "a11yEn": "Maintain the semantic HTML hierarchy (h1→h6 order, ul/ol/blockquote/table structure), and underline links to provide a cue beyond color. Keep body contrast at AA, and use token colors for code and tables."
     },
     {

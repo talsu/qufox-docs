@@ -130,6 +130,15 @@ describe("asset routes", () => {
     expect(response.headers.get("cache-control")).toContain("immutable");
   });
 
+  it("serves and references the vendored icon stylesheet", async () => {
+    const response = await site.app.request("/assets/design/icons.css");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toContain("text/css");
+
+    const html = await (await site.app.request("/")).text();
+    expect(html).toContain("assets/design/icons.css");
+  });
+
   it("serves the engine stylesheet", async () => {
     const response = await site.app.request("/assets/app/engine.css");
     expect(response.status).toBe(200);
