@@ -5,6 +5,13 @@
  * the engine-generated markup the design system cannot know about.
  */
 
+/* ── Article width ───────────────────────────────────────────────────────
+ * The design system caps .qf-prose at the narrow container width (for forms);
+ * for a docs/blog article we let it fill the page container instead. */
+.qf-prose {
+  max-width: none;
+}
+
 /* ── Code blocks (shiki dual-theme output) ─────────────────────────────
  * Shiki emits per-token `--shiki-dark` / `--shiki-light` variables
  * (defaultColor: false); the active theme picks which one applies.
@@ -80,6 +87,13 @@ a.qf-list__text:hover,
  * The heading tree is always expanded. On wide viewports the panel floats in
  * the right margin without dimming the page; on narrow ones it overlays with a
  * scrim. Kept out of the app-shell grid so the article stays centered. */
+/* The design system's .qf-drawer sets display:flex, which overrides the
+ * browser's [hidden] rule — hide the closed drawer/backdrop explicitly. */
+.qf-toc-drawer[hidden],
+.qf-drawer-backdrop[hidden] {
+  display: none;
+}
+
 .qf-toc-drawer .qf-toc ul {
   list-style: none;
   margin: 0;
