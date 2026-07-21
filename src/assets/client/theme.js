@@ -29,4 +29,30 @@
       store("qufox-brand", brand);
     });
   }
+
+  // Table of contents drawer (hidden by default).
+  const panel = document.querySelector("[data-toc-panel]");
+  const backdrop = document.querySelector("[data-toc-backdrop]");
+  if (panel) {
+    const setOpen = (open) => {
+      panel.hidden = !open;
+      if (backdrop) backdrop.hidden = !open;
+      for (const t of document.querySelectorAll("[data-toc-toggle]")) {
+        t.setAttribute("aria-expanded", String(open));
+      }
+    };
+    for (const t of document.querySelectorAll("[data-toc-toggle]")) {
+      t.addEventListener("click", () => setOpen(panel.hidden));
+    }
+    for (const c of document.querySelectorAll("[data-toc-close]")) {
+      c.addEventListener("click", () => setOpen(false));
+    }
+    for (const link of panel.querySelectorAll("[data-toc-link]")) {
+      link.addEventListener("click", () => setOpen(false));
+    }
+    backdrop?.addEventListener("click", () => setOpen(false));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !panel.hidden) setOpen(false);
+    });
+  }
 })();

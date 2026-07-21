@@ -85,6 +85,7 @@ export function Document(props: DocumentProps) {
               </div>
               <span class="qf-navbar__spacer" />
               <div class="qf-cluster qf-cluster--tight">
+                {props.aside !== undefined ? <TocToggle /> : null}
                 <BrandSelect />
                 <ThemeToggle />
               </div>
@@ -93,12 +94,26 @@ export function Document(props: DocumentProps) {
           <main class="qf-app-shell__main">
             <div class="qf-container">{props.children}</div>
           </main>
-          {props.aside !== undefined ? (
-            <aside class="qf-app-shell__aside">{props.aside}</aside>
-          ) : null}
         </div>
+        {props.aside}
       </body>
     </html>
+  );
+}
+
+function TocToggle() {
+  return (
+    <button
+      type="button"
+      class="qf-btn qf-btn--ghost qf-btn--icon"
+      data-toc-toggle
+      aria-label="On this page"
+      aria-expanded="false"
+    >
+      <svg class="qf-icon qf-icon--sm" aria-hidden="true">
+        <use href="#qf-i-hash" />
+      </svg>
+    </button>
   );
 }
 

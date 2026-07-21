@@ -76,35 +76,25 @@ a.qf-list__text:hover,
   color: var(--accent-text);
 }
 
-/* ── Table of contents (collapsible, right-hand aside) ───────────────── */
-.qf-toc {
-  position: sticky;
-  top: var(--s-6);
-}
-
-.qf-toc > summary.qf-toc__title {
-  cursor: pointer;
+/* ── Table of contents drawer (hidden by default, opened from the navbar) ──
+ * The heading tree is always expanded. On wide viewports the panel floats in
+ * the right margin without dimming the page; on narrow ones it overlays with a
+ * scrim. Kept out of the app-shell grid so the article stays centered. */
+.qf-toc-drawer .qf-toc ul {
   list-style: none;
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
 }
 
-.qf-toc > summary.qf-toc__title::-webkit-details-marker {
-  display: none;
-}
-
-.qf-toc > summary.qf-toc__title::before {
-  content: "";
-  width: 0;
-  height: 0;
-  border-inline-start: 5px solid currentColor;
-  border-block: 4px solid transparent;
-  transition: transform var(--dur-fast) var(--ease-standard);
-}
-
-.qf-toc[open] > summary.qf-toc__title::before {
-  transform: rotate(90deg);
+@media (min-width: 900px) {
+  .qf-toc-drawer {
+    top: var(--h-navbar);
+    width: min(300px, 24vw);
+  }
+  /* No page-dimming scrim on desktop — the article stays interactive. */
+  [data-toc-backdrop] {
+    background: none;
+  }
 }
 
 /* ── Prev / next post navigation ─────────────────────────────────────── */
