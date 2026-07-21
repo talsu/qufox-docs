@@ -53,7 +53,6 @@ export function Document(props: DocumentProps) {
           href={`${href("assets/app/engine.css")}?v=${config.engineVersion}`}
         />
         <script defer src={href("assets/app/theme.js")} />
-        <script defer src={href("assets/app/search.js")} />
         {config.mode === "serve" && config.server.liveReload ? (
           <script defer src={href("assets/app/livereload.js")} />
         ) : null}
@@ -74,7 +73,6 @@ export function Document(props: DocumentProps) {
                 </a>
               </div>
               <span class="qf-navbar__spacer" />
-              <SearchButton />
               <ThemeToggle />
             </nav>
           </header>
@@ -85,47 +83,8 @@ export function Document(props: DocumentProps) {
             <aside class="qf-app-shell__aside">{props.aside}</aside>
           ) : null}
         </div>
-        <SearchPalette />
       </body>
     </html>
-  );
-}
-
-function SearchButton() {
-  return (
-    <button
-      type="button"
-      class="qf-btn qf-btn--ghost qf-btn--icon"
-      data-search-open
-      aria-label="Search"
-    >
-      <svg class="qf-icon qf-icon--sm" aria-hidden="true">
-        <use href="#qf-i-search" />
-      </svg>
-    </button>
-  );
-}
-
-/** Site-wide search overlay, opened with the navbar button, "/" or Ctrl/⌘+K. */
-function SearchPalette() {
-  return (
-    <div class="qf-cmd-palette-backdrop" data-search-backdrop hidden>
-      <div class="qf-cmd-palette" role="dialog" aria-modal="true" aria-label="Search">
-        <div class="qf-cmd-palette__search">
-          <input
-            class="qf-cmd-palette__input"
-            type="search"
-            role="combobox"
-            aria-expanded="false"
-            aria-controls="qf-search-list"
-            placeholder="Search…"
-            data-search-input
-          />
-        </div>
-        {/* biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: listbox is the ARIA combobox pattern the design system's command palette expects */}
-        <ul id="qf-search-list" class="qf-cmd-palette__list" role="listbox" data-search-list />
-      </div>
-    </div>
   );
 }
 

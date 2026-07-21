@@ -42,9 +42,7 @@ export function PostPage(props: PostPageProps) {
           ))}
         </div>
       ) : null}
-      <article class={proseClasses} data-pagefind-body>
-        {raw(page.html)}
-      </article>
+      <article class={proseClasses}>{raw(page.html)}</article>
       <Backlinks note={note} index={index} href={href} />
       <PrevNext note={note} index={index} href={href} />
     </Document>

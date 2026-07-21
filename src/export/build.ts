@@ -2,7 +2,7 @@ import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import pc from "picocolors";
 import { ASSETS_DIR } from "../assets-dir.js";
-import { bootSite, buildSearchIndex, type Site } from "../boot.js";
+import { bootSite, type Site } from "../boot.js";
 import type { ResolvedConfig } from "../config/schema.js";
 import { createApp } from "../server/app.js";
 import { paginate } from "../site/pagination.js";
@@ -11,7 +11,6 @@ export interface BuildResult {
   outDir: string;
   pages: number;
   attachments: number;
-  searchAvailable: boolean;
   warnings: string[];
 }
 
@@ -53,11 +52,6 @@ export async function exportSite(config: ResolvedConfig): Promise<BuildResult> {
   await copyEngineAssets(outDir);
   const attachments = await copyAttachments(config.contentDirAbs, outDir, referencedAttachments);
 
-  await buildSearchIndex(site);
-  await site.search.writeTo(outDir);
-  if (!site.search.available) {
-    warnings.push("search index was not generated (pagefind unavailable)");
-  }
   if (config.site.url === undefined) {
     warnings.push("site.url is not set — feeds and sitemap will be unavailable (v1.1)");
   }
@@ -66,12 +60,11 @@ export async function exportSite(config: ResolvedConfig): Promise<BuildResult> {
     outDir,
     pages: routes.length + 1,
     attachments,
-    searchAvailable: site.search.available,
     warnings,
   };
 }
 
-/** Enumerate every static route: home, posts, tags, archive, search, and pages. */
+/** Enumerate every static route: home (paginated), posts, tags, and archive. */
 function enumerateRoutes(site: Site): Route[] {
   const routes: Route[] = [];
   const pageSize = site.config.feed.pageSize;
@@ -105,7 +98,6 @@ function enumerateRoutes(site: Site): Route[] {
   }
 
   routes.push({ request: "/archive", file: "archive/index.html" });
-  routes.push({ request: "/search", file: "search/index.html" });
   return routes;
 }
 
@@ -147,9 +139,7 @@ async function copyEngineAssets(outDir: string): Promise<void> {
   await mkdir(join(outDir, "assets", "app"), { recursive: true });
   await cp(join(ASSETS_DIR, "engine.css"), join(outDir, "assets", "app", "engine.css"));
   // Client scripts, minus the live-reload helper (serve mode only).
-  for (const script of ["theme.js", "search.js"]) {
-    await cp(join(ASSETS_DIR, "client", script), join(outDir, "assets", "app", script));
-  }
+  await cp(join(ASSETS_DIR, "client", "theme.js"), join(outDir, "assets", "app", "theme.js"));
 }
 
 /** Empty a directory's contents without removing the directory itself (works on mount points). */
@@ -185,9 +175,7 @@ export function printBuildSummary(result: BuildResult): void {
   console.log(
     `  ${pc.green("✓")} built ${pc.bold(String(result.pages))} pages to ${pc.cyan(result.outDir)}`,
   );
-  console.log(
-    `    ${result.attachments} attachments · search ${result.searchAvailable ? "enabled" : pc.yellow("disabled")}`,
-  );
+  console.log(`    ${result.attachments} attachments`);
   for (const warning of result.warnings) {
     console.log(`    ${pc.yellow("!")} ${warning}`);
   }

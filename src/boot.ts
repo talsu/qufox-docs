@@ -8,9 +8,6 @@ import { createVaultWatcher } from "./content/watcher.js";
 import { MarkdownRenderer } from "./markdown/pipeline.js";
 import { ShikiService } from "./markdown/shiki.js";
 import { Renderer } from "./render/renderer.js";
-import { buildIndexablePages } from "./search/indexable.js";
-import { PagefindSearch } from "./search/pagefind.js";
-import type { SearchProvider } from "./search/provider.js";
 import { createApp } from "./server/app.js";
 import { LiveReloadHub } from "./server/livereload.js";
 import { type RunningServer, startServer } from "./server/serve.js";
@@ -22,7 +19,6 @@ export interface Site {
   index: SiteIndex;
   markdown: MarkdownRenderer;
   renderer: Renderer;
-  search: SearchProvider;
 }
 
 /** Scan the vault and prepare the render pipeline. */
@@ -34,19 +30,7 @@ export async function bootSite(config: ResolvedConfig): Promise<Site> {
     index,
     href: siteHref(config),
   });
-  return {
-    config,
-    index,
-    markdown,
-    renderer: new Renderer(markdown),
-    search: new PagefindSearch(),
-  };
-}
-
-/** Build (or rebuild) the full-text search index from the current site state. */
-export async function buildSearchIndex(site: Site): Promise<void> {
-  const pages = await buildIndexablePages(site.index, site.renderer, siteHref(site.config));
-  await site.search.build(pages, site.config.site.locale);
+  return { config, index, markdown, renderer: new Renderer(markdown) };
 }
 
 export interface CreateServerOptions {
@@ -73,15 +57,9 @@ export async function createServer(
   let livereload: LiveReloadHub | undefined;
   let watcher: FSWatcher | undefined;
 
-  const rebuildSearch = debounce(() => {
-    buildSearchIndex(site).catch((error) => {
-      console.warn(pc.yellow(`  ! search index rebuild failed: ${String(error)}`));
-    });
-  }, 2000);
-
   if (watch) {
     // Live reload (browser auto-refresh) is optional; the watcher always runs
-    // so content re-renders and the search index rebuilds on change.
+    // so content re-renders on change.
     if (config.server.liveReload) livereload = new LiveReloadHub();
     const hub = livereload;
     watcher = createVaultWatcher(config, async (batch) => {
@@ -95,7 +73,6 @@ export async function createServer(
           ...applied.removedSlugs,
         ]);
         for (const slug of invalidated) site.renderer.invalidate(slug);
-        rebuildSearch();
         hub?.broadcast("change", {
           revision: site.index.revision,
           pages: [...invalidated].map((slug) => `/${slug}`),
@@ -105,8 +82,6 @@ export async function createServer(
         console.error(pc.red(`  ! failed to apply file changes: ${String(error)}`));
       }
     });
-    // Build the initial index off the startup path.
-    rebuildSearch();
   }
 
   const app = createApp({ ...site, livereload });
@@ -118,27 +93,8 @@ export async function createServer(
     watcher,
     start: () => startServer(app, config),
     close: async () => {
-      rebuildSearch.cancel();
       livereload?.close();
       await watcher?.close();
     },
   };
-}
-
-interface Debounced {
-  (): void;
-  cancel(): void;
-}
-
-function debounce(fn: () => void, ms: number): Debounced {
-  let timer: NodeJS.Timeout | undefined;
-  const debounced = (() => {
-    if (timer !== undefined) clearTimeout(timer);
-    timer = setTimeout(fn, ms);
-    timer.unref?.();
-  }) as Debounced;
-  debounced.cancel = () => {
-    if (timer !== undefined) clearTimeout(timer);
-  };
-  return debounced;
 }

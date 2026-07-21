@@ -93,9 +93,8 @@ intentionally out of scope, mirroring other Obsidian publishing tools.
 
 ## Blog features
 
-Tag pages, a date archive, pagination, and full-text search (a command palette
-opened with `/` or `Ctrl`/`⌘`+`K`). RSS/Atom feeds, sitemaps, and comments are
-on the roadmap.
+Tag pages, a date archive, and pagination. Full-text search, RSS/Atom feeds,
+sitemaps, and comments are on the roadmap.
 
 ## Deployment
 

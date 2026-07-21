@@ -31,21 +31,6 @@ const MIME_TYPES: Record<string, string> = {
   ".woff2": "font/woff2",
 };
 
-/** Serve an in-memory Pagefind index file. */
-export function servePagefindAsset(c: Context, path: string, content: Uint8Array): Response {
-  const type = PAGEFIND_MIME[extname(path).toLowerCase()] ?? "application/octet-stream";
-  c.header("Content-Type", type);
-  c.header("Cache-Control", "no-cache");
-  return c.body(new Uint8Array(content));
-}
-
-const PAGEFIND_MIME: Record<string, string> = {
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".wasm": "application/wasm",
-};
-
 /** Serve a file bundled with the engine (design system, client scripts). */
 export async function serveEngineAsset(
   c: Context,
