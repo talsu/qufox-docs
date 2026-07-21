@@ -63,6 +63,20 @@ pre.shiki span {
   white-space: nowrap;
 }
 
+/* ── Icon paint ──────────────────────────────────────────────────────────
+ * The design system ships Lucide-style outline icons and sizes them per
+ * context (`.qf-btn svg`, `.qf-callout__icon svg`, …) but never sets their
+ * paint, so a bare `<use>` icon falls back to a solid black fill — the sun
+ * renders as a dot, the moon as a black crescent, both invisible on a dark
+ * navbar. Paint them as outlines in the current text color instead. */
+.qf-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* ── Theme toggle (show the icon for the theme you can switch to) ────── */
 [data-theme-icon="light"] {
   display: none;
