@@ -17,11 +17,23 @@ async function render(raw: string, relPath = "test.md"): Promise<string> {
   return (await renderer.render(raw, { relPath })).html;
 }
 
+/**
+ * Collapse Shiki's per-token color hex values to a placeholder. The exact token
+ * coloring depends on the syntax grammar and regex engine and varies slightly
+ * across platforms; it is not part of the qf-* markup contract, so the snapshot
+ * pins structure (spans, dual-theme variables) rather than the color values.
+ */
+function normalizeShiki(html: string): string {
+  return html.replace(/--shiki-(light|dark)(-bg)?:#[0-9a-fA-F]{3,8}/g, "--shiki-$1$2:#COLOR");
+}
+
 describe("markdown pipeline snapshots (qf markup contract)", () => {
   it.each(fixtures)("%s", async (name) => {
     const raw = readFileSync(`${fixturesDir}/${name}`, "utf8");
     const { html } = await renderer.render(raw, { relPath: name });
-    await expect(html).toMatchFileSnapshot(`__snapshots__/ofm/${name.replace(/\.md$/, "")}.html`);
+    await expect(normalizeShiki(html)).toMatchFileSnapshot(
+      `__snapshots__/ofm/${name.replace(/\.md$/, "")}.html`,
+    );
   });
 });
 
