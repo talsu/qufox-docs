@@ -77,7 +77,7 @@ export function Document(props: DocumentProps) {
             </nav>
           </header>
           <main class="qf-app-shell__main">
-            <div class="qf-container qf-container--narrow">{props.children}</div>
+            <div class="qf-container">{props.children}</div>
           </main>
           {props.aside !== undefined ? (
             <aside class="qf-app-shell__aside">{props.aside}</aside>

@@ -1,11 +1,14 @@
 import type { TocEntry } from "../../types.js";
 
-/** "On this page" navigation built from the rendered heading outline. */
+/**
+ * "On this page" navigation built from the rendered heading outline.
+ * A collapsible <details>, closed by default on every viewport.
+ */
 export function TableOfContents(props: { toc: TocEntry[] }) {
   if (props.toc.length < 2) return null;
   return (
-    <nav class="qf-toc" aria-label="On this page">
-      <div class="qf-toc__title">On this page</div>
+    <details class="qf-toc">
+      <summary class="qf-toc__title">On this page</summary>
       <ul>
         {props.toc.map((entry) => (
           <li
@@ -17,6 +20,6 @@ export function TableOfContents(props: { toc: TocEntry[] }) {
           </li>
         ))}
       </ul>
-    </nav>
+    </details>
   );
 }
