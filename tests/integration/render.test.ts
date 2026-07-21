@@ -40,6 +40,12 @@ describe("home page", () => {
     expect(html).toMatch(/<meta name="generator" content="qufox-docs \d/);
     expect(html).toMatch(/<meta name="qufox-design-version" content="\d+\.\d+\.\d+"/);
   });
+
+  it("inlines the icon sprite so <use> references resolve", async () => {
+    const html = await (await site.app.request("/")).text();
+    expect(html).toContain('<symbol id="qf-i-moon"');
+    expect(html).toContain('<symbol id="qf-i-sun"');
+  });
 });
 
 describe("live reload toggle", () => {

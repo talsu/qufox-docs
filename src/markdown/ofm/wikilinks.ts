@@ -25,6 +25,7 @@ export function remarkWikilinks() {
   return async (tree: Root, file: VFile): Promise<void> => {
     const context = getRenderContext(file);
     await transcludeNoteEmbeds(tree, context);
+    resolveMarkdownLinks(tree, context);
     findAndReplace(tree, [
       [
         WIKILINK_PATTERN,
@@ -32,6 +33,47 @@ export function remarkWikilinks() {
       ],
     ]);
   };
+}
+
+// Absolute URLs, protocol/protocol-relative, root-absolute paths, and bare anchors.
+const NON_RELATIVE = /^([a-z][a-z0-9+.-]*:|\/\/|#|\/)/i;
+
+/**
+ * Rewrite Markdown links that point at another note (e.g. `[text](note.md)` or
+ * `[text](sub/note.md#heading)`) to the note's slug URL, the same way wikilinks
+ * resolve. Links to non-notes (images, external files) are left untouched.
+ */
+function resolveMarkdownLinks(tree: Root, context: RenderContext): void {
+  visit(tree, "link", (node) => {
+    if (node.url === "" || NON_RELATIVE.test(node.url)) return;
+    const className = (node.data?.hProperties as { className?: unknown } | undefined)?.className;
+    if (Array.isArray(className) && className.includes("qf-wikilink")) return;
+
+    let decoded = node.url;
+    try {
+      decoded = decodeURIComponent(node.url);
+    } catch {
+      // keep the raw value if it is not valid percent-encoding
+    }
+    const { base, fragment } = splitTarget(decoded);
+    if (base === "") return;
+
+    const resolved = resolveLinkTarget(context.index, context.relPath, base);
+    if (resolved.kind !== "note") return;
+
+    const note = context.index.notes.get(resolved.slug);
+    const anchor =
+      fragment !== null
+        ? ((note !== undefined ? resolveFragmentAnchor(note, fragment) : null) ??
+          slugAnchor(fragment))
+        : null;
+    node.url = context.href(resolved.slug) + (anchor !== null ? `#${anchor}` : "");
+    const data = (node.data ?? {}) as { hProperties?: Record<string, unknown> };
+    const props = data.hProperties ?? {};
+    props.className = ["qf-wikilink"];
+    data.hProperties = props;
+    node.data = data as typeof node.data;
+  });
 }
 
 /**

@@ -1,6 +1,6 @@
 import { raw } from "hono/html";
 import type { Child } from "hono/jsx";
-import { DS_VERSION } from "../assets-dir.js";
+import { DS_VERSION, ICONS_SPRITE } from "../assets-dir.js";
 import type { ResolvedConfig } from "../config/schema.js";
 import type { Href } from "./url.js";
 
@@ -69,6 +69,7 @@ export function Document(props: DocumentProps) {
         ) : null}
       </head>
       <body>
+        {raw(ICONS_SPRITE)}
         <div class="qf-app-shell">
           <header class="qf-app-shell__navbar">
             <nav class="qf-navbar" aria-label="Main">

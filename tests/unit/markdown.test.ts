@@ -116,6 +116,25 @@ describe("wikilinks and embeds (resolution)", () => {
     expect(html).toContain('href="/guides/setup#install"');
   });
 
+  it("resolves markdown-style links with a .md extension and fragment", async () => {
+    const r = await makeRenderer(indexFromFiles(vault));
+    const html = (
+      await r.render(
+        "[to setup](guides/setup.md) and [install](guides/setup.md#Install) and [ext](https://x.com/a.md)",
+        { relPath: "x.md" },
+      )
+    ).html;
+    expect(html).toContain('href="/guides/setup"');
+    expect(html).toContain('href="/guides/setup#install"');
+    expect(html).toContain('href="https://x.com/a.md"'); // external links untouched
+  });
+
+  it("leaves relative links to non-notes untouched", async () => {
+    const r = await makeRenderer(indexFromFiles(vault));
+    const html = (await r.render("[pic](assets/photo.png)", { relPath: "x.md" })).html;
+    expect(html).toContain('href="assets/photo.png"');
+  });
+
   it("marks unresolved links distinctly with no href", async () => {
     const r = await makeRenderer(indexFromFiles(vault));
     const html = (await r.render("[[does-not-exist]]", { relPath: "x.md" })).html;
