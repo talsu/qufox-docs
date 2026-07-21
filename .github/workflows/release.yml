@@ -26,6 +26,8 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
           cache: pnpm
+      # Trusted publishing (OIDC) needs npm >= 11.5.1.
+      - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: Create release PR or publish
