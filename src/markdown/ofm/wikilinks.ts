@@ -26,6 +26,7 @@ export function remarkWikilinks() {
     const context = getRenderContext(file);
     await transcludeNoteEmbeds(tree, context);
     resolveMarkdownLinks(tree, context);
+    resolveMarkdownImages(tree, context);
     findAndReplace(tree, [
       [
         WIKILINK_PATTERN,
@@ -73,6 +74,28 @@ function resolveMarkdownLinks(tree: Root, context: RenderContext): void {
     props.className = ["qf-wikilink"];
     data.hProperties = props;
     node.data = data as typeof node.data;
+  });
+}
+
+/**
+ * Rewrite standard Markdown images that point at a vault attachment (e.g.
+ * `![alt](img/photo.png)` or `![alt](../assets/photo.png)`) to the served asset
+ * URL, the same way `![[photo.png]]` embeds resolve. Absolute and external image
+ * URLs, and paths that match no attachment, are left untouched.
+ */
+function resolveMarkdownImages(tree: Root, context: RenderContext): void {
+  visit(tree, "image", (node) => {
+    if (node.url === "" || NON_RELATIVE.test(node.url)) return;
+
+    let decoded = node.url;
+    try {
+      decoded = decodeURIComponent(node.url);
+    } catch {
+      // keep the raw value if it is not valid percent-encoding
+    }
+    const attachment = resolveAttachment(context.index, decoded);
+    if (attachment === null) return;
+    node.url = context.href(`assets/vault/${attachment.relPath}`);
   });
 }
 

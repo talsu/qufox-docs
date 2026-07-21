@@ -135,6 +135,22 @@ describe("wikilinks and embeds (resolution)", () => {
     expect(html).toContain('href="assets/photo.png"');
   });
 
+  it("resolves relative markdown images to the vault asset route", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["home-network/img/fox.png"]));
+    const html = (await r.render("![a fox](img/fox.png)", { relPath: "home-network/note.md" }))
+      .html;
+    expect(html).toContain('src="/assets/vault/home-network/img/fox.png"');
+  });
+
+  it("leaves external and unresolvable markdown images untouched", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["assets/fox.png"]));
+    const html = (
+      await r.render("![ext](https://x.com/a.png) and ![missing](nope.png)", { relPath: "x.md" })
+    ).html;
+    expect(html).toContain('src="https://x.com/a.png"');
+    expect(html).toContain('src="nope.png"');
+  });
+
   it("marks unresolved links distinctly with no href", async () => {
     const r = await makeRenderer(indexFromFiles(vault));
     const html = (await r.render("[[does-not-exist]]", { relPath: "x.md" })).html;
