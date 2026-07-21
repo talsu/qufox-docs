@@ -46,7 +46,10 @@ export const configSchema = z.object({
     .prefault({}),
   theme: z
     .object({
-      default: z.enum(["dark", "light", "system"]).default("dark"),
+      /** Initial color scheme before the viewer picks one. */
+      default: z.enum(["dark", "light", "system"]).default("light"),
+      /** Initial design-system brand accent before the viewer picks one. */
+      brand: z.enum(["qufox", "ocean", "forest", "amber", "rose"]).default("qufox"),
     })
     .prefault({}),
   feed: z

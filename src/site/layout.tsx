@@ -19,15 +19,26 @@ export interface DocumentProps extends PageContext {
 }
 
 /** FOUC-free theme boot: dark is the token default, light is opted into. */
-function themeInitScript(themeDefault: string): string {
+/** FOUC-free init: apply the saved (or default) theme and brand before paint. */
+function themeInitScript(themeDefault: string, brandDefault: string): string {
   return (
-    `(function(){try{var t=localStorage.getItem("qufox-theme");` +
-    `var d=${JSON.stringify(themeDefault)};` +
-    `var m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches;` +
-    `if(t==="light"||(!t&&(d==="light"||(d==="system"&&m))))` +
-    `document.documentElement.dataset.theme="light";}catch(e){}})();`
+    `(function(){try{var r=document.documentElement;` +
+    `var t=localStorage.getItem("qufox-theme")||${JSON.stringify(themeDefault)};` +
+    `if(t==="system")t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";` +
+    `r.dataset.theme=t;` +
+    `var b=localStorage.getItem("qufox-brand")||${JSON.stringify(brandDefault)};` +
+    `if(b&&b!=="qufox")r.dataset.brand=b;else delete r.dataset.brand;` +
+    `}catch(e){}})();`
   );
 }
+
+const BRANDS: ReadonlyArray<{ value: string; label: string }> = [
+  { value: "qufox", label: "qufox" },
+  { value: "ocean", label: "Ocean" },
+  { value: "forest", label: "Forest" },
+  { value: "amber", label: "Amber" },
+  { value: "rose", label: "Rose" },
+];
 
 export function Document(props: DocumentProps) {
   const { config, href } = props;
@@ -45,7 +56,7 @@ export function Document(props: DocumentProps) {
         <meta name="generator" content={`qufox-docs ${config.engineVersion}`} />
         <meta name="qufox-design-version" content={DS_VERSION} />
         <meta name="qufox-base" content={config.build.basePath} />
-        <script>{raw(themeInitScript(config.theme.default))}</script>
+        <script>{raw(themeInitScript(config.theme.default, config.theme.brand))}</script>
         <link rel="stylesheet" href={`${href("assets/design/tokens.css")}?v=${DS_VERSION}`} />
         <link rel="stylesheet" href={`${href("assets/design/components.css")}?v=${DS_VERSION}`} />
         <link
@@ -73,7 +84,10 @@ export function Document(props: DocumentProps) {
                 </a>
               </div>
               <span class="qf-navbar__spacer" />
-              <ThemeToggle />
+              <div class="qf-cluster qf-cluster--tight">
+                <BrandSelect />
+                <ThemeToggle />
+              </div>
             </nav>
           </header>
           <main class="qf-app-shell__main">
@@ -85,6 +99,18 @@ export function Document(props: DocumentProps) {
         </div>
       </body>
     </html>
+  );
+}
+
+function BrandSelect() {
+  return (
+    <span class="qf-select">
+      <select data-brand-select aria-label="Brand color">
+        {BRANDS.map((brand) => (
+          <option value={brand.value}>{brand.label}</option>
+        ))}
+      </select>
+    </span>
   );
 }
 

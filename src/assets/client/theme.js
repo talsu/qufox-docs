@@ -1,23 +1,32 @@
-/* qufox-docs theme toggle: persist the viewer's light/dark choice. */
+/* qufox-docs appearance controls: persist the viewer's theme and brand. */
 (() => {
   const root = document.documentElement;
-
-  const apply = (theme) => {
-    if (theme === "light") root.dataset.theme = "light";
-    else delete root.dataset.theme;
+  const store = (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* ignore storage failures (private mode) */
+    }
   };
 
-  const current = () => (root.dataset.theme === "light" ? "light" : "dark");
-
+  // Theme (light / dark).
+  const currentTheme = () => (root.dataset.theme === "light" ? "light" : "dark");
   for (const button of document.querySelectorAll("[data-theme-toggle]")) {
     button.addEventListener("click", () => {
-      const next = current() === "light" ? "dark" : "light";
-      apply(next);
-      try {
-        localStorage.setItem("qufox-theme", next);
-      } catch {
-        /* ignore storage failures (private mode) */
-      }
+      const next = currentTheme() === "light" ? "dark" : "light";
+      root.dataset.theme = next;
+      store("qufox-theme", next);
+    });
+  }
+
+  // Brand accent.
+  for (const select of document.querySelectorAll("[data-brand-select]")) {
+    select.value = root.dataset.brand || "qufox";
+    select.addEventListener("change", () => {
+      const brand = select.value;
+      if (brand && brand !== "qufox") root.dataset.brand = brand;
+      else delete root.dataset.brand;
+      store("qufox-brand", brand);
     });
   }
 })();

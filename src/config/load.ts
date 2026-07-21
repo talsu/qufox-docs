@@ -91,6 +91,15 @@ export function readEnvConfig(env: NodeJS.ProcessEnv): QufoxUserConfig {
   const basePath = readString(env, "QUFOX_BASE_PATH");
   if (basePath !== undefined) config.build = { basePath };
 
+  const theme: NonNullable<QufoxUserConfig["theme"]> = {};
+  const themeDefault = readString(env, "QUFOX_THEME");
+  if (themeDefault !== undefined) theme.default = themeDefault as "dark" | "light" | "system";
+  const brand = readString(env, "QUFOX_BRAND");
+  if (brand !== undefined) {
+    theme.brand = brand as "qufox" | "ocean" | "forest" | "amber" | "rose";
+  }
+  if (Object.keys(theme).length > 0) config.theme = theme;
+
   return config;
 }
 

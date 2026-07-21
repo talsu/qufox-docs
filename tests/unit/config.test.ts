@@ -29,7 +29,8 @@ describe("resolveConfig", () => {
     expect(config.server.port).toBe(4880);
     expect(config.server.host).toBe("localhost");
     expect(config.publish.mode).toBe("opt-out");
-    expect(config.theme.default).toBe("dark");
+    expect(config.theme.default).toBe("light");
+    expect(config.theme.brand).toBe("qufox");
     expect(config.feed.pageSize).toBe(10);
     expect(config.build.basePath).toBe("/");
     expect(config.markdown.breaks).toBe(true);
