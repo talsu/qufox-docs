@@ -1,6 +1,6 @@
 {
   "name": "qufox-docs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Serve a folder of Obsidian-flavored Markdown as a modern blog, live.",
   "keywords": [
     "markdown",
