@@ -12,6 +12,7 @@ import {
 import { relPathKey } from "../../content/slugs.js";
 import type { Note } from "../../types.js";
 import { getRenderContext, type RenderContext } from "./context.js";
+import { NON_RELATIVE, vaultAssetUrl } from "./vault-assets.js";
 
 /** `[[link]]`, `[[link|alias]]`, `![[embed]]`, `![[embed|size]]`. */
 const WIKILINK_PATTERN = /(!?)\[\[([^\]\n]+?)\]\]/g;
@@ -35,9 +36,6 @@ export function remarkWikilinks() {
     ]);
   };
 }
-
-// Absolute URLs, protocol/protocol-relative, root-absolute paths, and bare anchors.
-const NON_RELATIVE = /^([a-z][a-z0-9+.-]*:|\/\/|#|\/)/i;
 
 /**
  * Rewrite Markdown links that point at another note (e.g. `[text](note.md)` or
@@ -92,17 +90,8 @@ function resolveMarkdownImages(tree: Root, context: RenderContext): void {
   visit(tree, "image", (node) => {
     applyObsidianSize(node);
 
-    if (node.url === "" || NON_RELATIVE.test(node.url)) return;
-
-    let decoded = node.url;
-    try {
-      decoded = decodeURIComponent(node.url);
-    } catch {
-      // keep the raw value if it is not valid percent-encoding
-    }
-    const attachment = resolveAttachment(context.index, decoded);
-    if (attachment === null) return;
-    node.url = context.href(`assets/vault/${attachment.relPath}`);
+    const resolved = vaultAssetUrl(context, node.url);
+    if (resolved !== null) node.url = resolved;
   });
 }
 

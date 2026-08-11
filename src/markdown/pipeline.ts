@@ -23,6 +23,7 @@ import { preprocess } from "./ofm/preprocess.js";
 import { remarkTags } from "./ofm/tags.js";
 import { sliceByFragment } from "./ofm/transclude.js";
 import { remarkUnsupported } from "./ofm/unsupported.js";
+import { rehypeVaultAssets } from "./ofm/vault-assets.js";
 import { remarkWikilinks } from "./ofm/wikilinks.js";
 import { rehypeCodeLanguageFallback, rehypeQfClasses } from "./qf-classes.js";
 import { extractFenceLanguages, ShikiService } from "./shiki.js";
@@ -69,6 +70,7 @@ function buildHastProcessor(shiki: ShikiService) {
   return unified()
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
+    .use(rehypeVaultAssets)
     .use(rehypeCallouts)
     .use(rehypeSlug)
     .use(rehypeQfClasses)

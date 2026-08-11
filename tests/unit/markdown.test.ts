@@ -142,6 +142,43 @@ describe("wikilinks and embeds (resolution)", () => {
     expect(html).toContain('src="/assets/vault/home-network/img/fox.png"');
   });
 
+  it("resolves relative html image sources to the vault asset route", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["home-network/img/fox.png"]));
+    const html = (
+      await r.render('<img src="img/fox.png" width="150">', { relPath: "home-network/note.md" })
+    ).html;
+    expect(html).toContain('src="/assets/vault/home-network/img/fox.png"');
+    expect(html).toContain('width="150"'); // authored sizing preserved
+  });
+
+  it("resolves html media inside a table cell", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["home-network/img/fox.png"]));
+    const html = (
+      await r.render('| a |\n| --- |\n| <img src="img/fox.png"> |', {
+        relPath: "home-network/note.md",
+      })
+    ).html;
+    expect(html).toContain('src="/assets/vault/home-network/img/fox.png"');
+  });
+
+  it("resolves relative html video src and poster", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["assets/clip.mp4", "assets/thumb.png"]));
+    const html = (
+      await r.render('<video src="clip.mp4" poster="thumb.png"></video>', { relPath: "x.md" })
+    ).html;
+    expect(html).toContain('src="/assets/vault/assets/clip.mp4"');
+    expect(html).toContain('poster="/assets/vault/assets/thumb.png"');
+  });
+
+  it("leaves external and unresolvable html image sources untouched", async () => {
+    const r = await makeRenderer(indexFromFiles(vault, ["assets/fox.png"]));
+    const html = (
+      await r.render('<img src="https://x.com/a.png"> <img src="nope.png">', { relPath: "x.md" })
+    ).html;
+    expect(html).toContain('src="https://x.com/a.png"');
+    expect(html).toContain('src="nope.png"');
+  });
+
   it("leaves external and unresolvable markdown images untouched", async () => {
     const r = await makeRenderer(indexFromFiles(vault, ["assets/fox.png"]));
     const html = (
