@@ -3,6 +3,7 @@ import { Document, type PageContext } from "../layout.js";
 import type { PageSlice } from "../pagination.js";
 import { Pagination } from "../partials/pagination.js";
 import { PostFeed } from "../partials/post-card.js";
+import { noteTree } from "../tree.js";
 
 export interface TagPageProps extends PageContext {
   index: SiteIndex;
@@ -21,7 +22,7 @@ export function TagPage(props: TagPageProps) {
     .filter((note): note is Note => note !== undefined);
 
   return (
-    <Document config={config} href={href} title={`#${tag}`}>
+    <Document config={config} href={href} title={`#${tag}`} tree={noteTree(index)}>
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">#{tag}</h1>

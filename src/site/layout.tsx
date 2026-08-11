@@ -2,6 +2,8 @@ import { raw } from "hono/html";
 import type { Child } from "hono/jsx";
 import { DS_VERSION, ICONS_SPRITE } from "../assets-dir.js";
 import type { ResolvedConfig } from "../config/schema.js";
+import { BrowseDrawer } from "./partials/browse-drawer.js";
+import type { TreeNode } from "./tree.js";
 import type { Href } from "./url.js";
 
 export interface PageContext {
@@ -15,6 +17,12 @@ export interface DocumentProps extends PageContext {
   description?: string;
   /** Optional right-hand column (e.g. the table of contents). */
   aside?: Child;
+  /** Folder tree for the browse drawer; omitted, the drawer is not rendered. */
+  tree?: TreeNode[];
+  /** Slug of the note being viewed, marked in the tree. */
+  currentSlug?: string | undefined;
+  /** Folder paths the tree starts expanded at. */
+  openPaths?: ReadonlySet<string> | undefined;
   children?: Child;
 }
 
@@ -74,10 +82,14 @@ export function Document(props: DocumentProps) {
         <div class="qf-app-shell">
           <header class="qf-app-shell__navbar">
             <nav class="qf-navbar" aria-label="Main">
+              {props.tree !== undefined ? <BrowseToggle /> : null}
               <a class="qf-navbar__brand" href={href("")}>
                 {config.site.title}
               </a>
               <div class="qf-navbar__nav">
+                <a class="qf-navbar__link" href={href("browse")}>
+                  Browse
+                </a>
                 <a class="qf-navbar__link" href={href("tags")}>
                   Tags
                 </a>
@@ -97,9 +109,33 @@ export function Document(props: DocumentProps) {
             <div class="qf-container">{props.children}</div>
           </main>
         </div>
+        {props.tree !== undefined ? (
+          <BrowseDrawer
+            nodes={props.tree}
+            href={href}
+            currentSlug={props.currentSlug}
+            openPaths={props.openPaths}
+          />
+        ) : null}
         {props.aside}
       </body>
     </html>
+  );
+}
+
+function BrowseToggle() {
+  return (
+    <button
+      type="button"
+      class="qf-btn qf-btn--ghost qf-btn--icon"
+      data-tree-toggle
+      aria-label="Browse files"
+      aria-expanded="false"
+    >
+      <svg class="qf-icon qf-icon--sm" aria-hidden="true">
+        <use href="#qf-i-folder" />
+      </svg>
+    </button>
   );
 }
 

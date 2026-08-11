@@ -1,5 +1,6 @@
 import type { Note, SiteIndex } from "../../types.js";
 import { Document, type PageContext } from "../layout.js";
+import { noteTree } from "../tree.js";
 
 export interface ArchivePageProps extends PageContext {
   index: SiteIndex;
@@ -20,7 +21,7 @@ export function ArchivePage(props: ArchivePageProps) {
   );
 
   return (
-    <Document config={config} href={href} title="Archive">
+    <Document config={config} href={href} title="Archive" tree={noteTree(index)}>
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">Archive</h1>

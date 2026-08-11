@@ -64,7 +64,7 @@ export async function exportSite(config: ResolvedConfig): Promise<BuildResult> {
   };
 }
 
-/** Enumerate every static route: home (paginated), posts, tags, and archive. */
+/** Enumerate every static route: home (paginated), posts, tags, archive, browse. */
 function enumerateRoutes(site: Site): Route[] {
   const routes: Route[] = [];
   const pageSize = site.config.feed.pageSize;
@@ -98,6 +98,7 @@ function enumerateRoutes(site: Site): Route[] {
   }
 
   routes.push({ request: "/archive", file: "archive/index.html" });
+  routes.push({ request: "/browse", file: "browse/index.html" });
   return routes;
 }
 

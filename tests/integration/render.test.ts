@@ -189,6 +189,26 @@ describe("tag, archive, and pagination routes", () => {
     expect(html).toContain("Hello World");
   });
 
+  it("browses the vault as a folder tree", async () => {
+    const response = await site.app.request("/browse");
+    expect(response.status).toBe(200);
+    const html = await response.text();
+    expect(html).toContain("qf-tree");
+    expect(html).toContain('href="/guides/setup"'); // note leaf
+    expect(html).toContain(">guides<"); // folder row
+    expect(html).toContain(">advanced<"); // nested folder
+    expect(html).not.toContain("Draft Note"); // unpublished stay out
+    expect(html).not.toContain("secret");
+  });
+
+  it("opens the browse drawer on every page, revealing the current note", async () => {
+    const html = await (await site.app.request("/guides/advanced/deep-dive")).text();
+    expect(html).toContain("data-tree-toggle");
+    expect(html).toContain("data-tree-panel");
+    expect(html).toMatch(/<details class="qf-tree__folder" open[^>]*>[\s\S]*?>guides</);
+    expect(html).toMatch(/href="\/guides\/advanced\/deep-dive"[^>]*aria-current="page"/);
+  });
+
   it("redirects /page/1 to the home root", async () => {
     const response = await site.app.request("/page/1");
     expect(response.status).toBe(301);

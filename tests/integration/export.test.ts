@@ -43,6 +43,7 @@ describe("static export", () => {
       "tags/index.html",
       "tags/intro/index.html",
       "archive/index.html",
+      "browse/index.html",
       "404.html",
     ]) {
       expect(existsSync(join(outDir, file)), file).toBe(true);

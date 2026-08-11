@@ -30,29 +30,37 @@
     });
   }
 
-  // Table of contents drawer (hidden by default).
-  const panel = document.querySelector("[data-toc-panel]");
-  const backdrop = document.querySelector("[data-toc-backdrop]");
-  if (panel) {
+  /**
+   * Wire a drawer that is hidden by default: toggled from the navbar, closed by
+   * its close button, its backdrop, Escape, or following a link inside it.
+   * `name` selects the data-attribute family (data-<name>-panel, -backdrop,
+   * -toggle, -close, -link).
+   */
+  const setupDrawer = (name) => {
+    const panel = document.querySelector(`[data-${name}-panel]`);
+    if (!panel) return;
+    const backdrop = document.querySelector(`[data-${name}-backdrop]`);
+    const toggles = document.querySelectorAll(`[data-${name}-toggle]`);
+
     const setOpen = (open) => {
       panel.hidden = !open;
       if (backdrop) backdrop.hidden = !open;
-      for (const t of document.querySelectorAll("[data-toc-toggle]")) {
-        t.setAttribute("aria-expanded", String(open));
-      }
+      for (const t of toggles) t.setAttribute("aria-expanded", String(open));
     };
-    for (const t of document.querySelectorAll("[data-toc-toggle]")) {
-      t.addEventListener("click", () => setOpen(panel.hidden));
-    }
-    for (const c of document.querySelectorAll("[data-toc-close]")) {
+
+    for (const t of toggles) t.addEventListener("click", () => setOpen(panel.hidden));
+    for (const c of document.querySelectorAll(`[data-${name}-close]`)) {
       c.addEventListener("click", () => setOpen(false));
     }
-    for (const link of panel.querySelectorAll("[data-toc-link]")) {
+    for (const link of panel.querySelectorAll(`[data-${name}-link]`)) {
       link.addEventListener("click", () => setOpen(false));
     }
     backdrop?.addEventListener("click", () => setOpen(false));
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !panel.hidden) setOpen(false);
     });
-  }
+  };
+
+  setupDrawer("toc"); // table of contents (right)
+  setupDrawer("tree"); // folder tree (left)
 })();

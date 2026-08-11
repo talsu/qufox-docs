@@ -32,6 +32,9 @@ npx qufox-docs build ./notes --out ./dist
   the browser reloads on save. Write in Obsidian (or anything), see it on the web.
 - **Obsidian-friendly** — wikilinks, embeds, callouts, tags, and highlights render
   the way you wrote them.
+- **Browse by folder** — the vault's folder structure is a first-class way around
+  the site: a `/browse` page and a drawer that opens on any page, so you can move
+  between neighbouring notes the way you do in your editor.
 - **One design system** — every page is built from the
   [qufox design system](https://design.qufox.com): plain CSS, `qf-*` classes,
   dark-first with a light theme.

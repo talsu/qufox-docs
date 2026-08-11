@@ -5,6 +5,7 @@ import { Backlinks } from "../partials/backlinks.js";
 import { Breadcrumb } from "../partials/breadcrumb.js";
 import { PrevNext } from "../partials/prev-next.js";
 import { TableOfContents } from "../partials/toc.js";
+import { ancestorPaths, noteTree } from "../tree.js";
 
 export interface PostPageProps extends PageContext {
   note: Note;
@@ -23,6 +24,9 @@ export function PostPage(props: PostPageProps) {
       title={note.title}
       description={note.excerpt}
       aside={page.toc.length >= 2 ? <TableOfContents toc={page.toc} /> : undefined}
+      tree={noteTree(index)}
+      currentSlug={note.slug}
+      openPaths={new Set(ancestorPaths(note.relPath))}
     >
       <Breadcrumb note={note} index={index} href={href} />
       <div class="qf-page-header">

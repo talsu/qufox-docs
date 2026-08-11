@@ -1,5 +1,6 @@
 import type { SiteIndex } from "../../types.js";
 import { Document, type PageContext } from "../layout.js";
+import { noteTree } from "../tree.js";
 
 export interface TagsPageProps extends PageContext {
   index: SiteIndex;
@@ -13,7 +14,7 @@ export function TagsPage(props: TagsPageProps) {
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
 
   return (
-    <Document config={config} href={href} title="Tags">
+    <Document config={config} href={href} title="Tags" tree={noteTree(index)}>
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">Tags</h1>

@@ -2,6 +2,7 @@ import { type Context, Hono } from "hono";
 import type { ResolvedConfig } from "../config/schema.js";
 import type { Renderer } from "../render/renderer.js";
 import { ArchivePage } from "../site/pages/archive.js";
+import { BrowsePage } from "../site/pages/browse.js";
 import { HomePage } from "../site/pages/home.js";
 import { NotFoundPage } from "../site/pages/not-found.js";
 import { PostPage } from "../site/pages/post.js";
@@ -59,6 +60,8 @@ export function createApp(context: AppContext): Hono {
   });
 
   app.get("/archive", (c) => listResponse(c, "archive", ArchivePage({ index, ...page })));
+
+  app.get("/browse", (c) => listResponse(c, "browse", BrowsePage({ index, ...page })));
 
   // Assets.
   app.get("/assets/design/:file", (c) =>
