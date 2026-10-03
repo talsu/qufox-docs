@@ -57,6 +57,7 @@ describe("static export", () => {
   it("copies referenced attachments and the design system", () => {
     expect(existsSync(join(outDir, "assets/vault/attachments/fox.png"))).toBe(true);
     expect(existsSync(join(outDir, "assets/design/tokens.css"))).toBe(true);
+    expect(existsSync(join(outDir, "assets/fonts/geist-mono-latin.woff2"))).toBe(true);
     expect(existsSync(join(outDir, "assets/app/theme.js"))).toBe(true);
   });
 

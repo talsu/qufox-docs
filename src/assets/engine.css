@@ -29,7 +29,10 @@
 
 .qf-prose pre.shiki code {
   background: none;
+  border: 0;
   padding: 0;
+  /* Inline code is medium weight to stand out in a sentence; a block is regular. */
+  font-weight: 400;
   font-size: var(--fs-13);
   line-height: 1.6;
 }

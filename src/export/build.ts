@@ -199,6 +199,7 @@ async function copyAttachments(
 
 async function copyEngineAssets(outDir: string): Promise<void> {
   await cp(join(ASSETS_DIR, "design"), join(outDir, "assets", "design"), { recursive: true });
+  await cp(join(ASSETS_DIR, "fonts"), join(outDir, "assets", "fonts"), { recursive: true });
   await mkdir(join(outDir, "assets", "app"), { recursive: true });
   await cp(join(ASSETS_DIR, "engine.css"), join(outDir, "assets", "app", "engine.css"));
   // Client scripts, minus the live-reload helper (serve mode only).

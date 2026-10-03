@@ -174,3 +174,20 @@ describe("interface language", () => {
     expect(await (await other.app.request("/")).text()).toContain(">Archive</a>");
   });
 });
+
+describe("brand fonts", () => {
+  it("serves the design system's fonts itself instead of a font CDN", async () => {
+    const html = await (await site.app.request("/")).text();
+    expect(html).toContain('href="/assets/fonts/fonts.css?v=');
+    expect(html).not.toContain("fonts.googleapis.com");
+
+    const css = await site.app.request("/assets/fonts/fonts.css");
+    expect(css.status).toBe(200);
+    expect(await css.text()).toContain('font-family: "Geist Mono"');
+
+    const font = await site.app.request("/assets/fonts/geist-mono-latin.woff2");
+    expect(font.status).toBe(200);
+    expect(font.headers.get("content-type")).toBe("font/woff2");
+    expect(font.headers.get("cache-control")).toContain("immutable");
+  });
+});

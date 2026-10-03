@@ -105,6 +105,9 @@ export function createApp(context: AppContext): Hono {
   app.get("/assets/design/:file", (c) =>
     serveEngineAsset(c, `design/${c.req.param("file")}`, "immutable"),
   );
+  app.get("/assets/fonts/:file", (c) =>
+    serveEngineAsset(c, `fonts/${c.req.param("file")}`, "immutable"),
+  );
   app.get("/assets/app/:file", (c) => {
     const file = c.req.param("file");
     return serveEngineAsset(c, file === "engine.css" ? file : `client/${file}`, "no-cache");

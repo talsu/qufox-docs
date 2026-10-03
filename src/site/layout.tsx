@@ -107,6 +107,7 @@ export function Document(props: DocumentProps) {
         <meta name="qufox-design-version" content={DS_VERSION} />
         <meta name="qufox-base" content={config.build.basePath} />
         <script>{raw(themeInitScript(config.theme.default, config.theme.brand))}</script>
+        <link rel="stylesheet" href={`${href("assets/fonts/fonts.css")}?v=${DS_VERSION}`} />
         <link rel="stylesheet" href={`${href("assets/design/tokens.css")}?v=${DS_VERSION}`} />
         <link rel="stylesheet" href={`${href("assets/design/components.css")}?v=${DS_VERSION}`} />
         <link rel="stylesheet" href={`${href("assets/design/icons.css")}?v=${DS_VERSION}`} />
