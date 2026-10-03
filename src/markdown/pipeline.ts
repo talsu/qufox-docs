@@ -7,6 +7,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import remarkBreaks from "remark-breaks";
+import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
@@ -52,17 +53,22 @@ export interface RenderedMarkdown {
 
 /** mdast phase: parse + Obsidian transforms (wikilinks, embeds, block ids). */
 function buildMdastProcessor(breaks: boolean) {
-  return unified()
-    .use(remarkParse)
-    .use(remarkFrontmatter, ["yaml"])
-    .use(remarkGfm)
-    .use(breaks ? [remarkBreaks] : [])
-    .use(remarkHighlight)
-    .use(remarkWikilinks)
-    .use(remarkTags)
-    .use(remarkBlockIds)
-    .use(remarkUnsupported)
-    .freeze();
+  return (
+    unified()
+      .use(remarkParse)
+      .use(remarkFrontmatter, ["yaml"])
+      .use(remarkGfm)
+      // CommonMark only closes `**` before punctuation when a space follows, which
+      // Korean, Japanese, and Chinese prose never has: "**굵게(강조)**는".
+      .use(remarkCjkFriendly)
+      .use(breaks ? [remarkBreaks] : [])
+      .use(remarkHighlight)
+      .use(remarkWikilinks)
+      .use(remarkTags)
+      .use(remarkBlockIds)
+      .use(remarkUnsupported)
+      .freeze()
+  );
 }
 
 /** hast phase: mdast → hast → heading anchors → syntax highlighting → HTML. */

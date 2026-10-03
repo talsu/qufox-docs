@@ -38,6 +38,22 @@ describe("markdown pipeline snapshots (qf markup contract)", () => {
 });
 
 describe("markdown pipeline behavior", () => {
+  it("closes emphasis before punctuation in CJK prose", async () => {
+    const html = await render("수행**(연산)**속도와 *(컴퓨터)*의 기능");
+    expect(html).toContain("<strong>(연산)</strong>속도");
+    expect(html).toContain("<em>(컴퓨터)</em>의");
+  });
+
+  it("links an inline tag only when the index treats it as one", async () => {
+    const files = { "c.md": "A real #topic here.\n\n*#asm*\n\n\\#include is escaped." };
+    const scoped = await makeRenderer(indexFromFiles(files));
+    const html = (await scoped.render(files["c.md"], { relPath: "c.md" })).html;
+    expect(html).toContain('href="/tags/topic"');
+    expect(html).not.toContain("/tags/asm");
+    expect(html).not.toContain("/tags/include");
+    expect(html).toContain("#include is escaped");
+  });
+
   it("collects a table of contents from h2/h3 with duplicate-safe ids", async () => {
     const raw = readFileSync(`${fixturesDir}/headings.md`, "utf8");
     const { toc } = await renderer.render(raw, { relPath: "headings.md" });
