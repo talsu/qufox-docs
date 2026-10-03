@@ -82,6 +82,7 @@ export function parseNote(input: ParseNoteInput, publishGate: PublishGate): Pars
   for (const tag of scan.inlineTags) tags.add(tag);
 
   const aliases = toStringArray(frontmatter.aliases ?? frontmatter.alias);
+  const redirectFrom = toRedirectSources(frontmatter.redirect_from);
   const description =
     typeof frontmatter.description === "string" ? frontmatter.description.trim() : "";
 
@@ -95,6 +96,7 @@ export function parseNote(input: ParseNoteInput, publishGate: PublishGate): Pars
     dateSource,
     tags: [...tags],
     aliases,
+    redirectFrom,
     headings: scan.headings,
     rawLinks: scan.rawLinks,
     outboundLinks: [],
@@ -144,6 +146,15 @@ function toStringArray(value: unknown): string[] {
   }
   if (typeof value === "number") return [String(value)];
   return [];
+}
+
+/** `redirect_from` entries are URLs, so a string is one entry — never comma-split. */
+function toRedirectSources(value: unknown): string[] {
+  const items = Array.isArray(value) ? value : [value];
+  return items
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter((item) => item !== "");
 }
 
 interface BodyScan {

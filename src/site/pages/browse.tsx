@@ -18,7 +18,14 @@ export function BrowsePage(props: BrowsePageProps) {
   );
 
   return (
-    <Document config={config} href={href} title="Browse" tree={tree} openPaths={topLevel}>
+    <Document
+      config={config}
+      href={href}
+      title="Browse"
+      path="browse"
+      tree={tree}
+      openPaths={topLevel}
+    >
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">Browse</h1>

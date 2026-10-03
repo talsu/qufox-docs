@@ -7,6 +7,8 @@ export interface NoteFrontmatter {
   date?: string | number | Date;
   tags?: string[] | string;
   aliases?: string[] | string;
+  /** Old URLs (path, optionally with a query string) that redirect to this note. */
+  redirect_from?: string[] | string;
   slug?: string;
   permalink?: string;
   draft?: boolean;
@@ -42,6 +44,8 @@ export interface Note {
   /** Lowercased union of frontmatter tags and inline #tags (nesting kept). */
   tags: string[];
   aliases: string[];
+  /** Legacy URLs that redirect here, as written in `redirect_from`. */
+  redirectFrom: string[];
   headings: Heading[];
   /** Wikilink/embed targets as written; resolved against the index in a second pass. */
   rawLinks: RawLink[];

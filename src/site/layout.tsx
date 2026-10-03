@@ -2,6 +2,7 @@ import { raw } from "hono/html";
 import type { Child } from "hono/jsx";
 import { DS_VERSION, ICONS_SPRITE } from "../assets-dir.js";
 import type { ResolvedConfig } from "../config/schema.js";
+import { absoluteUrl, FEED_PATH } from "./feeds.js";
 import { BrowseDrawer } from "./partials/browse-drawer.js";
 import type { TreeNode } from "./tree.js";
 import type { Href } from "./url.js";
@@ -15,6 +16,13 @@ export interface DocumentProps extends PageContext {
   /** Page title; the site title is appended automatically. */
   title?: string;
   description?: string;
+  /**
+   * Site path of this page ("" for home, a slug, "tags/x"). With `site.url`
+   * set it becomes the canonical URL; omit it for pages with no stable address.
+   */
+  path?: string;
+  /** Publication date; marks the page as an article for link previews. */
+  published?: Date | undefined;
   /** Optional right-hand column (e.g. the table of contents). */
   aside?: Child;
   /** Folder tree for the browse drawer; omitted, the drawer is not rendered. */
@@ -53,6 +61,8 @@ export function Document(props: DocumentProps) {
   const title =
     props.title !== undefined ? `${props.title} · ${config.site.title}` : config.site.title;
   const description = props.description ?? config.site.description;
+  const canonical = props.path !== undefined ? absoluteUrl(config, href, props.path) : null;
+  const feed = absoluteUrl(config, href, FEED_PATH);
 
   return (
     <html lang={config.site.locale}>
@@ -61,6 +71,21 @@ export function Document(props: DocumentProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
         {description !== "" ? <meta name="description" content={description} /> : null}
+        {canonical !== null ? <link rel="canonical" href={canonical} /> : null}
+        {canonical !== null ? <meta property="og:url" content={canonical} /> : null}
+        <meta property="og:site_name" content={config.site.title} />
+        <meta property="og:title" content={props.title ?? config.site.title} />
+        {description !== "" ? <meta property="og:description" content={description} /> : null}
+        <meta property="og:type" content={props.published !== undefined ? "article" : "website"} />
+        {props.published !== undefined ? (
+          <meta property="article:published_time" content={props.published.toISOString()} />
+        ) : null}
+        {feed !== null ? (
+          <link rel="alternate" type="application/rss+xml" title={config.site.title} href={feed} />
+        ) : null}
+        {config.site.favicon !== undefined ? (
+          <link rel="icon" href={href(`assets/vault/${config.site.favicon}`)} />
+        ) : null}
         <meta name="generator" content={`qufox-docs ${config.engineVersion}`} />
         <meta name="qufox-design-version" content={DS_VERSION} />
         <meta name="qufox-base" content={config.build.basePath} />

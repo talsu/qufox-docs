@@ -23,6 +23,8 @@ export function PostPage(props: PostPageProps) {
       href={href}
       title={note.title}
       description={note.excerpt}
+      path={note.slug}
+      published={note.dateSource === "frontmatter" ? note.date : undefined}
       aside={page.toc.length >= 2 ? <TableOfContents toc={page.toc} /> : undefined}
       tree={noteTree(index)}
       currentSlug={note.slug}

@@ -1,6 +1,15 @@
 import { type Context, Hono } from "hono";
+import pc from "picocolors";
 import type { ResolvedConfig } from "../config/schema.js";
 import type { Renderer } from "../render/renderer.js";
+import {
+  FEED_PATH,
+  ROBOTS_PATH,
+  renderFeed,
+  renderRobots,
+  renderSitemap,
+  SITEMAP_PATH,
+} from "../site/feeds.js";
 import { ArchivePage } from "../site/pages/archive.js";
 import { BrowsePage } from "../site/pages/browse.js";
 import { HomePage } from "../site/pages/home.js";
@@ -9,6 +18,7 @@ import { PostPage } from "../site/pages/post.js";
 import { TagPage } from "../site/pages/tag.js";
 import { TagsPage } from "../site/pages/tags.js";
 import { paginate } from "../site/pagination.js";
+import { buildRedirectTable, matchRedirect, type RedirectTable } from "../site/redirects.js";
 import { siteHref, slugFromPathname } from "../site/url.js";
 import type { SiteIndex } from "../types.js";
 import { serveEngineAsset, serveVaultAsset } from "./assets.js";
@@ -33,6 +43,18 @@ export function createApp(context: AppContext): Hono {
   if (context.livereload !== undefined) {
     app.get("/__qufox/events", context.livereload.handler);
   }
+
+  // Legacy URLs that differ only by query string ("/?p=123") share a path with
+  // a live page, so they are matched before routing. Path redirects never
+  // shadow a live page: they are tried once nothing else answered (notFound).
+  app.use("*", async (c, next) => {
+    const search = new URL(c.req.url).search;
+    if (search.length > 1) {
+      const target = matchRedirect(redirectTable(), c.req.path, search, { queryOnly: true });
+      if (target !== null) return c.redirect(target, 301);
+    }
+    await next();
+  });
 
   // Home feed and its pages.
   app.get("/", (c) => renderHome(c, 1));
@@ -62,6 +84,22 @@ export function createApp(context: AppContext): Hono {
   app.get("/archive", (c) => listResponse(c, "archive", ArchivePage({ index, ...page })));
 
   app.get("/browse", (c) => listResponse(c, "browse", BrowsePage({ index, ...page })));
+
+  // Machine-readable outputs. The feed and sitemap need absolute URLs (site.url).
+  app.get(`/${FEED_PATH}`, (c) =>
+    textResponse(c, renderFeed(config, index, href), "application/rss+xml; charset=utf-8"),
+  );
+  app.get(`/${SITEMAP_PATH}`, (c) =>
+    textResponse(c, renderSitemap(config, index, href), "application/xml; charset=utf-8"),
+  );
+  app.get(`/${ROBOTS_PATH}`, (c) =>
+    textResponse(c, renderRobots(config, href), "text/plain; charset=utf-8"),
+  );
+  app.get("/favicon.ico", (c) =>
+    config.site.favicon !== undefined
+      ? c.redirect(href(`assets/vault/${config.site.favicon}`), 302)
+      : notFound(c),
+  );
 
   // Assets.
   app.get("/assets/design/:file", (c) =>
@@ -103,8 +141,29 @@ export function createApp(context: AppContext): Hono {
     return c.html(body);
   }
 
+  function textResponse(c: Context, body: string | null, contentType: string) {
+    if (body === null) return notFound(c);
+    c.header("Content-Type", contentType);
+    c.header("Cache-Control", "no-cache");
+    return c.body(body);
+  }
+
   function notFound(c: Context) {
+    const target = matchRedirect(redirectTable(), c.req.path, new URL(c.req.url).search);
+    if (target !== null) return c.redirect(target, 301);
     return c.html(NotFoundPage(page), 404);
+  }
+
+  /** The redirect table follows the index: rebuilt after each applied change batch. */
+  let redirects: { revision: number; table: RedirectTable } | undefined;
+  function redirectTable(): RedirectTable {
+    if (redirects === undefined || redirects.revision !== index.revision) {
+      const table = buildRedirectTable(index, config, href, (message) =>
+        console.warn(pc.yellow(`  ! ${message}`)),
+      );
+      redirects = { revision: index.revision, table };
+    }
+    return redirects.table;
   }
 
   return app;

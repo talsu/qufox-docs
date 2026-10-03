@@ -87,3 +87,27 @@ describe("static export with a base path", () => {
     expect(html).not.toMatch(/href="\/(guides|tags|archive)\//);
   });
 });
+
+describe("static export of feeds and redirects", () => {
+  it("writes robots.txt and redirect stubs, and reports what a static host cannot do", async () => {
+    const { outDir, result } = await build({});
+    expect(readFileSync(join(outDir, "robots.txt"), "utf8")).toContain("Allow: /");
+    expect(existsSync(join(outDir, "feed.xml"))).toBe(false);
+    const stub = readFileSync(join(outDir, "2026/06/old-aliased/index.html"), "utf8");
+    expect(stub).toContain('http-equiv="refresh" content="0; url=/aliased"');
+    expect(result.warnings.some((w) => w.includes("query string"))).toBe(true);
+  });
+
+  it("writes the feed and sitemap when site.url is set", async () => {
+    const { outDir, result } = await build({
+      site: { url: "https://example.com" },
+      build: { basePath: "/blog/" },
+    });
+    const feed = readFileSync(join(outDir, "feed.xml"), "utf8");
+    expect(feed).toContain("<link>https://example.com/blog/hello-world</link>");
+    expect(readFileSync(join(outDir, "sitemap.xml"), "utf8")).toContain(
+      "<loc>https://example.com/blog/</loc>",
+    );
+    expect(result.warnings.some((w) => w.includes("site.url"))).toBe(false);
+  });
+});

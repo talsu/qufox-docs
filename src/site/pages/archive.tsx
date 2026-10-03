@@ -21,7 +21,7 @@ export function ArchivePage(props: ArchivePageProps) {
   );
 
   return (
-    <Document config={config} href={href} title="Archive" tree={noteTree(index)}>
+    <Document config={config} href={href} title="Archive" path="archive" tree={noteTree(index)}>
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">Archive</h1>

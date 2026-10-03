@@ -12,6 +12,8 @@ export const configSchema = z.object({
       locale: z.string().default("en"),
       /** Public origin of the deployed site, e.g. "https://blog.example.com". */
       url: z.url().optional(),
+      /** Vault-relative path of the site icon, e.g. "assets/favicon.svg". */
+      favicon: z.string().optional(),
     })
     .prefault({}),
   publish: z
@@ -56,8 +58,24 @@ export const configSchema = z.object({
     .object({
       /** Posts per page on list pages. */
       pageSize: z.number().int().min(1).max(100).default(10),
+      /** Number of newest posts in the RSS feed (`/feed.xml`). */
+      limit: z.number().int().min(1).max(500).default(20),
     })
     .prefault({}),
+  /**
+   * Site-level redirects for URLs that no longer exist. `from` is a site-root
+   * path with an optional query string ("/?feed=rss2"); a trailing "*" on the
+   * path forwards a whole subtree and is substituted into "*" in `to`.
+   * Per-note redirects belong in the note's `redirect_from` frontmatter.
+   */
+  redirects: z
+    .array(
+      z.object({
+        from: z.string().regex(/^\//, 'redirect "from" must start with "/"'),
+        to: z.string().min(1),
+      }),
+    )
+    .default([]),
   build: z
     .object({
       outDir: z.string().default("dist"),

@@ -22,7 +22,13 @@ export function TagPage(props: TagPageProps) {
     .filter((note): note is Note => note !== undefined);
 
   return (
-    <Document config={config} href={href} title={`#${tag}`} tree={noteTree(index)}>
+    <Document
+      config={config}
+      href={href}
+      title={`#${tag}`}
+      path={slice.page === 1 ? `tags/${tag}` : `tags/${tag}/page/${slice.page}`}
+      tree={noteTree(index)}
+    >
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">#{tag}</h1>

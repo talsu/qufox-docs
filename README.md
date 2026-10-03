@@ -96,8 +96,47 @@ intentionally out of scope, mirroring other Obsidian publishing tools.
 
 ## Blog features
 
-Tag pages, a date archive, and pagination. Full-text search, RSS/Atom feeds,
-sitemaps, and comments are on the roadmap.
+Tag pages, a date archive, and pagination. Full-text search and comments are on
+the roadmap.
+
+With `site.url` set (or `QUFOX_SITE_URL`), the site also publishes an RSS feed at
+`/feed.xml` (the newest `feed.limit` posts, 20 by default), a `/sitemap.xml`, and
+canonical / OpenGraph tags on every page. `/robots.txt` is always served. Point
+`site.favicon` at an image in the vault to give the site an icon.
+
+## Redirects
+
+Moving from another blog engine? Keep the old URLs alive. List them in the note
+they now belong to:
+
+```yaml
+---
+title: Remoting over port 80
+redirect_from:
+  - /?p=2117            # WordPress "plain" permalink
+  - /2011/11/remoting/  # date-based permalink
+---
+```
+
+A source is a site-root path, optionally with a query string. A request matches
+when the path is the same and it carries those query parameters (extra ones, such
+as tracking tags, are ignored). Site-wide rules go in the config; end the path
+with `*` to forward a whole folder:
+
+```ts
+export default defineConfig({
+  redirects: [
+    { from: "/?feed=rss2", to: "/feed.xml" },
+    { from: "/?cat=6", to: "/tags/programming" },
+    { from: "/wp-content/uploads/*", to: "/assets/vault/uploads/*" },
+  ],
+});
+```
+
+`serve` answers with a `301`. A path redirect never hides a live page: it applies
+only where the site would otherwise return 404. A static `build` writes a
+forwarding page for each plain path; rules that match on a query string or a
+folder need a server, and the build reports how many it skipped.
 
 ## Deployment
 
@@ -114,7 +153,7 @@ served by nginx for public sites.
 
 ## Roadmap
 
-- RSS/Atom + JSON Feed, `sitemap.xml`, richer SEO/OpenGraph tags
+- Atom + JSON Feed, per-post social images
 - Math and Mermaid rendering
 - Comments (giscus)
 - Distribution: Docker image, standalone binaries, Homebrew tap

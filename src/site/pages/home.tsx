@@ -18,7 +18,12 @@ export function HomePage(props: HomePageProps) {
     .filter((note): note is Note => note !== undefined);
 
   return (
-    <Document config={config} href={href} tree={noteTree(index)}>
+    <Document
+      config={config}
+      href={href}
+      path={slice.page === 1 ? "" : `page/${slice.page}`}
+      tree={noteTree(index)}
+    >
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">{config.site.title}</h1>

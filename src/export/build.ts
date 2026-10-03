@@ -5,7 +5,17 @@ import { ASSETS_DIR } from "../assets-dir.js";
 import { bootSite, type Site } from "../boot.js";
 import type { ResolvedConfig } from "../config/schema.js";
 import { createApp } from "../server/app.js";
+import {
+  FEED_PATH,
+  ROBOTS_PATH,
+  renderFeed,
+  renderRobots,
+  renderSitemap,
+  SITEMAP_PATH,
+} from "../site/feeds.js";
 import { paginate } from "../site/pagination.js";
+import { buildRedirectTable } from "../site/redirects.js";
+import { siteHref } from "../site/url.js";
 
 export interface BuildResult {
   outDir: string;
@@ -52,13 +62,21 @@ export async function exportSite(config: ResolvedConfig): Promise<BuildResult> {
   await copyEngineAssets(outDir);
   const attachments = await copyAttachments(config.contentDirAbs, outDir, referencedAttachments);
 
+  const href = siteHref(config);
+  const feed = renderFeed(config, site.index, href);
+  const sitemap = renderSitemap(config, site.index, href);
+  if (feed !== null) await writeSite(outDir, FEED_PATH, feed);
+  if (sitemap !== null) await writeSite(outDir, SITEMAP_PATH, sitemap);
+  await writeSite(outDir, ROBOTS_PATH, renderRobots(config, href));
   if (config.site.url === undefined) {
-    warnings.push("site.url is not set — feeds and sitemap will be unavailable (v1.1)");
+    warnings.push("site.url is not set — the feed and sitemap were not written");
   }
+
+  const redirects = await writeRedirectStubs(site, outDir, routes, warnings);
 
   return {
     outDir,
-    pages: routes.length + 1,
+    pages: routes.length + 1 + redirects,
     attachments,
     warnings,
   };
@@ -100,6 +118,50 @@ function enumerateRoutes(site: Site): Route[] {
   routes.push({ request: "/archive", file: "archive/index.html" });
   routes.push({ request: "/browse", file: "browse/index.html" });
   return routes;
+}
+
+/**
+ * A static host cannot answer with a 301, so each path redirect becomes a stub
+ * page that forwards the browser. Redirects keyed on a query string or a
+ * subtree need a server and are reported instead.
+ */
+async function writeRedirectStubs(
+  site: Site,
+  outDir: string,
+  routes: Route[],
+  warnings: string[],
+): Promise<number> {
+  const table = buildRedirectTable(site.index, site.config, siteHref(site.config), (message) =>
+    warnings.push(message),
+  );
+  const taken = new Set(routes.map((route) => route.file));
+  let written = 0;
+  let skipped = table.splats.length;
+
+  for (const [path, rules] of table.exact) {
+    const rule = rules.find((candidate) => candidate.query.length === 0);
+    skipped += rules.length - (rule === undefined ? 0 : 1);
+    if (rule === undefined) continue;
+    const file = `${path.replace(/^\/+/, "")}/index.html`.replace(/^\//, "");
+    if (taken.has(file)) continue;
+    await writeSite(outDir, file, redirectStub(rule.to));
+    written++;
+  }
+  if (skipped > 0) {
+    warnings.push(
+      `${skipped} redirect(s) match on a query string or a subtree and only work with "qufox-docs serve"`,
+    );
+  }
+  return written;
+}
+
+function redirectStub(target: string): string {
+  const escaped = target.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
+  return (
+    `<!doctype html><meta charset="utf-8"><title>Redirecting…</title>` +
+    `<link rel="canonical" href="${escaped}"><meta http-equiv="refresh" content="0; url=${escaped}">` +
+    `<a href="${escaped}">Redirecting…</a>\n`
+  );
 }
 
 const ATTACHMENT_PATTERN = /assets\/vault\/([^"'\s>)]+)/g;
