@@ -1396,11 +1396,12 @@
       "class": "qf-tag",
       "layer": "generic",
       "category": "Display",
-      "purpose": "라벨이나 카테고리를 나타내는 칩입니다(카운트, 상태용 Badge 와 구분되는 텍스트 라벨).",
+      "purpose": "라벨이나 카테고리를 나타내는 칩입니다(카운트, 상태용 Badge 와 구분되는 텍스트 라벨). <a class=\"qf-tag\"> 로 두면 눌리는 태그가 됩니다(hover 는 selected 표면, 터치 환경 40px + 44px 히트). 글 수 같은 개수는 qf-tag__count(가는 숫자)로 — qf-badge--count(빨강)는 알림 전용입니다. qf-story--stretched 카드 안에서도 눌립니다.",
       "variants": [
         "qf-tag--accent",
         "qf-tag--outline",
-        "qf-tag__remove"
+        "qf-tag__remove",
+        "qf-tag__count"
       ],
       "requiredTokens": [
         "--bg-hover",
@@ -1409,12 +1410,29 @@
         "--accent-on-subtle",
         "--r-sm",
         "--s-3",
-        "--fs-12"
+        "--fs-12",
+        "--bg-selected",
+        "--text",
+        "--text-muted",
+        "--ring-focus",
+        "--s-9",
+        "--m-touch",
+        "--dur-fast",
+        "--ease-standard",
+        "--s-2",
+        "--border-strong",
+        "--r-xs"
       ],
-      "a11y": "제거 버튼(qf-tag__remove)에는 aria-label(예: 디자인 태그 제거)을 둡니다. 색만으로 의미를 전하지 않고 라벨 텍스트를 함께 둡니다.",
+      "a11y": "제거 버튼(qf-tag__remove)에는 aria-label(예: 디자인 태그 제거)을 둡니다. 색만으로 의미를 전하지 않고 라벨 텍스트를 함께 둡니다. 링크 태그는 a[href] 라 포커스 링이 보이고, 개수는 숫자 뒤에 단위를 aria-label 로 보충할 수 있습니다(예: \"powershell, 글 24건\"). 링크 태그에는 qf-tag__remove 를 넣지 않습니다(a 안의 button). 본문(qf-prose) 안 인라인 태그는 줄 높이를 지키며 터치 성장이 없습니다. 개수는 --text-secondary(굵기 400, 태그 글자는 500)라 바탕 --bg-hover 위 9.5 / 9.5, hover 표면 --bg-selected 위에서도 AA 입니다(--text-muted 는 라이트 4.48 로 미달이라 쓰지 않음).",
       "exampleHtml": "<span class=\"qf-tag qf-tag--accent\">Design<button class=\"qf-tag__remove\" aria-label=\"Remove Design tag\">×</button></span>",
-      "purposeEn": "A chip that represents a label or category (a text label, distinct from Badge which is used for counts and status).",
-      "a11yEn": "Give the remove button (qf-tag__remove) an aria-label (e.g., Remove design tag). Pair label text with color so meaning is never conveyed by color alone."
+      "purposeEn": "A chip that represents a label or category (a text label, distinct from Badge which is used for counts and status). As <a class=\"qf-tag\"> it becomes a clickable tag (hover = selected surface; 40px tall with a 44px hit area on touch). Show counts such as post totals with qf-tag__count (a lighter-weight number) — qf-badge--count (red) is for notifications only. It stays clickable inside a qf-story--stretched card.",
+      "a11yEn": "Give the remove button (qf-tag__remove) an aria-label (e.g., Remove design tag). Pair label text with color so meaning is never conveyed by color alone. A link tag is an a[href] with a visible focus ring; supplement a count with an aria-label such as \"powershell, 24 posts\". Do not put qf-tag__remove inside a link tag (a button inside an a). Inline tags inside qf-prose keep the line height and do not grow on touch. The count uses --text-secondary at weight 400 (tag text is 500): 9.5 / 9.5 on --bg-hover and still AA on the --bg-selected hover surface (--text-muted would be 4.48 in light, so it is not used).",
+      "examples": [
+        {
+          "label": "Link tags with counts (tag index)",
+          "html": "<div class=\"qf-cluster qf-cluster--tight\"><a class=\"qf-tag\" href=\"#t1\">#powershell <span class=\"qf-tag__count\">24</span></a><a class=\"qf-tag\" href=\"#t2\">#drama <span class=\"qf-tag__count\">30</span></a><a class=\"qf-tag\" href=\"#t3\">#algorithm <span class=\"qf-tag__count\">12</span></a><a class=\"qf-tag qf-tag--accent\" href=\"#t4\" aria-current=\"page\">#travel <span class=\"qf-tag__count\">10</span></a></div>"
+        }
+      ]
     },
     {
       "name": "Stat",
@@ -1975,7 +1993,7 @@
       "class": "qf-navbar",
       "layer": "generic",
       "category": "Navigation",
-      "purpose": "브랜드, 내비 링크, 액션을 담는 상단 앱 바입니다. --sticky 는 위에 붙는 고정 상단 바입니다 — 긴 목록이나 읽기 페이지처럼 내려간 뒤에도 찾기와 맨 위로 가는 길이 필요할 때 씁니다. 클래스 계약: 소비처 JS 가 스크롤이 0 이 아니면 is-stuck(그림자·선), 아래로 스크롤 중이면 is-hidden(위로 숨음)을 붙였다 뗍니다.",
+      "purpose": "브랜드, 내비 링크, 액션을 담는 상단 앱 바입니다. --sticky 는 위에 붙는 고정 상단 바입니다 — 긴 목록이나 읽기 페이지처럼 내려간 뒤에도 찾기와 맨 위로 가는 길이 필요할 때 씁니다. 클래스 계약: 소비처 JS 가 스크롤이 0 이 아니면 is-stuck(그림자·선), 아래로 스크롤 중이면 is-hidden(위로 숨음)을 붙였다 뗍니다. 좁은 폭 계약: 바는 한 줄을 지킵니다 — 브랜드는 말줄임, 링크 묶음(qf-navbar__nav)은 넘치면 가로 스크롤, 아이콘 버튼은 줄지 않음, ≤600px 에서 간격·여백 한 단계 축소. 폰에 둘 것은 브랜드 + 링크 2개 + 아이콘 버튼 3개까지이고 select·긴 링크는 소비처가 드로어나 메뉴로 옮깁니다(DS 는 아무것도 숨기지 않습니다).",
       "variants": [
         "qf-navbar__brand",
         "qf-navbar__nav",
@@ -1997,12 +2015,22 @@
         "--dur-base",
         "--ease-standard",
         "--dur-fast",
-        "--m-touch"
+        "--m-touch",
+        "--s-4",
+        "--s-3",
+        "--s-2",
+        "--s-1",
+        "--fs-16",
+        "--fs-14",
+        "--tracking-tight",
+        "--text-secondary",
+        "--r-sm",
+        "--text"
       ],
-      "a11y": "header > nav[aria-label] 로 감싸고, 현재 위치 링크에 aria-current=page 를 둡니다. 링크는 a[href], 키보드 포커스 가시. 밝기 토글은 qf-btn--ghost qf-btn--icon 에 aria-pressed(밝은 모드 = true)를 두고 해(qf-i-sun)/달(qf-i-moon) 아이콘을 소비처 JS 가 바꿉니다. 눌린 상태는 selected 표면으로 보입니다. 고정 바는 뷰포트를 가리므로 페이지 안 sticky(qf-dayrule)는 --qf-dayrule-top: var(--h-navbar) 로 그 아래에 두고, 포커스 이동 대상에는 scroll-margin-top 을 줍니다. 숨김 전환은 prefers-reduced-motion 에서 즉시 바뀝니다. --sticky 는 nav 를 body 직하(또는 header 자체)에 두어야 뷰포트에 붙습니다(header 안의 nav 는 header 박스 안에서만 붙음). 숨은 바 안으로 키보드 포커스가 들어오면 다시 보입니다. 바 안의 아이콘 버튼은 터치 환경에서 44px 히트 영역을 자동으로 받습니다.",
+      "a11y": "header > nav[aria-label] 로 감싸고, 현재 위치 링크에 aria-current=page 를 둡니다. 링크는 a[href], 키보드 포커스 가시. 밝기 토글은 qf-btn--ghost qf-btn--icon 에 aria-pressed(밝은 모드 = true)를 두고 해(qf-i-sun)/달(qf-i-moon) 아이콘을 소비처 JS 가 바꿉니다. 눌린 상태는 selected 표면으로 보입니다. 고정 바는 뷰포트를 가리므로 페이지 안 sticky(qf-dayrule)는 --qf-dayrule-top: var(--h-navbar) 로 그 아래에 두고, 포커스 이동 대상에는 scroll-margin-top 을 줍니다. 숨김 전환은 prefers-reduced-motion 에서 즉시 바뀝니다. --sticky 는 nav 를 body 직하(또는 header 자체)에 두어야 뷰포트에 붙습니다(header 안의 nav 는 header 박스 안에서만 붙음). 숨은 바 안으로 키보드 포커스가 들어오면 다시 보입니다. 바 안의 아이콘 버튼은 터치 환경에서 44px 히트 영역을 자동으로 받습니다. 브랜드가 아이콘 + 글자면 글자 span 에 말줄임 스타일을 두고(inline-flex 브랜드는 text-overflow 가 글자 요소에 걸려야 함) title 로 전체 이름을 줍니다. __nav 는 넘침 단서가 없으므로 폰에서 링크 2개까지(키보드 포커스는 자동 스크롤).",
       "exampleHtml": "<nav class=\"qf-navbar\" aria-label=\"Main menu\"><span class=\"qf-navbar__brand\">Acme</span><div class=\"qf-navbar__nav\"><a class=\"qf-navbar__link\" aria-current=\"page\">Dashboard</a><a class=\"qf-navbar__link\" href=\"/r\">Reports</a></div><span class=\"qf-navbar__spacer\"></span><button class=\"qf-btn qf-btn--ghost qf-btn--icon\" type=\"button\" aria-pressed=\"true\" aria-label=\"Light theme\"><svg class=\"qf-icon qf-icon--md\" aria-hidden=\"true\"><use href=\"#qf-i-sun\"/></svg></button><button class=\"qf-btn qf-btn--primary qf-btn--sm\">New</button></nav>",
-      "purposeEn": "A top app bar that holds branding, navigation links, and actions. --sticky pins the bar to the top; use it on long lists and reading pages where search and a way back up must stay reachable. Class contract: consumer JS toggles is-stuck when scrolled past 0 (shadow and line) and is-hidden while scrolling down (slides up out of view).",
-      "a11yEn": "Wrap it in header > nav[aria-label] and set aria-current=\"page\" on the link for the current location. Use a[href] for links, with a visible keyboard focus. A theme toggle is a qf-btn--ghost qf-btn--icon with aria-pressed (light mode = true); consumer JS swaps the sun (qf-i-sun) / moon (qf-i-moon) icon. The pressed state shows as the selected surface. A pinned bar covers part of the viewport: place in-page sticky elements (qf-dayrule) below it with --qf-dayrule-top: var(--h-navbar) and give focus targets a scroll-margin-top. The hide transition becomes instant under prefers-reduced-motion. For --sticky, put the nav directly under body (or make the header itself the bar); a nav inside a header only sticks within the header box. If keyboard focus enters a hidden bar it reappears. Icon buttons inside the bar get a 44px hit area on touch devices automatically."
+      "purposeEn": "A top app bar that holds branding, navigation links, and actions. --sticky pins the bar to the top; use it on long lists and reading pages where search and a way back up must stay reachable. Class contract: consumer JS toggles is-stuck when scrolled past 0 (shadow and line) and is-hidden while scrolling down (slides up out of view). Narrow-width contract: the bar stays one line — the brand truncates with an ellipsis, the link group (qf-navbar__nav) scrolls horizontally when it overflows, icon buttons never shrink, and gaps/padding step down at ≤600px. On phones keep to brand + two links + three icon buttons; move a select or long links into a drawer or menu on the consumer side (the DS hides nothing).",
+      "a11yEn": "Wrap it in header > nav[aria-label] and set aria-current=\"page\" on the link for the current location. Use a[href] for links, with a visible keyboard focus. A theme toggle is a qf-btn--ghost qf-btn--icon with aria-pressed (light mode = true); consumer JS swaps the sun (qf-i-sun) / moon (qf-i-moon) icon. The pressed state shows as the selected surface. A pinned bar covers part of the viewport: place in-page sticky elements (qf-dayrule) below it with --qf-dayrule-top: var(--h-navbar) and give focus targets a scroll-margin-top. The hide transition becomes instant under prefers-reduced-motion. For --sticky, put the nav directly under body (or make the header itself the bar); a nav inside a header only sticks within the header box. If keyboard focus enters a hidden bar it reappears. Icon buttons inside the bar get a 44px hit area on touch devices automatically. If the brand is icon + text, put the ellipsis styling on the text span (an inline-flex brand needs text-overflow on the text element) and give the full name via title. __nav shows no overflow hint, so keep to two links on phones (keyboard focus scrolls automatically)."
     },
     {
       "name": "ToTop",
@@ -2181,8 +2209,8 @@
       "class": "qf-footer",
       "layer": "generic",
       "category": "Layout",
-      "purpose": "읽기 폭 안의 바닥글입니다: 위 선, 안내 문단(qf-footer__note, 13px 보조 톤, 줄 길이 제한), 링크 줄(qf-footer__links). 안내는 한 문단으로 쓰기를 권합니다 — 둘 이상이면 작은 글씨가 길어져 읽히지 않습니다. 링크는 13px 에 세로 패딩으로 탭 대상 24px 이상이고 폰에서 두 줄로 감싸도 줄 사이 간격이 유지됩니다. 아래 여백은 안전 영역을 더합니다.",
-      "purposeEn": "A footer within the reading width: a top rule, a note paragraph (qf-footer__note, 13px secondary tone, limited measure), and a link row (qf-footer__links). Keep the note to one paragraph — more small print stops being read. Links are 13px with vertical padding for a 24px+ tap target, and the row keeps its spacing when it wraps on phones. Bottom padding includes the safe area.",
+      "purpose": "읽기 폭 안의 바닥글입니다: 위 선, 안내 문단(qf-footer__note, 13px 보조 톤, 줄 길이 제한), 링크 줄(qf-footer__links). 안내는 한 문단으로 쓰기를 권합니다 — 둘 이상이면 작은 글씨가 길어져 읽히지 않습니다. 링크는 13px 에 세로 패딩으로 탭 대상 24px 이상이고 폰에서 두 줄로 감싸도 줄 사이 간격이 유지됩니다. 아래 여백은 안전 영역을 더합니다. 링크 앞에 아이콘(RSS 등)을 두면 간격 --s-1 로 붙습니다.",
+      "purposeEn": "A footer within the reading width: a top rule, a note paragraph (qf-footer__note, 13px secondary tone, limited measure), and a link row (qf-footer__links). Keep the note to one paragraph — more small print stops being read. Links are 13px with vertical padding for a 24px+ tap target, and the row keeps its spacing when it wraps on phones. Bottom padding includes the safe area. A leading icon (e.g. RSS) inside a link sits with a --s-1 gap.",
       "variants": [
         "qf-footer__note",
         "qf-footer__links"
@@ -2210,6 +2238,48 @@
       "a11yEn": "Use the footer element (contentinfo) and group the links in nav[aria-label] or a ul. Links rely on the link-row context plus hover underline rather than a permanent underline, so use this only in a footer link row. 13px is the floor for secondary text; do not make the note smaller.",
       "exampleHtml": "<footer class=\"qf-footer\"><p class=\"qf-footer__note\">Summaries are written by AI from community posts and may be inaccurate. Check the original posts for details.</p><nav class=\"qf-footer__links\" aria-label=\"Site\"><a href=\"#about\">About</a><a href=\"#removal\">Correction and removal requests</a><a href=\"#privacy\">Privacy policy</a></nav></footer>",
       "wideExamples": true
+    },
+    {
+      "name": "PostNav",
+      "class": "qf-postnav",
+      "layer": "generic",
+      "category": "Navigation",
+      "purpose": "글 끝의 이전 글 / 다음 글입니다(읽기 열 끝, 바닥글 앞 — \"읽은 다음\"의 자리). 두 칸이며 ≤600px 에서는 한 칸씩 세로로 쌓여 제목이 여러 줄로 감기지 않습니다. 각 칸은 카드 톤의 블록 링크(qf-postnav__link, --prev / --next)로 머리말(qf-postnav__eyebrow: \"← 이전 글\" / \"다음 글 →\")과 제목(qf-postnav__title, 15px 600, 두 줄 clamp)을 담고, 다음 글은 오른쪽 정렬입니다. 한쪽만 있으면 그 칸만 둡니다.",
+      "purposeEn": "Previous / next post links at the end of an article (end of the reading column, before the footer — the \"after reading\" slot). Two cells; at ≤600px they stack so titles do not wrap into many lines. Each cell is a card-toned block link (qf-postnav__link, --prev / --next) holding an eyebrow (qf-postnav__eyebrow: \"← Previous\" / \"Next →\") and a title (qf-postnav__title, 15px 600, two-line clamp); the next cell is right-aligned. If only one neighbour exists, render just that cell.",
+      "variants": [
+        "qf-postnav__link",
+        "qf-postnav__link--prev",
+        "qf-postnav__link--next",
+        "qf-postnav__eyebrow",
+        "qf-postnav__title"
+      ],
+      "requiredTokens": [
+        "--s-9",
+        "--s-4",
+        "--s-5",
+        "--s-2",
+        "--border",
+        "--border-strong",
+        "--r-lg",
+        "--bg-panel",
+        "--bg-elevated",
+        "--fs-12",
+        "--fs-15",
+        "--lh-tight",
+        "--lh-snug",
+        "--tracking-caps",
+        "--text-muted",
+        "--text-strong",
+        "--accent-text",
+        "--ring-focus",
+        "--dur-fast",
+        "--ease-standard"
+      ],
+      "a11y": "nav[aria-label=\"앞뒤 글\"] 로 감싸고 각 칸은 a[href] 입니다. 머리말의 화살표는 텍스트라 낭독되며 링크 이름은 \"이전 글 제목\" 처럼 읽힙니다. 포커스 링이 칸 전체에 보입니다. 두 줄 clamp 로 잘린 제목은 title 속성으로 전체를 줄 수 있습니다.",
+      "a11yEn": "Wrap in nav[aria-label=\"Adjacent posts\"]; each cell is an a[href]. The eyebrow arrows are text and are read, so the link name reads like \"Previous post, title\". The focus ring surrounds the whole cell. Provide clamped titles in full via a title attribute.",
+      "exampleHtml": "<nav class=\"qf-postnav\" aria-label=\"Adjacent posts\"><a class=\"qf-postnav__link qf-postnav__link--prev\" href=\"#prev\"><span class=\"qf-postnav__eyebrow\">← Previous</span><span class=\"qf-postnav__title\">.NET - WPF JumpList</span></a><a class=\"qf-postnav__link qf-postnav__link--next\" href=\"#next\"><span class=\"qf-postnav__eyebrow\">Next →</span><span class=\"qf-postnav__title\">PowerShell - Creating a Credential for remote access</span></a></nav>",
+      "wideExamples": true,
+      "variantsAsChips": true
     },
     {
       "name": "Search",
@@ -2398,8 +2468,8 @@
       "class": "qf-story",
       "layer": "generic",
       "category": "Display",
-      "purpose": "뉴스, 이슈, 블로그 같은 콘텐츠 목록의 한 항목입니다. 분류와 메타(kicker), 제목, 요약, 출처 칩, 4:3 썸네일의 위계를 구성요소로 고정합니다. 항목 전체가 링크(a.qf-story)이거나 제목만 링크일 수 있습니다. --pictured 는 텍스트 1열 + 썸네일 2열(좁은 폭에서는 크기만 줄고 자리는 유지), --lead 는 첫 항목 강조(제목 24px, 썸네일 확대. 좁은 폭에서는 16:9 썸네일이 텍스트 위로), --compact 는 제목과 kicker 만(요약, 출처는 마크업이 있어도 숨김). 방문한 항목은 제목이 한 톤 낮아집니다. 목록은 qf-container--reading(720px) 안에 두는 것을 권합니다(narrow 는 제목과 출처 칩이 넘치고 기본 폭은 요약 행이 깁니다). 항목 안의 출처 칩은 자동으로 한 단계 작아집니다(11px). --skeleton 은 다음 화면을 불러오는 동안 자리를 지키는 카드(빈 슬롯에 막대, 실제 카드와 같은 높이. 실제 카드가 --stretched 면 스켈레톤에도 --stretched 를 붙여 터치 환경의 출처 행 높이를 맞춥니다). --stretched 는 카드가 article 이고 제목만 링크일 때 제목 링크를 카드 전체로 늘려, 카드 안의 출처 칩을 눌리는 링크(qf-source--link)로 둘 수 있게 합니다.",
-      "purposeEn": "One item of a content list such as news, issues, or a blog. It fixes the hierarchy of kicker (category + meta), title, summary, source chips, and a 4:3 thumbnail. The whole item may be the link (a.qf-story) or only the title. --pictured places text in column 1 and the thumbnail in column 2 (on narrow screens it only shrinks, it does not move); --lead emphasizes the first item (24px title, wider thumbnail; on narrow screens a 16:9 thumbnail sits above the text); --compact shows only kicker and title (summary and sources are hidden even if present). Visited items get a quieter title. Place the list inside qf-container--reading (720px): narrow overflows titles and source chips, the default width makes summary lines too long. Source chips inside an item are automatically one step smaller (11px). --skeleton is a placeholder card shown while the next page loads (bars in the empty slots, same height as a real card; if real cards are --stretched, add --stretched to the skeleton too so the sources row matches on touch devices). --stretched stretches the title link over the whole card when the card is an article with only the title linked, so source chips inside can be real links (qf-source--link).",
+      "purpose": "뉴스, 이슈, 블로그 같은 콘텐츠 목록의 한 항목입니다. 분류와 메타(kicker), 제목, 요약, 출처 칩, 4:3 썸네일의 위계를 구성요소로 고정합니다. 항목 전체가 링크(a.qf-story)이거나 제목만 링크일 수 있습니다. --pictured 는 텍스트 1열 + 썸네일 2열(좁은 폭에서는 크기만 줄고 자리는 유지), --lead 는 첫 항목 강조(제목 24px, 썸네일 확대. 좁은 폭에서는 16:9 썸네일이 텍스트 위로), --compact 는 제목과 kicker 만(요약, 출처는 마크업이 있어도 숨김). 방문한 항목은 제목이 한 톤 낮아집니다. 목록은 qf-container--reading(720px) 안에 두는 것을 권합니다(narrow 는 제목과 출처 칩이 넘치고 기본 폭은 요약 행이 깁니다). 항목 안의 출처 칩은 자동으로 한 단계 작아집니다(11px). --skeleton 은 다음 화면을 불러오는 동안 자리를 지키는 카드(빈 슬롯에 막대, 실제 카드와 같은 높이. 실제 카드가 --stretched 면 스켈레톤에도 --stretched 를 붙여 터치 환경의 출처 행 높이를 맞춥니다). --stretched 는 카드가 article 이고 제목만 링크일 때 제목 링크를 카드 전체로 늘려, 카드 안의 출처 칩(qf-source--link)과 태그 링크(a.qf-tag)를 눌리는 링크로 둘 수 있게 합니다 — 출처는 qf-source, 분류·주제는 qf-tag.",
+      "purposeEn": "One item of a content list such as news, issues, or a blog. It fixes the hierarchy of kicker (category + meta), title, summary, source chips, and a 4:3 thumbnail. The whole item may be the link (a.qf-story) or only the title. --pictured places text in column 1 and the thumbnail in column 2 (on narrow screens it only shrinks, it does not move); --lead emphasizes the first item (24px title, wider thumbnail; on narrow screens a 16:9 thumbnail sits above the text); --compact shows only kicker and title (summary and sources are hidden even if present). Visited items get a quieter title. Place the list inside qf-container--reading (720px): narrow overflows titles and source chips, the default width makes summary lines too long. Source chips inside an item are automatically one step smaller (11px). --skeleton is a placeholder card shown while the next page loads (bars in the empty slots, same height as a real card; if real cards are --stretched, add --stretched to the skeleton too so the sources row matches on touch devices). --stretched stretches the title link over the whole card when the card is an article with only the title linked, so source chips (qf-source--link) and tag links (a.qf-tag) inside can be real links — sources use qf-source, categories and topics use qf-tag.",
       "variants": [
         "qf-story__kicker",
         "qf-story__title",

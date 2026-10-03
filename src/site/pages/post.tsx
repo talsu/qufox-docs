@@ -9,6 +9,9 @@ import { PrevNext } from "../partials/prev-next.js";
 import { TableOfContents } from "../partials/toc.js";
 import { ancestorPaths, noteTree } from "../tree.js";
 
+/** Tags shown under the title; a longer list continues at the end of the post. */
+const HEADER_TAGS = 5;
+
 export interface PostPageProps extends PageContext {
   note: Note;
   page: RenderedPage;
@@ -45,6 +48,21 @@ export function PostPage(props: PostPageProps) {
       </div>
       {note.tags.length > 0 ? (
         <div class="qf-cluster qf-cluster--tight qf-post-tags">
+          {note.tags.slice(0, HEADER_TAGS).map((tag) => (
+            <a class="qf-tag" href={href(`tags/${tag}`)}>
+              #{tag}
+            </a>
+          ))}
+          {note.tags.length > HEADER_TAGS ? (
+            <a class="qf-tag" href="#all-tags">
+              +{note.tags.length - HEADER_TAGS}
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+      <article class={proseClasses}>{raw(page.html)}</article>
+      {note.tags.length > HEADER_TAGS ? (
+        <div class="qf-cluster qf-cluster--tight qf-post-tags-all" id="all-tags">
           {note.tags.map((tag) => (
             <a class="qf-tag" href={href(`tags/${tag}`)}>
               #{tag}
@@ -52,7 +70,6 @@ export function PostPage(props: PostPageProps) {
           ))}
         </div>
       ) : null}
-      <article class={proseClasses}>{raw(page.html)}</article>
       <Backlinks note={note} index={index} href={href} t={t} />
       <PrevNext note={note} index={index} href={href} t={t} />
     </Document>

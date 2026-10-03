@@ -24,20 +24,30 @@ export function PrevNext(props: {
   if (newer === undefined && older === undefined) return null;
 
   return (
-    <nav class="qf-grid qf-grid--cols-2 qf-postnav" aria-label={t.adjacentPosts}>
-      {older !== undefined ? <PostLink note={older} href={href} eyebrow={t.older} /> : <span />}
-      {newer !== undefined ? <PostLink note={newer} href={href} eyebrow={t.newer} /> : <span />}
+    <nav class="qf-postnav" aria-label={t.adjacentPosts}>
+      {older !== undefined ? (
+        <PostLink note={older} href={href} eyebrow={t.older} side="prev" />
+      ) : null}
+      {newer !== undefined ? (
+        <PostLink note={newer} href={href} eyebrow={t.newer} side="next" />
+      ) : null}
     </nav>
   );
 }
 
-function PostLink(props: { note: Note; href: PageContext["href"]; eyebrow: string }) {
+function PostLink(props: {
+  note: Note;
+  href: PageContext["href"];
+  eyebrow: string;
+  side: "prev" | "next";
+}) {
   return (
-    <a class="qf-card qf-card--interactive" href={props.href(props.note.slug)}>
-      <div class="qf-card__body">
-        <div class="qf-postnav__eyebrow">{props.eyebrow}</div>
-        <div>{props.note.title}</div>
-      </div>
+    <a
+      class={`qf-postnav__link qf-postnav__link--${props.side}`}
+      href={props.href(props.note.slug)}
+    >
+      <span class="qf-postnav__eyebrow">{props.eyebrow}</span>
+      <span class="qf-postnav__title">{props.note.title}</span>
     </a>
   );
 }

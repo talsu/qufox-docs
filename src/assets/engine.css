@@ -68,18 +68,16 @@ pre.shiki span {
   transform: none;
 }
 
-/* ── Post page rhythm: tags sit above the article, older/newer below it ── */
+/* ── Post page rhythm ────────────────────────────────────────────────────
+ * Title → date → tags → article. The page header's own bottom padding is more
+ * than the tag row wants, so the row pulls up toward the date. A long tag
+ * list continues after the article, above the older/newer links. */
 .qf-post-tags {
-  margin-block-end: var(--s-6);
+  margin-block: calc(var(--s-3) - var(--s-5)) var(--s-6);
 }
 
-.qf-postnav {
-  margin-block-start: var(--s-9);
-}
-
-/* Footer links may lead with an icon (the feed). */
-.qf-footer__links a {
-  gap: var(--s-1);
+.qf-post-tags-all {
+  margin-block-start: var(--s-8);
 }
 
 /* ── Post feed ───────────────────────────────────────────────────────────
@@ -96,27 +94,11 @@ pre.shiki span {
 }
 
 /* ── Navbar on phones ────────────────────────────────────────────────────
- * The site title must not wrap, and the brand-accent picker (a preference,
- * not navigation) gives its room to the links. */
-.qf-navbar__brand {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
+ * The design system keeps the bar on one line; what leaves it is ours to say.
+ * The brand-accent picker is a preference, not navigation. */
 @media (max-width: 640px) {
-  .qf-navbar {
-    gap: var(--s-2);
-    padding-inline: var(--s-3);
-  }
-
   .qf-navbar .qf-select {
     display: none;
-  }
-
-  .qf-navbar__link {
-    padding-inline: var(--s-2);
   }
 }
 
@@ -229,14 +211,6 @@ pre.shiki span {
   [data-tree-backdrop] {
     background: none;
   }
-}
-
-/* ── Prev / next post navigation ─────────────────────────────────────── */
-.qf-postnav__eyebrow {
-  color: var(--text-muted);
-  font-size: var(--fs-11);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
 }
 
 /* ── Heading anchors (appended by the pipeline) ──────────────────────── */

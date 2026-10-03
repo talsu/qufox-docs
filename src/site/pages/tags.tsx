@@ -29,15 +29,15 @@ export function TagsPage(props: TagsPageProps) {
           <div class="qf-empty__body">{t.noTagsBody}</div>
         </div>
       ) : (
-        <div class="qf-sources">
+        <div class="qf-cluster qf-cluster--tight">
           {tags.map(({ tag, count }) => (
             <a
-              class="qf-source qf-source--link"
+              class="qf-tag"
               href={href(`tags/${tag}`)}
               aria-label={`#${tag}, ${t.postCount(count)}`}
             >
               #{tag}
-              <span class="qf-source__count" aria-hidden="true">
+              <span class="qf-tag__count" aria-hidden="true">
                 {count}
               </span>
             </a>

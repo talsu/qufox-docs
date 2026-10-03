@@ -30,13 +30,13 @@ export function PostCard(props: { note: Note; index: SiteIndex; href: PageContex
         <p class="qf-story__summary qf-clamp qf-clamp--3">{note.excerpt}</p>
       ) : null}
       {shown.length > 0 ? (
-        <div class="qf-sources qf-story__sources">
+        <div class="qf-cluster qf-cluster--tight qf-story__sources">
           {shown.map((tag) => (
-            <a class="qf-source qf-source--link" href={href(`tags/${tag}`)}>
+            <a class="qf-tag" href={href(`tags/${tag}`)}>
               #{tag}
             </a>
           ))}
-          {hidden > 0 ? <span class="qf-source">+{hidden}</span> : null}
+          {hidden > 0 ? <span class="qf-tag">+{hidden}</span> : null}
         </div>
       ) : null}
     </article>

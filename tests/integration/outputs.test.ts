@@ -136,7 +136,7 @@ describe("feed entries and the side column", () => {
     const html = await (await site.app.request("/")).text();
     expect(html).toContain("qf-story qf-story--stretched qf-story--pictured");
     expect(html).toContain('class="qf-story__media" src="/assets/vault/attachments/fox.png"');
-    expect(html).toContain('<a class="qf-source qf-source--link" href="/tags/intro">');
+    expect(html).toContain('<a class="qf-tag" href="/tags/intro">');
   });
 
   it("lists tags, years, and the feed beside the home feed", async () => {

@@ -42,15 +42,15 @@ export function SiteAside(props: {
           <h2 class="qf-aside__title" id="aside-tags">
             {t.tags}
           </h2>
-          <div class="qf-sources">
+          <div class="qf-cluster qf-cluster--tight">
             {tags.slice(0, ASIDE_TAGS).map(({ tag, count }) => (
               <a
-                class="qf-source qf-source--link"
+                class="qf-tag"
                 href={href(`tags/${tag}`)}
                 aria-label={`#${tag}, ${t.postCount(count)}`}
               >
                 #{tag}
-                <span class="qf-source__count" aria-hidden="true">
+                <span class="qf-tag__count" aria-hidden="true">
                   {count}
                 </span>
               </a>

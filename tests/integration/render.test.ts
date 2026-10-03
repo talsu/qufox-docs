@@ -159,9 +159,9 @@ describe("asset routes", () => {
 describe("tag, archive, and pagination routes", () => {
   it("lists all tags with counts", async () => {
     const html = await (await site.app.request("/tags")).text();
-    expect(html).toContain("qf-source qf-source--link");
+    expect(html).toContain('class="qf-tag"');
     expect(html).toContain('href="/tags/intro"');
-    expect(html).toContain("qf-source__count");
+    expect(html).toContain("qf-tag__count");
   });
 
   it("shows posts for a tag", async () => {
