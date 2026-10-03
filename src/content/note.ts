@@ -103,6 +103,10 @@ export function parseNote(input: ParseNoteInput, publishGate: PublishGate): Pars
     unresolvedLinks: [],
     embeds: [],
     excerpt: description !== "" ? description : scan.excerpt,
+    image:
+      typeof frontmatter.image === "string" && frontmatter.image.trim() !== ""
+        ? frontmatter.image.trim()
+        : scan.firstImage,
     published: publishGate(input.relPath, frontmatter),
     mtimeMs: input.mtimeMs,
     contentHash: createHash("sha1").update(input.raw).digest("hex"),
@@ -162,11 +166,16 @@ interface BodyScan {
   rawLinks: RawLink[];
   inlineTags: string[];
   firstH1: string | undefined;
+  firstImage: string | undefined;
   excerpt: string;
 }
 
 const WIKILINK_PATTERN = /(!?)\[\[([^[\]]+?)\]\]/g;
 const TAG_PATTERN = /(?:^|[\s(["'{])#([\p{L}\p{N}_/-]+)/gu;
+const IMAGE_EXTENSION = /\.(png|jpe?g|gif|webp|avif|svg|bmp)$/i;
+// `![[a.png|300]]`, `![alt](a.png "title")`, `<img src="a.png">` — target in group 1, 2, or 3.
+const IMAGE_PATTERN =
+  /!\[\[([^[\]|#]+)[^[\]]*\]\]|!\[[^\]]*\]\(\s*<?([^)\s>]+)|<img\b[^>]*?\bsrc\s*=\s*["']([^"']+)["']/gi;
 const HEADING_PATTERN = /^(#{1,6})\s+(.+?)\s*#*\s*$/;
 
 /**
@@ -180,6 +189,7 @@ function scanBody(content: string): BodyScan {
   const rawLinks: RawLink[] = [];
   const inlineTags = new Set<string>();
   let firstH1: string | undefined;
+  let firstImage: string | undefined;
 
   const excerptLines: string[] = [];
   let excerptDone = false;
@@ -208,6 +218,16 @@ function scanBody(content: string): BodyScan {
       const target = (inner.split("|")[0] ?? "").trim();
       if (target !== "" || inner.includes("#")) {
         rawLinks.push({ target: target !== "" ? target : inner.trim(), embed: match[1] === "!" });
+      }
+    }
+
+    if (firstImage === undefined) {
+      for (const match of visible.matchAll(IMAGE_PATTERN)) {
+        const target = (match[1] ?? match[2] ?? match[3] ?? "").trim();
+        if (IMAGE_EXTENSION.test(target.split(/[?#]/)[0] ?? "")) {
+          firstImage = target;
+          break;
+        }
       }
     }
 
@@ -248,6 +268,7 @@ function scanBody(content: string): BodyScan {
     rawLinks,
     inlineTags: [...inlineTags],
     firstH1,
+    firstImage,
     excerpt: truncate(stripInlineMarkdown(excerptLines.join(" ")), EXCERPT_LENGTH),
   };
 }

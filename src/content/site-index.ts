@@ -221,6 +221,7 @@ export async function applyVaultChanges(
         old.date.getTime() !== note.date.getTime() ||
         old.published !== note.published ||
         old.excerpt !== note.excerpt ||
+        old.image !== note.image ||
         old.tags.join("\n") !== note.tags.join("\n")
       ) {
         structural = true;

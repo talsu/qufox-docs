@@ -61,7 +61,7 @@ next to your content, or a `qufox` key in `package.json`:
 import { defineConfig } from "qufox-docs";
 
 export default defineConfig({
-  site: { title: "My Notes", description: "Thinking out loud", locale: "en" },
+  site: { title: "My Notes", description: "Thinking out loud", locale: "en" }, // "ko" for a Korean interface
   publish: { mode: "opt-out" },     // or "opt-in": only publish: true notes
   feed: { pageSize: 10 },
   theme: { default: "dark" },       // "dark" | "light" | "system"
@@ -96,8 +96,9 @@ intentionally out of scope, mirroring other Obsidian publishing tools.
 
 ## Blog features
 
-Tag pages, a date archive, and pagination. Full-text search and comments are on
-the roadmap.
+A feed of stories with thumbnails (a post's `image` frontmatter, else its first
+image), tag pages, a date archive, and pagination. Full-text search and comments
+are on the roadmap.
 
 With `site.url` set (or `QUFOX_SITE_URL`), the site also publishes an RSS feed at
 `/feed.xml` (the newest `feed.limit` posts, 20 by default), a `/sitemap.xml`, and

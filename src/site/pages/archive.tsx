@@ -1,4 +1,5 @@
 import type { Note, SiteIndex } from "../../types.js";
+import { messagesFor } from "../i18n.js";
 import { Document, type PageContext } from "../layout.js";
 import { noteTree } from "../tree.js";
 
@@ -14,6 +15,7 @@ interface YearGroup {
 /** All posts grouped by year, newest first. */
 export function ArchivePage(props: ArchivePageProps) {
   const { index, config, href } = props;
+  const t = messagesFor(config.site.locale);
   const groups = groupByYear(
     index.posts
       .map((slug) => index.notes.get(slug))
@@ -21,24 +23,24 @@ export function ArchivePage(props: ArchivePageProps) {
   );
 
   return (
-    <Document config={config} href={href} title="Archive" path="archive" tree={noteTree(index)}>
+    <Document config={config} href={href} title={t.archive} path="archive" tree={noteTree(index)}>
       <div class="qf-page-header">
         <div>
-          <h1 class="qf-page-header__title">Archive</h1>
-          <p class="qf-page-header__subtitle">{index.posts.length} posts</p>
+          <h1 class="qf-page-header__title">{t.archive}</h1>
+          <p class="qf-page-header__subtitle">{t.postCount(index.posts.length)}</p>
         </div>
       </div>
       {groups.length === 0 ? (
         <div class="qf-empty">
-          <div class="qf-empty__title">No posts yet</div>
-          <div class="qf-empty__body">Published posts will appear here by year.</div>
+          <div class="qf-empty__title">{t.noPostsTitle}</div>
+          <div class="qf-empty__body">{t.archiveEmptyBody}</div>
         </div>
       ) : (
         <div class="qf-stack qf-stack--loose">
           {groups.map((group, i) => (
             <section>
               {i > 0 ? <hr class="qf-divider" /> : null}
-              <h2>{group.year}</h2>
+              <h2 id={`y${group.year}`}>{group.year}</h2>
               <ul class="qf-list">
                 {group.notes.map((note) => (
                   <li class="qf-list__item qf-list__item--interactive">

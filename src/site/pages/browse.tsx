@@ -1,4 +1,5 @@
 import type { SiteIndex } from "../../types.js";
+import { messagesFor } from "../i18n.js";
 import { Document, type PageContext } from "../layout.js";
 import { FileTree } from "../partials/file-tree.js";
 import { noteTree, type TreeNode } from "../tree.js";
@@ -10,6 +11,7 @@ export interface BrowsePageProps extends PageContext {
 /** The whole vault as a folder tree, with top-level folders expanded. */
 export function BrowsePage(props: BrowsePageProps) {
   const { index, config, href } = props;
+  const t = messagesFor(config.site.locale);
   const tree = noteTree(index);
   const topLevel = new Set(
     tree
@@ -21,14 +23,14 @@ export function BrowsePage(props: BrowsePageProps) {
     <Document
       config={config}
       href={href}
-      title="Browse"
+      title={t.browse}
       path="browse"
       tree={tree}
       openPaths={topLevel}
     >
       <div class="qf-page-header">
         <div>
-          <h1 class="qf-page-header__title">Browse</h1>
+          <h1 class="qf-page-header__title">{t.browse}</h1>
           <p class="qf-page-header__subtitle">{summary(tree)}</p>
         </div>
       </div>

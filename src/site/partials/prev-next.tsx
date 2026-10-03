@@ -1,12 +1,18 @@
 import type { Note, SiteIndex } from "../../types.js";
+import type { Messages } from "../i18n.js";
 import type { PageContext } from "../layout.js";
 
 /**
  * Older/newer navigation between adjacent posts. The feed is newest-first, so
  * the next-older post sits after the current slug and the next-newer before it.
  */
-export function PrevNext(props: { note: Note; index: SiteIndex; href: PageContext["href"] }) {
-  const { note, index, href } = props;
+export function PrevNext(props: {
+  note: Note;
+  index: SiteIndex;
+  href: PageContext["href"];
+  t: Messages;
+}) {
+  const { note, index, href, t } = props;
   const position = index.posts.indexOf(note.slug);
   if (position === -1) return null;
 
@@ -18,9 +24,9 @@ export function PrevNext(props: { note: Note; index: SiteIndex; href: PageContex
   if (newer === undefined && older === undefined) return null;
 
   return (
-    <nav class="qf-grid qf-grid--cols-2" aria-label="Adjacent posts">
-      {older !== undefined ? <PostLink note={older} href={href} eyebrow="← Older" /> : <span />}
-      {newer !== undefined ? <PostLink note={newer} href={href} eyebrow="Newer →" /> : <span />}
+    <nav class="qf-grid qf-grid--cols-2 qf-postnav" aria-label={t.adjacentPosts}>
+      {older !== undefined ? <PostLink note={older} href={href} eyebrow={t.older} /> : <span />}
+      {newer !== undefined ? <PostLink note={newer} href={href} eyebrow={t.newer} /> : <span />}
     </nav>
   );
 }

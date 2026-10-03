@@ -1,20 +1,23 @@
+import type { Messages } from "../i18n.js";
+
 /** Numbered pagination control. `pageHref(n)` builds the URL for page n. */
 export function Pagination(props: {
   page: number;
   totalPages: number;
   pageHref: (page: number) => string;
+  t: Messages;
 }) {
-  const { page, totalPages, pageHref } = props;
+  const { page, totalPages, pageHref, t } = props;
   if (totalPages <= 1) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <nav aria-label="Pagination">
+    <nav aria-label={t.pagination}>
       <ul class="qf-pagination">
         {page > 1 ? (
           <li>
-            <a class="qf-pagination__item" href={pageHref(page - 1)} aria-label="Previous">
+            <a class="qf-pagination__item" href={pageHref(page - 1)} aria-label={t.previousPage}>
               ‹
             </a>
           </li>
@@ -36,7 +39,7 @@ export function Pagination(props: {
         )}
         {page < totalPages ? (
           <li>
-            <a class="qf-pagination__item" href={pageHref(page + 1)} aria-label="Next">
+            <a class="qf-pagination__item" href={pageHref(page + 1)} aria-label={t.nextPage}>
               ›
             </a>
           </li>

@@ -1,3 +1,4 @@
+import type { Messages } from "../i18n.js";
 import type { TreeNode } from "../tree.js";
 import type { Href } from "../url.js";
 import { FileTree } from "./file-tree.js";
@@ -5,6 +6,7 @@ import { FileTree } from "./file-tree.js";
 export interface BrowseDrawerProps {
   nodes: TreeNode[];
   href: Href;
+  t: Messages;
   currentSlug?: string | undefined;
   openPaths?: ReadonlySet<string> | undefined;
 }
@@ -22,24 +24,24 @@ export function BrowseDrawer(props: BrowseDrawerProps) {
       <aside
         class="qf-drawer qf-drawer--left qf-tree-drawer"
         role="dialog"
-        aria-label="Browse files"
+        aria-label={props.t.browseFiles}
         data-tree-panel
         hidden
       >
         <div class="qf-drawer__header">
-          <h2 class="qf-drawer__title">Browse</h2>
+          <h2 class="qf-drawer__title">{props.t.browse}</h2>
           <button
             type="button"
             class="qf-btn qf-btn--ghost qf-btn--icon"
             data-tree-close
-            aria-label="Close"
+            aria-label={props.t.close}
           >
             <svg class="qf-icon qf-icon--sm" aria-hidden="true">
               <use href="#qf-i-x" />
             </svg>
           </button>
         </div>
-        <nav class="qf-drawer__body" aria-label="Files">
+        <nav class="qf-drawer__body" aria-label={props.t.files}>
           <FileTree
             nodes={props.nodes}
             href={props.href}

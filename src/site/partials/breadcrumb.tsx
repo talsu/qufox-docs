@@ -1,4 +1,5 @@
 import type { Note, SiteIndex } from "../../types.js";
+import type { Messages } from "../i18n.js";
 import type { PageContext } from "../layout.js";
 
 /**
@@ -6,8 +7,13 @@ import type { PageContext } from "../layout.js";
  * published note owns that folder path (e.g. via an index.md); otherwise they
  * are shown as plain text, since folders are not pages on their own.
  */
-export function Breadcrumb(props: { note: Note; index: SiteIndex; href: PageContext["href"] }) {
-  const { note, index, href } = props;
+export function Breadcrumb(props: {
+  note: Note;
+  index: SiteIndex;
+  href: PageContext["href"];
+  t: Messages;
+}) {
+  const { note, index, href, t } = props;
   const segments = note.slug.split("/");
   if (segments.length < 2) return null;
 
@@ -39,11 +45,11 @@ export function Breadcrumb(props: { note: Note; index: SiteIndex; href: PageCont
   });
 
   return (
-    <nav aria-label="Breadcrumb">
+    <nav aria-label={t.breadcrumb}>
       <ol class="qf-breadcrumb">
         <li>
           <a class="qf-breadcrumb__item" href={href("")}>
-            Home
+            {t.home}
           </a>
         </li>
         <li class="qf-breadcrumb__sep" aria-hidden="true">

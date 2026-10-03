@@ -1,6 +1,8 @@
 import { raw } from "hono/html";
 import type { Note, RenderedPage, SiteIndex } from "../../types.js";
+import { messagesFor } from "../i18n.js";
 import { Document, formatDate, type PageContext } from "../layout.js";
+import { noteImageUrl } from "../note-image.js";
 import { Backlinks } from "../partials/backlinks.js";
 import { Breadcrumb } from "../partials/breadcrumb.js";
 import { PrevNext } from "../partials/prev-next.js";
@@ -15,6 +17,7 @@ export interface PostPageProps extends PageContext {
 
 export function PostPage(props: PostPageProps) {
   const { note, page, index, config, href } = props;
+  const t = messagesFor(config.site.locale);
   const proseClasses = ["qf-prose", ...cssClasses(note)].join(" ");
 
   return (
@@ -24,13 +27,14 @@ export function PostPage(props: PostPageProps) {
       title={note.title}
       description={note.excerpt}
       path={note.slug}
+      image={noteImageUrl(note, index, href) ?? undefined}
       published={note.dateSource === "frontmatter" ? note.date : undefined}
-      aside={page.toc.length >= 2 ? <TableOfContents toc={page.toc} /> : undefined}
+      aside={page.toc.length >= 2 ? <TableOfContents toc={page.toc} t={t} /> : undefined}
       tree={noteTree(index)}
       currentSlug={note.slug}
       openPaths={new Set(ancestorPaths(note.relPath))}
     >
-      <Breadcrumb note={note} index={index} href={href} />
+      <Breadcrumb note={note} index={index} href={href} t={t} />
       <div class="qf-page-header">
         <div>
           <h1 class="qf-page-header__title">{note.title}</h1>
@@ -40,7 +44,7 @@ export function PostPage(props: PostPageProps) {
         </div>
       </div>
       {note.tags.length > 0 ? (
-        <div class="qf-cluster qf-cluster--tight">
+        <div class="qf-cluster qf-cluster--tight qf-post-tags">
           {note.tags.map((tag) => (
             <a class="qf-tag" href={href(`tags/${tag}`)}>
               #{tag}
@@ -49,8 +53,8 @@ export function PostPage(props: PostPageProps) {
         </div>
       ) : null}
       <article class={proseClasses}>{raw(page.html)}</article>
-      <Backlinks note={note} index={index} href={href} />
-      <PrevNext note={note} index={index} href={href} />
+      <Backlinks note={note} index={index} href={href} t={t} />
+      <PrevNext note={note} index={index} href={href} t={t} />
     </Document>
   );
 }

@@ -61,6 +61,36 @@
     });
   };
 
+  // Back-to-top: shown once the reader is a screen down. The page scrolls
+  // inside the app shell's main area, not the window.
+  const scroller = document.querySelector("[data-scroll-root]");
+  const toTop = document.querySelector("[data-to-top]");
+  if (scroller && toTop) {
+    let ticking = false;
+    const look = () => {
+      const show = scroller.scrollTop > scroller.clientHeight;
+      toTop.classList.toggle("is-shown", show);
+      toTop.tabIndex = show ? 0 : -1;
+      ticking = false;
+    };
+    scroller.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(look);
+        }
+      },
+      { passive: true },
+    );
+    toTop.addEventListener("click", () => {
+      const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scroller.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
+      scroller.focus({ preventScroll: true });
+    });
+    look();
+  }
+
   setupDrawer("toc"); // table of contents (right)
   setupDrawer("tree"); // folder tree (left)
 })();

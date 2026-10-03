@@ -1,4 +1,5 @@
 import type { TocEntry } from "../../types.js";
+import type { Messages } from "../i18n.js";
 
 /**
  * "On this page" navigation, rendered as a drawer that is hidden by default and
@@ -6,7 +7,7 @@ import type { TocEntry } from "../../types.js";
  * viewports the drawer overlays the content, on wide ones it floats in the
  * right margin. Kept out of the app-shell grid so the article stays centered.
  */
-export function TableOfContents(props: { toc: TocEntry[] }) {
+export function TableOfContents(props: { toc: TocEntry[]; t: Messages }) {
   if (props.toc.length < 2) return null;
   return (
     <>
@@ -14,17 +15,17 @@ export function TableOfContents(props: { toc: TocEntry[] }) {
       <aside
         class="qf-drawer qf-toc-drawer"
         role="dialog"
-        aria-label="On this page"
+        aria-label={props.t.onThisPage}
         data-toc-panel
         hidden
       >
         <div class="qf-drawer__header">
-          <h2 class="qf-drawer__title">On this page</h2>
+          <h2 class="qf-drawer__title">{props.t.onThisPage}</h2>
           <button
             type="button"
             class="qf-btn qf-btn--ghost qf-btn--icon"
             data-toc-close
-            aria-label="Close"
+            aria-label={props.t.close}
           >
             <svg class="qf-icon qf-icon--sm" aria-hidden="true">
               <use href="#qf-i-x" />

@@ -30,7 +30,7 @@ describe("home page", () => {
     const html = await response.text();
     expect(html).toContain('class="qf-app-shell"');
     expect(html).toContain('class="qf-navbar"');
-    expect(html).toContain("qf-card qf-card--interactive");
+    expect(html).toContain("qf-story qf-story--stretched");
     expect(html).toContain("Hello World");
     expect(html).not.toContain("Draft Note");
   });
@@ -159,9 +159,9 @@ describe("asset routes", () => {
 describe("tag, archive, and pagination routes", () => {
   it("lists all tags with counts", async () => {
     const html = await (await site.app.request("/tags")).text();
-    expect(html).toContain("qf-tag");
+    expect(html).toContain("qf-source qf-source--link");
     expect(html).toContain('href="/tags/intro"');
-    expect(html).toContain("qf-badge--count");
+    expect(html).toContain("qf-source__count");
   });
 
   it("shows posts for a tag", async () => {

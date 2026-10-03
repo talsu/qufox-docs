@@ -130,3 +130,47 @@ describe("head metadata", () => {
     expect((await bare.app.request("/favicon.ico")).status).toBe(404);
   });
 });
+
+describe("feed entries and the side column", () => {
+  it("renders each post as a story with its lead image and tags", async () => {
+    const html = await (await site.app.request("/")).text();
+    expect(html).toContain("qf-story qf-story--stretched qf-story--pictured");
+    expect(html).toContain('class="qf-story__media" src="/assets/vault/attachments/fox.png"');
+    expect(html).toContain('<a class="qf-source qf-source--link" href="/tags/intro">');
+  });
+
+  it("lists tags, years, and the feed beside the home feed", async () => {
+    const html = await (await site.app.request("/")).text();
+    expect(html).toContain("qf-twocol__aside qf-aside");
+    expect(html).toContain('href="/archive#y2026"');
+    expect(html).toContain('href="/feed.xml"');
+    const archive = await (await site.app.request("/archive")).text();
+    expect(archive).toContain('<h2 id="y2026">');
+  });
+
+  it("uses a post's lead image for link previews", async () => {
+    const html = await (await site.app.request("/media-note")).text();
+    expect(html).toContain(
+      '<meta property="og:image" content="https://blog.example.com/assets/vault/attachments/fox.png"/>',
+    );
+    expect(html).toContain('<meta name="twitter:card" content="summary_large_image"/>');
+    const plain = await (await site.app.request("/hello-world")).text();
+    expect(plain).not.toContain("og:image");
+  });
+});
+
+describe("interface language", () => {
+  it("follows site.locale and falls back to English", async () => {
+    const korean = await serveFixture({ site: { locale: "ko-KR" } });
+    const html = await (await korean.app.request("/")).text();
+    expect(html).toContain('<html lang="ko-KR">');
+    expect(html).toContain(">보관함</a>");
+    expect(html).toContain("본문으로 건너뛰기");
+    expect(await (await korean.app.request("/nope")).text()).toContain("찾는 페이지가 없습니다");
+
+    const english = await (await bare.app.request("/")).text();
+    expect(english).toContain(">Archive</a>");
+    const other = await serveFixture({ site: { locale: "fr" } });
+    expect(await (await other.app.request("/")).text()).toContain(">Archive</a>");
+  });
+});

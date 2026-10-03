@@ -55,10 +55,69 @@ pre.shiki span {
   display: inline-block;
 }
 
-/* ── Post feed metadata row ──────────────────────────────────────────── */
-.qf-post-meta {
-  color: var(--text-muted);
-  font-size: var(--fs-13);
+/* ── Skip link (first focusable element; visible only while focused) ─── */
+.qf-skip {
+  position: absolute;
+  inset-inline-start: var(--s-4);
+  inset-block-start: var(--s-3);
+  z-index: var(--z-modal);
+  transform: translateY(-200%);
+}
+
+.qf-skip:focus {
+  transform: none;
+}
+
+/* ── Post page rhythm: tags sit above the article, older/newer below it ── */
+.qf-post-tags {
+  margin-block-end: var(--s-6);
+}
+
+.qf-postnav {
+  margin-block-start: var(--s-9);
+}
+
+/* Footer links may lead with an icon (the feed). */
+.qf-footer__links a {
+  gap: var(--s-1);
+}
+
+/* ── Post feed ───────────────────────────────────────────────────────────
+ * Entries are design-system stories; each draws its own separator. */
+.qf-feed {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The page scrolls inside the app shell's main area, below the navbar, so the
+ * side column sticks to the top of that area rather than under a fixed bar. */
+.qf-twocol {
+  --qf-aside-top: 0px;
+}
+
+/* ── Navbar on phones ────────────────────────────────────────────────────
+ * The site title must not wrap, and the brand-accent picker (a preference,
+ * not navigation) gives its room to the links. */
+.qf-navbar__brand {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .qf-navbar {
+    gap: var(--s-2);
+    padding-inline: var(--s-3);
+  }
+
+  .qf-navbar .qf-select {
+    display: none;
+  }
+
+  .qf-navbar__link {
+    padding-inline: var(--s-2);
+  }
 }
 
 /* ── Table of contents drawer (hidden by default, opened from the navbar) ──

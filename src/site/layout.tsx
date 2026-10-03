@@ -3,6 +3,7 @@ import type { Child } from "hono/jsx";
 import { DS_VERSION, ICONS_SPRITE } from "../assets-dir.js";
 import type { ResolvedConfig } from "../config/schema.js";
 import { absoluteUrl, FEED_PATH } from "./feeds.js";
+import { type Messages, messagesFor } from "./i18n.js";
 import { BrowseDrawer } from "./partials/browse-drawer.js";
 import type { TreeNode } from "./tree.js";
 import type { Href } from "./url.js";
@@ -23,6 +24,10 @@ export interface DocumentProps extends PageContext {
   path?: string;
   /** Publication date; marks the page as an article for link previews. */
   published?: Date | undefined;
+  /** Site URL of the page's lead image, for link previews. */
+  image?: string | undefined;
+  /** Content width: lists read best narrow, a feed with a side column needs room. */
+  container?: "default" | "reading" | "wide";
   /** Optional right-hand column (e.g. the table of contents). */
   aside?: Child;
   /** Folder tree for the browse drawer; omitted, the drawer is not rendered. */
@@ -63,6 +68,16 @@ export function Document(props: DocumentProps) {
   const description = props.description ?? config.site.description;
   const canonical = props.path !== undefined ? absoluteUrl(config, href, props.path) : null;
   const feed = absoluteUrl(config, href, FEED_PATH);
+  const t = messagesFor(config.site.locale);
+  const image =
+    props.image !== undefined && config.site.url !== undefined
+      ? new URL(props.image, config.site.url).href
+      : null;
+  const containerClass =
+    props.container === undefined || props.container === "default"
+      ? "qf-container"
+      : `qf-container qf-container--${props.container}`;
+  const section = props.path?.split("/")[0];
 
   return (
     <html lang={config.site.locale}>
@@ -80,6 +95,8 @@ export function Document(props: DocumentProps) {
         {props.published !== undefined ? (
           <meta property="article:published_time" content={props.published.toISOString()} />
         ) : null}
+        {image !== null ? <meta property="og:image" content={image} /> : null}
+        <meta name="twitter:card" content={image !== null ? "summary_large_image" : "summary"} />
         {feed !== null ? (
           <link rel="alternate" type="application/rss+xml" title={config.site.title} href={feed} />
         ) : null}
@@ -104,40 +121,68 @@ export function Document(props: DocumentProps) {
       </head>
       <body>
         {raw(ICONS_SPRITE)}
+        <a class="qf-btn qf-btn--secondary qf-skip" href="#main">
+          {t.skipToContent}
+        </a>
         <div class="qf-app-shell">
           <header class="qf-app-shell__navbar">
-            <nav class="qf-navbar" aria-label="Main">
-              {props.tree !== undefined ? <BrowseToggle /> : null}
+            <nav class="qf-navbar" aria-label={t.navMain}>
+              {props.tree !== undefined ? <BrowseToggle t={t} /> : null}
               <a class="qf-navbar__brand" href={href("")}>
                 {config.site.title}
               </a>
               <div class="qf-navbar__nav">
-                <a class="qf-navbar__link" href={href("browse")}>
-                  Browse
-                </a>
-                <a class="qf-navbar__link" href={href("tags")}>
-                  Tags
-                </a>
-                <a class="qf-navbar__link" href={href("archive")}>
-                  Archive
-                </a>
+                <NavLink href={href("tags")} current={section === "tags"}>
+                  {t.tags}
+                </NavLink>
+                <NavLink href={href("archive")} current={section === "archive"}>
+                  {t.archive}
+                </NavLink>
               </div>
               <span class="qf-navbar__spacer" />
               <div class="qf-cluster qf-cluster--tight">
-                {props.aside !== undefined ? <TocToggle /> : null}
-                <BrandSelect />
-                <ThemeToggle />
+                {props.aside !== undefined ? <TocToggle t={t} /> : null}
+                <BrandSelect t={t} />
+                <ThemeToggle t={t} />
               </div>
             </nav>
           </header>
-          <main class="qf-app-shell__main">
-            <div class="qf-container">{props.children}</div>
+          <main class="qf-app-shell__main" id="main" tabindex={-1} data-scroll-root>
+            <div class={containerClass}>{props.children}</div>
+            <footer class={`${containerClass} qf-footer`}>
+              <p class="qf-footer__note">
+                {config.site.title}
+                {config.site.description !== "" ? ` — ${config.site.description}` : ""}
+              </p>
+              <nav class="qf-footer__links" aria-label={t.siteLinks}>
+                <a href={href("tags")}>{t.tags}</a>
+                <a href={href("archive")}>{t.archive}</a>
+                <a href={href("browse")}>{t.browse}</a>
+                {feed !== null ? (
+                  <a href={href(FEED_PATH)}>
+                    <svg class="qf-icon qf-icon--sm" aria-hidden="true">
+                      <use href="#qf-i-rss" />
+                    </svg>
+                    {t.feed}
+                  </a>
+                ) : null}
+                <a href="https://github.com/talsu/qufox-docs" rel="noopener">
+                  {t.poweredBy}
+                </a>
+              </nav>
+            </footer>
           </main>
         </div>
+        <button type="button" class="qf-totop" data-to-top aria-label={t.toTop} tabindex={-1}>
+          <svg class="qf-icon qf-icon--md" aria-hidden="true">
+            <use href="#qf-i-chevron-up" />
+          </svg>
+        </button>
         {props.tree !== undefined ? (
           <BrowseDrawer
             nodes={props.tree}
             href={href}
+            t={t}
             currentSlug={props.currentSlug}
             openPaths={props.openPaths}
           />
@@ -148,13 +193,21 @@ export function Document(props: DocumentProps) {
   );
 }
 
-function BrowseToggle() {
+function NavLink(props: { href: string; current: boolean; children?: Child }) {
+  return (
+    <a class="qf-navbar__link" href={props.href} aria-current={props.current ? "page" : undefined}>
+      {props.children}
+    </a>
+  );
+}
+
+function BrowseToggle(props: { t: Messages }) {
   return (
     <button
       type="button"
       class="qf-btn qf-btn--ghost qf-btn--icon"
       data-tree-toggle
-      aria-label="Browse files"
+      aria-label={props.t.browseFiles}
       aria-expanded="false"
     >
       <svg class="qf-icon qf-icon--sm" aria-hidden="true">
@@ -164,13 +217,13 @@ function BrowseToggle() {
   );
 }
 
-function TocToggle() {
+function TocToggle(props: { t: Messages }) {
   return (
     <button
       type="button"
       class="qf-btn qf-btn--ghost qf-btn--icon"
       data-toc-toggle
-      aria-label="On this page"
+      aria-label={props.t.onThisPage}
       aria-expanded="false"
     >
       <svg class="qf-icon qf-icon--sm" aria-hidden="true">
@@ -180,10 +233,10 @@ function TocToggle() {
   );
 }
 
-function BrandSelect() {
+function BrandSelect(props: { t: Messages }) {
   return (
     <span class="qf-select">
-      <select data-brand-select aria-label="Brand color">
+      <select data-brand-select aria-label={props.t.brandColor}>
         {BRANDS.map((brand) => (
           <option value={brand.value}>{brand.label}</option>
         ))}
@@ -192,13 +245,13 @@ function BrandSelect() {
   );
 }
 
-function ThemeToggle() {
+function ThemeToggle(props: { t: Messages }) {
   return (
     <button
       type="button"
       class="qf-btn qf-btn--ghost qf-btn--icon"
       data-theme-toggle
-      aria-label="Toggle color theme"
+      aria-label={props.t.toggleTheme}
     >
       <svg class="qf-icon qf-icon--sm" aria-hidden="true" data-theme-icon="dark">
         <use href="#qf-i-moon" />

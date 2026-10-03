@@ -14,6 +14,8 @@ export interface NoteFrontmatter {
   draft?: boolean;
   publish?: boolean;
   description?: string;
+  /** Lead image for lists and link previews (vault path or absolute URL). */
+  image?: string;
   cssclasses?: string[] | string;
   [key: string]: unknown;
 }
@@ -56,6 +58,11 @@ export interface Note {
   /** Slugs of notes this note transcludes (filled by the index). */
   embeds: string[];
   excerpt: string;
+  /**
+   * Lead image as written: the `image` frontmatter, else the first image in the
+   * body. A vault reference or an absolute URL; resolved when a page needs it.
+   */
+  image: string | undefined;
   published: boolean;
   mtimeMs: number;
   /** SHA-1 of the raw file bytes; render-cache key component. */

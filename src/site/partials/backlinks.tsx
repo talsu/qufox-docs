@@ -1,9 +1,15 @@
 import type { Note, SiteIndex } from "../../types.js";
+import type { Messages } from "../i18n.js";
 import type { PageContext } from "../layout.js";
 
 /** "Linked from" card listing published notes that link to this one. */
-export function Backlinks(props: { note: Note; index: SiteIndex; href: PageContext["href"] }) {
-  const { note, index, href } = props;
+export function Backlinks(props: {
+  note: Note;
+  index: SiteIndex;
+  href: PageContext["href"];
+  t: Messages;
+}) {
+  const { note, index, href, t } = props;
   const sources = [...(index.backlinks.get(note.slug) ?? [])]
     .map((slug) => index.notes.get(slug))
     .filter((source): source is Note => source?.published === true)
@@ -14,7 +20,7 @@ export function Backlinks(props: { note: Note; index: SiteIndex; href: PageConte
   return (
     <section class="qf-card">
       <div class="qf-card__header">
-        <h2 class="qf-card__title">Linked from</h2>
+        <h2 class="qf-card__title">{t.linkedFrom}</h2>
       </div>
       <div class="qf-card__body">
         <ul class="qf-list">
