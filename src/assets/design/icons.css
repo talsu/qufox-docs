@@ -1,4 +1,4 @@
-/*! qufox-design v0.6.2 — icons.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
+/*! qufox-design v0.14.0 — icons.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
 /* qufox icon pack · usage:
    <svg class="qf-icon"><use href="/design-system/icons.svg#qf-i-home"/></svg>
    size via modifier: .qf-icon--sm (16px) .qf-icon--md (20px, default) .qf-icon--lg (24px) .qf-icon--xl (28px)
@@ -22,8 +22,11 @@
 .qf-icon--lg { width: 24px; height: 24px; stroke-width: 1.6; }
 .qf-icon--xl { width: 28px; height: 28px; stroke-width: 1.5; }
 
-/* Filled / solid variant — stroke same as fill for mass */
-.qf-icon--solid { fill: currentColor; stroke: none; }
+/* Filled / solid variant — stroke same as fill for mass.
+   스프라이트 심볼에 paint 가 구워져 있어(v0.6.2) 상속되는 fill/stroke 는 심볼에서 막힌다.
+   커스텀 프로퍼티는 <use> 안쪽까지 상속되므로 심볼이 --qf-icon-fill/--qf-icon-stroke 를 읽는다.
+   fill/stroke 선언은 paint 가 구워지지 않은 예전 스프라이트(≤ v0.6.1)를 위해 남긴다. */
+.qf-icon--solid { fill: currentColor; stroke: none; --qf-icon-fill: currentColor; --qf-icon-stroke: none; }
 
 /* Accent color override */
 .qf-icon--accent { color: var(--accent); }

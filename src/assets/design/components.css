@@ -1,4 +1,4 @@
-/*! qufox-design v0.6.2 — components.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
+/*! qufox-design v0.14.0 — components.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
 /* qufox · component library
  * Requires tokens.css. All components are plain CSS classes,
  * framework-agnostic (work with React, Vue, vanilla HTML).
@@ -20,6 +20,7 @@
   border: 1px solid transparent; border-radius: var(--r-md);
   font: 500 var(--fs-14)/1 var(--font-sans);
   letter-spacing: -0.005em; cursor: pointer; user-select: none; text-decoration: none;
+  white-space: nowrap; /* 013: 컨테이너(qf-empty/notice/toast…)의 overflow-wrap: anywhere 를 상속해 라벨이 글자 단위로 쪼개지지 않게 */
   transition: background var(--dur-fast) var(--ease-standard),
               color var(--dur-fast) var(--ease-standard),
               border-color var(--dur-fast) var(--ease-standard),
@@ -49,6 +50,8 @@
 .qf-btn--ghost { background: transparent; color: var(--text-secondary); }
 .qf-btn--ghost:hover  { background: var(--bg-hover); color: var(--text); }
 .qf-btn--ghost:active { background: var(--bg-selected); }
+/* 토글 버튼의 눌린 상태(013): aria-pressed="true" 면 selected 표면 + 진한 글자. 밝기 토글 등 — 아이콘 전환(해/달)은 소비처 JS. */
+.qf-btn--ghost[aria-pressed="true"], .qf-btn--icon[aria-pressed="true"] { background: var(--bg-selected); color: var(--text-strong); }
 
 .qf-btn--danger {
   background: var(--danger-600); color: #fff;
@@ -66,6 +69,13 @@
 .qf-btn--lg { height: 44px; padding: 0 var(--s-6); font-size: var(--fs-15); }
 
 .qf-btn--icon { width: 36px; padding: 0; }
+/* 터치 환경(014): 단독으로 선 아이콘 버튼은 시각 크기를 두고 투명 ::after 로 44px 히트 영역만 넓힌다(배너 닫기와 같은 패턴).
+   범위는 qf-navbar 안(gap 12px 라 안 겹침)과 opt-in .qf-btn--touch 뿐 — 밀집 툴바(qf-message__toolbar gap 2px 등)에
+   전역으로 걸면 이웃 버튼의 탭을 가로채므로 전역 적용하지 않는다. */
+.qf-navbar .qf-btn--icon, .qf-btn--touch { position: relative; }
+@media (any-pointer: coarse) {
+  .qf-navbar .qf-btn--icon::after, .qf-btn--touch::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: var(--m-touch); height: var(--m-touch); }
+}
 .qf-btn--icon.qf-btn--sm { width: 28px; }
 .qf-btn--icon.qf-btn--lg { width: 44px; }
 
@@ -95,6 +105,9 @@
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
 .qf-input::placeholder { color: var(--text-muted); }
+/* 입력 + 양옆 아이콘 버튼을 한 덩어리로(015: 날짜 입력 양옆 이전/다음 날 화살표). 줄바꿈하지 않고, 입력은 줄어들 수 있다. */
+.qf-input-group { display: inline-flex; align-items: center; gap: var(--s-1); white-space: nowrap; }
+.qf-input-group > .qf-input { min-width: 0; }
 .qf-input:hover:not(:focus) { border-color: var(--border-strong); }
 /* No focus halo on text inputs — the caret is the cue. Keeps border
    neutral so the typing experience feels calm. aria-invalid=true is
@@ -150,6 +163,7 @@
   font: 600 var(--fs-11)/1.2 var(--font-sans);
   background: var(--bg-hover); color: var(--text-secondary);
 }
+.qf-badge > svg:not([class*="qf-icon--"]) { width: 1.1em; height: 1.1em; flex-shrink: 0; } /* 배지 안 아이콘(예: qf-i-sparkle "AI 요약")은 글자 크기에 맞춤(016). 크기 변형(qf-icon--sm 등)을 명시한 svg 는 그대로 — 기존 소비처(채팅앱 공지 배지) 불변 */
 .qf-badge--accent { background: var(--accent-subtle); color: var(--accent-on-subtle); }
 .qf-badge--danger { background: var(--danger-bg); color: var(--text-danger); }
 .qf-badge--success { background: var(--ok-bg); color: var(--text-ok); }
@@ -165,6 +179,10 @@
   border-radius: var(--r-pill); font-size: 11px;
   justify-content: center;
 }
+/* 상태 배지 확장(010): --warn = 쉬는 중/지연, --muted = 멈춤/비활성(기본보다 한 단계 낮은 톤).
+   --count(빨강)는 알림 개수 전용 — 중립 개수는 기본 배지나 qf-source__count 를 쓴다. */
+.qf-badge--warn { background: var(--warn-bg); color: var(--text-warn); }
+.qf-badge--muted { background: transparent; box-shadow: inset 0 0 0 1px var(--border); color: var(--text-muted); } /* 테두리를 inset ring 으로 → 다른 배지와 같은 높이 */
 
 /* ───── Tooltip · layer: generic ───── */
 .qf-tooltip {
@@ -252,6 +270,19 @@
 .qf-toast--warn    { border-left-color: var(--warn-400); }
 .qf-toast__title { font: 600 var(--fs-14) var(--font-sans); color: var(--text-strong); }
 .qf-toast__body  { font-size: var(--fs-13); color: var(--text-secondary); margin-top: 2px; }
+/* 짧게 떠 있다 사라지는 토스트(014) — 링크 복사 피드백 등. --dur-toast-brief 뒤 투명·비표시로 끝나므로
+   소비처는 animationend 에서 요소를 제거한다. 패턴: 공유 버튼 → navigator.share, 없으면 링크 복사 + qf-toast--brief. */
+@keyframes qf-toast-brief {
+  0%   { opacity: 0; transform: translateY(var(--s-2)); }
+  8%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(var(--s-2)); visibility: hidden; }
+}
+.qf-toast--brief { animation: qf-toast-brief var(--dur-toast-brief) var(--ease-standard) forwards; }
+/* 축소 모션: 전역 가드(animation-duration 0.01ms)에 맡기면 즉시 사라져 피드백이 0 이 된다 → 모션 없이 수명(2.4초)만 유지. */
+@keyframes qf-toast-brief-static { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) {
+  .qf-toast--brief { animation: qf-toast-brief-static var(--dur-toast-brief) step-end forwards !important; }
+}
 
 /* ───── Chat: Message · layer: chat ───── */
 .qf-message {
@@ -656,7 +687,7 @@
 
 /* Eyebrow label */
 /* Eyebrow / UI uppercase labels use sans; mono is reserved for code contexts (decision 050-4). */
-.qf-eyebrow { font: 600 var(--fs-11) var(--font-sans); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--accent-text); }
+.qf-eyebrow { font: 600 var(--fs-12) var(--font-sans); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--accent-text); } /* 013: 11 → 12px(폰 바닥). 한글은 대문자 트래킹 효과가 없어 11px 이 더 작아 보인다 */
 
 /* Drop insertion indicator — thin splitter-like line shown at the
    point where a dragged channel/category will land. Token-driven,
@@ -1885,6 +1916,9 @@
 /* 중앙 정렬 본문 컨테이너 — 최대폭 + 좌우 여백. */
 .qf-container { width: 100%; max-width: var(--container-w); margin-inline: auto; padding-inline: var(--s-5); }
 .qf-container--narrow { max-width: var(--container-w-narrow); }
+/* 언제 무엇을: narrow(640) = 폼·단일 문서 본문. reading(720) = 뉴스/이슈/블로그 *목록*(제목 한 줄·요약 3줄·출처 칩 한 줄이
+   들어가는 폭, 011 실측). 기본(960) = 대시보드·표·2열 레이아웃. wide(1200) = 넓은 표·차트. */
+.qf-container--reading { max-width: var(--container-w-reading); }
 .qf-container--wide { max-width: var(--container-w-wide); }
 
 /* ───── Layout: Divider · layer: generic ───── */
@@ -1946,6 +1980,12 @@
 .qf-stat__delta--up   { color: var(--ok-600); }
 .qf-stat__delta--down { color: var(--danger-400); }
 [data-theme="light"] .qf-stat__delta--down { color: var(--danger-600); }
+/* 값 아래 보조 텍스트(010): 상한·단위·기준 등 ("상한 300장"). 델타와 같은 크기, 더 낮은 톤. */
+.qf-stat__hint { font-size: var(--fs-12); color: var(--text-muted); }
+/* 작은 변형(017): 사이드·요약 줄의 짧은 숫자("오늘 이슈 24건"). 값 18px 600, 라벨 12px. */
+.qf-stat--sm { gap: 0; }
+.qf-stat--sm .qf-stat__value { font: 600 var(--fs-18)/var(--lh-snug) var(--font-sans); letter-spacing: var(--tracking-normal); }
+.qf-stat--sm .qf-stat__label { font-size: var(--fs-12); }
 
 /* ───── Feedback: Spinner · layer: generic ───── */
 /* 무한 회전 로더. reduced-motion 은 tokens.css 전역 가드가 무력화. aria-label 권장. */
@@ -2337,6 +2377,18 @@
 }
 .qf-navbar__link:hover { background: var(--bg-hover); color: var(--text); }
 .qf-navbar__link[aria-current="page"] { background: var(--bg-selected); color: var(--text-strong); }
+/* 고정 상단 바(014) — 긴 목록·읽기 페이지에서 찾기/맨 위로 가는 길을 늘 두려 할 때. 클래스 계약(동작 JS 는 소비처):
+   .is-stuck  = 스크롤이 0 이 아닐 때(아래 내용과 구분되는 그림자·선),  .is-hidden = 아래로 스크롤 중(위로 미끄러져 숨음, 위로 스크롤하면 뗀다).
+   전역 prefers-reduced-motion 가드가 transition 을 끈다. 페이지 안 sticky(qf-dayrule)는 --qf-dayrule-top: var(--h-navbar) 로 그 아래에 둔다. */
+.qf-navbar--sticky {
+  position: sticky; top: 0; z-index: var(--z-header-sticky);
+  transition: transform var(--dur-base) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
+}
+.qf-navbar--sticky.is-stuck { box-shadow: var(--elev-2); border-bottom-color: var(--border); }
+.qf-navbar--sticky.is-hidden { transform: translateY(-100%); box-shadow: none; }
+.qf-navbar--sticky.is-hidden:focus-within { transform: none; } /* 키보드 포커스가 바 안으로 들어오면 숨김을 풀어 보이지 않는 포커스를 막는다 */
+/* 고정 바가 숨으면 그 아래 붙어 있던 날짜줄(--qf-dayrule-top)이 맨 위로 올라붙는다 — 바가 비운 56px 위로 내용이 지나가지 않게. */
+:root:has(.qf-navbar--sticky.is-hidden) .qf-dayrule--sticky { top: 0; }
 
 /* ───── Navigation: Side nav · layer: generic ───── */
 .qf-sidenav {
@@ -2366,6 +2418,13 @@
 .qf-page-header__title { font: 600 var(--fs-24) var(--font-sans); color: var(--text-strong); letter-spacing: var(--tracking-tight); margin: 0; }
 .qf-page-header__subtitle { font-size: var(--fs-14); color: var(--text-muted); margin-top: var(--s-1); }
 .qf-page-header__actions { display: flex; gap: var(--s-3); flex-shrink: 0; }
+/* 첫 화면 히어로(010): 제목 한 단계 크게(32px), 부제는 본문 크기 + 가독 폭. 사이트 첫 화면·랜딩 목록 상단용. */
+.qf-page-header--hero { padding: var(--s-8) 0 var(--s-5); } /* 011: 40/20 → 32/16, 뉴스 첫 화면 기준 */
+.qf-page-header--hero .qf-page-header__title { font-size: var(--fs-32); line-height: var(--lh-tight); }
+.qf-page-header--hero .qf-page-header__subtitle {
+  font-size: var(--fs-16); line-height: var(--lh-normal); color: var(--text-secondary);
+  margin-top: var(--s-2); max-width: var(--container-w-narrow);
+}
 
 /* ───── Forms: Search · layer: generic ───── */
 .qf-search {
@@ -2432,7 +2491,10 @@
 .qf-list { display: flex; flex-direction: column; list-style: none; margin: 0; padding: 0; }
 .qf-list__item { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); color: var(--text); }
 .qf-list__item + .qf-list__item { border-top: 1px solid var(--divider); }
-.qf-list__item--interactive { cursor: pointer; }
+.qf-list__item--interactive { cursor: pointer; min-height: var(--s-9); } /* 013: 행 최소 40px(폰 탭 대상) */
+/* 행 안의 링크/버튼(.qf-list__text)이 행 패딩까지 자기 박스로 가져가 탭 대상이 글자 높이(≈21px)가 아니라 행에 가깝게(≈37px) 된다.
+   display 는 건드리지 않아(flex 로 바꾸면 안의 아이콘+텍스트·strong 같은 인라인 흐름이 깨짐) 내용 모델이 보존된다. */
+.qf-list__item--interactive > :is(a, button).qf-list__text { margin-block: calc(-1 * var(--s-3)); padding-block: var(--s-3); }
 .qf-list__item--interactive:hover { background: var(--bg-hover); }
 .qf-list__text { flex: 1; min-width: 0; }
 .qf-list__trailing { flex-shrink: 0; color: var(--text-muted); }
@@ -2475,6 +2537,83 @@
 .qf-prose th, .qf-prose td { text-align: left; padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--divider); }
 .qf-prose th { color: var(--text-muted); font-weight: 600; }
 .qf-prose kbd { font: 600 var(--fs-12) var(--font-mono); background: var(--bg-input); border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: var(--r-sm); padding: 0 var(--s-2); color: var(--text-strong); }
+/* 기사 본문(010): 3~6문장 문단이 3~5개 이어지는 뉴스 전말용. 본문 16px, 문단 사이 한 줄(--s-6)로 숨을 트고,
+   한국어 어절이 줄 끝에서 쪼개지지 않게 keep-all(공백 없는 긴 URL 등은 anywhere 로 안전망). */
+.qf-prose--article { font-size: var(--fs-16); }
+.qf-prose--article p { margin: var(--s-6) 0; }
+.qf-prose--article p:first-child { margin-top: 0; }
+/* 기사 소제목(016): 전말이 네 문단 이상이면 흐름이 바뀌는 곳에 h2(12자 안). 본문 16 과 리드 18 사이의 17px, 600, 밑선 없음, 위 --s-6 아래 --s-2. */
+.qf-prose--article h2, .qf-prose--article h3 {
+  font-size: var(--fs-17); font-weight: 600; line-height: var(--lh-snug);
+  margin: var(--s-6) 0 var(--s-2); padding-bottom: 0; border-bottom: none;
+}
+.qf-prose--article h2:first-child, .qf-prose--article h3:first-child { margin-top: 0; }
+
+/* ───── Typography: 한국어 줄바꿈 · layer: generic ───── */
+/* 글이 들어가는 구성요소는 어절(공백) 단위로만 줄을 바꾼다(keep-all — CJK 에만 작용, 라틴 문자는 변화 없음).
+   공백 없는 긴 URL·영문 덩어리는 overflow-wrap: anywhere 가 칸을 밀어내지 않게 자른다(013).
+   채팅 메시지(qf-message 등 chat 레이어)는 대상이 아니다 — 좁은 말풍선에서 keep-all 은 줄이 들쭉날쭉해진다. */
+.qf-page-header__title, .qf-page-header__subtitle, .qf-story__title, .qf-story__summary, .qf-story__kicker,
+.qf-lede, .qf-prose, .qf-empty, .qf-notice, .qf-callout, .qf-card__title, .qf-list__text, .qf-timeline__body,
+.qf-stat__label, .qf-stat__hint, .qf-media-card__title, .qf-banner, .qf-toast {
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+
+/* ───── Display: Key points · layer: generic ───── */
+/* 핵심 묶음(016): 리드와 전말 사이(그림이 있으면 그림 다음)의 상자. 라벨("핵심", 12px caps 보조 톤) + 항목 2~4개.
+   글머리는 점이 아니라 액센트의 짧은 막대(순서가 의미가 아니므로 번호를 쓰지 않는다). 바탕 --bg-panel + 테두리, 왼쪽 선은 없음
+   (qf-notice 의 왼쪽 상태선과 겹쳐 보이지 않게). 폭은 본문(qf-prose)과 같은 measure. 항목은 한 문장(40자 안)으로. */
+.qf-keypoints {
+  margin: var(--s-5) 0 var(--s-6); padding: var(--s-4) var(--s-5);
+  max-width: var(--qf-prose-max, var(--container-w-narrow));
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--r-lg);
+}
+.qf-keypoints__title {
+  margin: 0 0 var(--s-3);
+  font: 600 var(--fs-12)/var(--lh-tight) var(--font-sans); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--text-muted);
+}
+.qf-keypoints__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--s-2); }
+.qf-keypoints__item {
+  position: relative; padding-left: var(--s-6);
+  font-size: var(--fs-15); line-height: var(--lh-normal); color: var(--text); word-break: keep-all; overflow-wrap: anywhere;
+}
+.qf-keypoints__item::before {
+  content: ""; position: absolute; left: 0; top: calc(var(--fs-15) * var(--lh-normal) / 2 - 1px);
+  width: var(--s-4); height: 0; border-top: 2px solid var(--accent); border-radius: var(--r-pill); /* border 로 그려 강제 색상 모드에서도 남음(012 규약) */
+}
+/* 리드와 같은 부모의 바로 다음 형제로 핵심이 오면 리드의 선(--rule)은 겹치므로 숨긴다 — 핵심 상자가 본문 시작 표시를 대신한다.
+   (리드가 다른 요소에 감싸여 있으면 발동하지 않으므로 소비처가 --rule 을 붙이지 않는다.) */
+.qf-lede--rule:has(+ .qf-keypoints)::after { display: none; }
+
+/* ───── Display: Mark · layer: generic ───── */
+/* 검색어 강조(015) <mark class="qf-mark">. 액센트 옅은 톤 바탕에 글자색은 상속(제목 600·요약 400 모두 과하지 않게).
+   좌우 2px 패딩을 음수 margin 으로 상쇄해 글자 흐름이 밀리지 않고, 두 줄에 걸치면 양 끝이 각각 둥글다(box-decoration-break: clone). */
+.qf-mark {
+  background: var(--accent-subtle); color: inherit; border-radius: var(--r-xs);
+  padding: 0 var(--s-1); margin: 0 calc(-1 * var(--s-1));
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+/* 카드 hover 로 제목이 --accent-text 가 되면 mark 안 글자는 라이트에서 4.25:1 로 떨어진다 → mark 안은 --text-strong 유지. */
+a.qf-story:hover .qf-mark, .qf-story__title a:hover .qf-mark, .qf-story--stretched:hover .qf-mark { color: var(--text-strong); }
+
+/* ───── Display: Lede · layer: generic ───── */
+/* 제목 아래 리드(standfirst) 문단(012). 본문(qf-prose--article: 16px / --text)과 크기(18px, 줄 간격도 따라 넓어짐)와
+   선(--rule)으로 구분하고 색(보조 톤)은 덧붙는 단서 — 색 하나에 기대지 않는다(색약·저대비).
+   여백은 위(제목) --s-2, 아래(그림 또는 본문) --s-6 로 다르게. qf-stack 안에서는 stack 의 gap 이 양쪽에 더해진다.
+   --rule: 아래에 짧은 액센트 선(본문 시작 표시). 리드와 본문 사이에 그림이 없으면 --rule 을, 그림이 가르면 기본형을 쓴다.
+   폭은 본문(qf-prose)과 같은 measure(--qf-prose-max 는 둘의 공통 조상에 둔다. 기본 --container-w-narrow).
+   본문 첫 문단 위 여백은 기존 .qf-prose > :first-child 가 0 으로 두므로 리드의 아래 여백 하나가 간격을 정한다. */
+.qf-lede {
+  margin: var(--s-2) 0 var(--s-6);
+  max-width: var(--qf-prose-max, var(--container-w-narrow));
+  font: 400 var(--fs-18)/var(--lh-loose) var(--font-sans);
+  color: var(--text-secondary);
+}
+/* 선은 border 로 그린다 — background 는 강제 색상(고대비) 모드에서 지워져 단서가 사라진다. */
+.qf-lede--rule::after {
+  content: ""; display: block; width: var(--s-9); margin-top: var(--s-5);
+  border-top: 2px solid var(--accent);
+}
 
 /* ═══════════════════════════════════════════════════════════════
    Media — 미디어/썸네일 레이어(layer: generic). 005 미디어 레이어.
@@ -2811,3 +2950,427 @@ details.qf-callout > .qf-callout__title:focus-visible { outline: none; box-shado
   border-left: 3px solid var(--border-strong);
   padding: var(--s-4) var(--s-5);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   뉴스형 목록 구성요소(010 · issue-hub 요청) — Story · Source · Chip · DayRule · Timeline.
+   전부 layer: generic. "목록형 콘텐츠"(뉴스/이슈/블로그/스트림) 일반의 요소로, 분류·메타·제목·요약·출처·
+   썸네일의 관계를 구성요소로 고정한다. 색·치수는 토큰만 사용(--sz-story-*, --sz-timeline-*, --aspect-4x3).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───── Display: Story · layer: generic ───── */
+/* 콘텐츠 목록 항목(뉴스/이슈 카드). 카드 표면 없이 구분선 + 위계(kicker → title → summary → sources)로
+   뉴스 목록의 리듬을 만든다. 전체가 링크(<a class="qf-story">)일 수도, 제목만 링크일 수도 있다.
+   --pictured: 텍스트 1열 + 4:3 고정 프레임 썸네일 2열(좁은 폭에서는 크기만 축소, 자리 유지).
+   --lead: 첫 항목 강조(제목 24px, 썸네일 확대. 좁은 폭에선 썸네일이 16:9 로 텍스트 위에 놓임).
+   --compact: 제목 + kicker 만(요약·출처는 마크업이 있어도 숨김 → 같은 마크업을 밀도만 바꿔 재사용). */
+.qf-story {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--s-5); align-items: start;
+  margin-inline: calc(-1 * var(--s-3)); padding: var(--s-5) var(--s-3); border-radius: var(--r-md); /* bleed: 텍스트는 컨테이너 가장자리에 정렬, hover 틴트·포커스 링만 8px 바깥으로(011) */
+  color: inherit; text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-standard);
+}
+.qf-story > * { margin: 0; min-width: 0; }
+/* 구분선은 ::after(직선) — border 로 두면 border-radius 를 따라 양끝이 휜다. */
+.qf-story::after { content: ""; position: absolute; left: var(--s-3); right: var(--s-3); bottom: 0; height: 1px; background: var(--border); } /* 선은 텍스트 폭에 맞춤. bg-app 위 목록 분절선은 --border(--divider 는 라이트에서 1.15:1, tokens.css 규약) */
+.qf-story__kicker {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3);
+  font-size: var(--fs-12); color: var(--text-muted); line-height: var(--lh-snug);
+}
+.qf-story__title {
+  margin-top: var(--s-2);
+  font: 600 var(--fs-18)/var(--lh-snug) var(--font-sans); color: var(--text-strong);
+  letter-spacing: var(--tracking-tight);
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.qf-story__title a { color: inherit; text-decoration: none; }
+.qf-story__summary { margin-top: var(--s-2); font-size: var(--fs-14); line-height: var(--lh-normal); color: var(--text-secondary); }
+.qf-story__sources { margin-top: var(--s-3); gap: var(--s-1) var(--s-2); }
+/* 썸네일: 4:3 고정 프레임 + cover. <img> 자체이거나 <img> 를 감싼 컨테이너 둘 다 허용. */
+.qf-story__media {
+  display: block; width: 100%; height: auto; aspect-ratio: var(--aspect-4x3); object-fit: cover;
+  border-radius: var(--r-md); background: var(--bg-media); overflow: hidden;
+}
+.qf-story__media > img, .qf-story__media > video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.qf-story--pictured {
+  grid-template-columns: minmax(0, 1fr) var(--sz-story-media);
+  /* 행 = 스페이서 | kicker | title | summary | sources | 스페이서. 썸네일이 텍스트보다 높으면 초과분이
+     양끝 1fr 로만 가서 슬롯 사이 간격이 벌어지지 않고(요약·출처 없음, --compact 포함) 텍스트가 세로 중앙에 온다. */
+  grid-template-rows: 1fr auto auto auto auto 1fr;
+}
+.qf-story--pictured .qf-story__kicker { grid-column: 1; grid-row: 2; }
+.qf-story--pictured .qf-story__title { grid-column: 1; grid-row: 3; }
+.qf-story--pictured .qf-story__summary { grid-column: 1; grid-row: 4; }
+.qf-story--pictured .qf-story__sources { grid-column: 1; grid-row: 5; }
+.qf-story--pictured .qf-story__media { grid-column: 2; grid-row: 1 / -1; align-self: center; }
+.qf-story--lead .qf-story__title { font-size: var(--fs-24); line-height: var(--lh-tight); }
+.qf-story--lead .qf-story__summary { font-size: var(--fs-15); }
+.qf-story--lead.qf-story--pictured { grid-template-columns: minmax(0, 1fr) var(--sz-story-media-lead); }
+.qf-story--compact { padding-block: var(--s-3); }
+.qf-story--compact .qf-story__title { font-size: var(--fs-15); margin-top: var(--s-1); }
+.qf-story--compact .qf-story__summary, .qf-story--compact .qf-story__sources { display: none; }
+.qf-story--compact.qf-story--pictured { grid-template-columns: minmax(0, 1fr) var(--sz-story-media-sm); }
+/* 상호작용: 항목 전체가 링크면 행 hover 틴트 + 제목 accent. 제목만 링크면 제목 hover 만. */
+a.qf-story:hover { background: var(--bg-row-hover); }
+a.qf-story:hover .qf-story__title, .qf-story__title a:hover { color: var(--accent-text); }
+a.qf-story:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+/* 방문 링크: 제목만 한 톤 낮춰 읽은 항목을 구분(뉴스 목록 관례). 색 외 단서 없음 = 보조 정보이므로 허용.
+   :visited 는 색 계열 속성만 허용되어 구조 변화 없음. 원치 않으면 소비처가 재선언. */
+a.qf-story:visited .qf-story__title, .qf-story__title a:visited { color: var(--text-secondary); }
+a.qf-story:visited:hover .qf-story__title, .qf-story__title a:visited:hover { color: var(--accent-text); }
+@media (max-width: 600px) {
+  .qf-story { column-gap: var(--s-4); margin-inline: 0; padding-inline: 0; }
+  .qf-story::after { left: 0; right: 0; }
+  .qf-story--pictured, .qf-story--compact.qf-story--pictured { grid-template-columns: minmax(0, 1fr) var(--sz-story-media-sm); }
+  .qf-story--lead.qf-story--pictured { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto auto auto; }
+  .qf-story--lead.qf-story--pictured .qf-story__media {
+    grid-column: 1; grid-row: 1; aspect-ratio: var(--aspect-16x9); margin-bottom: var(--s-3);
+  }
+}
+/* 스켈레톤 카드(015): 다음 화면을 불러오는 동안 자리를 지키는 카드. 빈 슬롯(kicker·title·summary·sources·media)에
+   CSS 가 막대를 그린다 — kicker 1줄, 제목 2줄, 요약 2줄, 출처 1줄, 썸네일 4:3. 막대 높이는 실제 줄 높이와 같아
+   실제 카드(제목 2줄 기준)와 높이가 같다. shimmer 는 qf-skel 과 같은 keyframes, 전역 reduced-motion 가드가 끈다.
+   aria-hidden="true" 로 두고, 실제 카드가 오면 통째로 바꾼다. */
+.qf-story--skeleton { pointer-events: none; user-select: none; }
+.qf-story--skeleton > * { display: flex; flex-direction: column; justify-content: space-around; align-items: flex-start; }
+.qf-story--skeleton .qf-story__kicker { min-height: calc(var(--fs-12) * var(--lh-snug)); }
+.qf-story--skeleton .qf-story__title { min-height: calc(var(--fs-18) * var(--lh-snug) * 2); }
+.qf-story--skeleton .qf-story__summary { min-height: calc(var(--fs-14) * var(--lh-normal) * 2); }
+.qf-story--skeleton .qf-story__sources { min-height: calc(var(--fs-12) * var(--lh-snug) + var(--s-3)); }
+.qf-story--skeleton .qf-story__kicker::before, .qf-story--skeleton .qf-story__title::before, .qf-story--skeleton .qf-story__title::after,
+.qf-story--skeleton .qf-story__summary::before, .qf-story--skeleton .qf-story__summary::after, .qf-story--skeleton .qf-story__sources::before {
+  content: ""; display: block; border-radius: var(--r-xs);
+  background: linear-gradient(90deg, var(--bg-hover) 0%, var(--bg-selected) 50%, var(--bg-hover) 100%);
+  background-size: 200% 100%; animation: qf-skel 1.8s linear infinite;
+}
+.qf-story--skeleton .qf-story__media {
+  background: linear-gradient(90deg, var(--bg-hover) 0%, var(--bg-selected) 50%, var(--bg-hover) 100%);
+  background-size: 200% 100%; animation: qf-skel 1.8s linear infinite;
+}
+.qf-story--skeleton .qf-story__kicker::before { width: 40%; height: calc(var(--fs-12) * 0.8); }
+.qf-story--skeleton .qf-story__title::before { width: 92%; height: calc(var(--fs-18) * 0.8); }
+.qf-story--skeleton .qf-story__title::after { width: 60%; height: calc(var(--fs-18) * 0.8); }
+.qf-story--skeleton .qf-story__summary::before { width: 100%; height: calc(var(--fs-14) * 0.75); }
+.qf-story--skeleton .qf-story__summary::after { width: 78%; height: calc(var(--fs-14) * 0.75); }
+.qf-story--skeleton .qf-story__sources::before { width: 45%; height: calc(var(--fs-12) * var(--lh-snug)); border-radius: var(--r-pill); }
+.qf-story--skeleton .qf-story__media { border-radius: var(--r-md); }
+/* 좁은 폭에서는 실제 카드의 요약이 3줄(clamp-3)까지 차므로 스켈레톤도 3줄 높이로 맞춘다(실측 198px). */
+@media (max-width: 600px) {
+  .qf-story--skeleton .qf-story__summary { min-height: calc(var(--fs-14) * var(--lh-normal) * 3); }
+}
+/* 실제 카드가 --stretched(칩이 링크)면 터치 환경에서 출처 행이 44px 이 되므로 스켈레톤에도 --stretched 를 함께 붙여 높이를 맞춘다. */
+@media (any-pointer: coarse) {
+  .qf-story--skeleton.qf-story--stretched .qf-story__sources { min-height: calc(var(--m-touch) + var(--s-3)); }
+}
+
+/* 늘어난 링크 변형(015): 카드가 <article> 이고 제목만 <a> 일 때, 제목 링크의 ::after 가 카드 전체를 덮어 어디를 눌러도
+   제목 링크가 눌린다(stretched link). 그러면 카드 안의 출처 칩을 <a class="qf-source qf-source--link"> 로 둘 수 있다(a 안의 a 가 아님) —
+   링크 칩만 z-index 로 덮개 위에 올린다. 링크 이름은 제목(짧음). 트레이드오프: 카드 안 텍스트를 드래그로 선택할 수 없고
+   우클릭 메뉴는 제목 링크의 것이다. hover 틴트·포커스 링은 카드 전체(:has). */
+.qf-story--stretched .qf-story__title a::after { content: ""; position: absolute; inset: 0; border-radius: var(--r-md); }
+.qf-story--stretched .qf-source--link { position: relative; z-index: 1; }
+.qf-story--stretched:hover { background: var(--bg-row-hover); }
+.qf-story--stretched:hover .qf-story__title { color: var(--accent-text); }
+/* 포커스 링은 카드 전체로 — :has() 를 지원할 때만 제목 링크 자체의 링을 끈다(미지원이면 링크의 링이 남는다). */
+@supports selector(:has(a)) {
+  .qf-story--stretched:has(.qf-story__title a:focus-visible) { box-shadow: var(--ring-focus); }
+  .qf-story--stretched .qf-story__title a:focus-visible { outline: none; box-shadow: none; }
+}
+
+/* ───── Display: Source · layer: generic ───── */
+/* 출처 칩 — 커뮤니티/매체 이름 하나. 중립 톤(outline pill)으로 태그(라벨)·배지(상태/알림)와 구분한다.
+   __count 는 회색 숫자(빨간 count 배지 금지), __mark 는 이니셜/파비콘. --link 는 눌러서 원문 목록으로.
+   qf-sources 는 묶음 컨테이너(wrap, 간격 고정). */
+.qf-sources { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.qf-source {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  padding: var(--s-2) var(--s-3); border: 1px solid var(--border); border-radius: var(--r-pill);
+  background: transparent; color: var(--text-secondary);
+  font: 500 var(--fs-12)/var(--lh-snug) var(--font-sans); white-space: nowrap;
+  text-decoration: none; vertical-align: middle;
+}
+.qf-source__mark {
+  display: inline-grid; place-items: center; flex-shrink: 0;
+  width: var(--s-5); height: var(--s-5); margin-left: calc(-1 * var(--s-2));
+  border-radius: var(--r-pill); background: var(--bg-selected); color: var(--text-secondary);
+  font: 600 var(--fs-11)/1 var(--font-sans); overflow: hidden;
+}
+.qf-source__mark > img, .qf-source__mark > svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.qf-source__count { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+/* 목록 항목(qf-story__sources)·타임라인 본문 안에서는 보조 정보라 한 단계 작게(11px, 21px 높이 = 본문 줄 높이).
+   8개 넘게 늘어서도 소음이 덜하고 타임라인 줄 높이가 고르다(011). 단독·상세 헤더의 칩은 기본 크기. */
+:where(.qf-story__sources) .qf-source, :where(.qf-timeline__body) > .qf-source { font-size: var(--fs-12); padding: var(--s-1) var(--s-2); } /* 013: 11 → 12px(폰 바닥). 여백만 작게 */ /* :where 로 특이도 (0,1,0) 유지 → 터치 환경의 --link 44px 규칙이 그대로 이김 */
+.qf-source--link { cursor: pointer; transition: background var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard); }
+.qf-source--link:hover { background: var(--bg-hover); border-color: var(--border-strong); color: var(--text); }
+.qf-source--link:hover .qf-source__count { color: var(--text-secondary); }
+.qf-source--link:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+/* 터치 환경(any-pointer: coarse — 터치 노트북 포함): 눌리는 칩(--link)만 44px 로 키운다(정적 칩은 그대로. qf-story--stretched 카드 안의 링크 칩도 44px). */
+@media (any-pointer: coarse) {
+  .qf-source--link { min-height: var(--m-touch); padding-inline: var(--s-4); }
+}
+
+/* ───── Navigation: Chip · layer: generic ───── */
+/* 데스크톱 필터 칩 그룹. 선택 상태 = aria-current="page"(링크) 또는 aria-pressed="true"(버튼).
+   모바일 qf-m-filter-chip 과 같은 토큰(--r-pill · --accent-subtle · --accent)으로 시각 일관.
+   라벨 색만 AA 를 위해 --accent-on-subtle(모바일 기본 변형의 --accent 는 4.5:1 미달 가능).
+   qf-chips 는 묶음(wrap 기본), --scroll 은 좁은 폭에서 한 줄 가로 스크롤(스크롤바 숨김). */
+.qf-chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.qf-chips--scroll {
+  flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding: var(--s-2); margin: calc(-1 * var(--s-2)); /* 포커스 링(halo 포함)이 overflow 에 잘리지 않게 */
+}
+.qf-chips--scroll::-webkit-scrollbar { display: none; }
+.qf-chip {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: var(--s-2);
+  padding: var(--s-3) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-pill);
+  background: var(--bg-panel); color: var(--text-secondary);
+  font: 500 var(--fs-13)/var(--lh-tight) var(--font-sans); white-space: nowrap;
+  text-decoration: none; cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+}
+.qf-chip:hover { background: var(--bg-hover); border-color: var(--border-strong); color: var(--text); }
+.qf-chip:hover .qf-chip__count { color: var(--text-secondary); }
+.qf-chip:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.qf-chip__count { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.qf-chip[aria-current="page"], .qf-chip[aria-pressed="true"] {
+  background: var(--accent-subtle); border-color: var(--accent); color: var(--accent-on-subtle); font-weight: 600;
+}
+.qf-chip[aria-current="page"] .qf-chip__count, .qf-chip[aria-pressed="true"] .qf-chip__count { color: var(--accent-on-subtle); }
+/* 터치 환경(017): 칩은 40px 로 두고(44px 는 줄에서 과함) 투명 ::before 로 세로 ±2px 를 더해 44px 히트 영역. */
+.qf-chip { position: relative; }
+@media (any-pointer: coarse) {
+  .qf-chip { min-height: var(--s-9); }
+  .qf-chip::before { content: ""; position: absolute; left: 0; right: 0; top: calc((var(--s-9) - var(--m-touch)) / 2); bottom: calc((var(--s-9) - var(--m-touch)) / 2); }
+}
+/* 가로 스크롤 칩 줄의 오른쪽 페이드(017): 마스크(투명도)라 다크·라이트 바탕 모두에서 배경으로 녹아든다.
+   스크롤 타임라인 지원 브라우저: 넘칠 때만 타임라인이 활성이라 넘치지 않는 줄(데스크톱)은 페이드가 없고, 끝까지
+   스크롤하면 걷힌다(마스크는 이산 전환이라 96% 지점에서 한 번에 걷힘). 미지원 브라우저: 기본 마스크 + 소비처 JS 가
+   load·resize·scroll 에서 scrollLeft + clientWidth ≥ scrollWidth 이면 .is-end 를 붙여 걷는다(넘치지 않으면 즉시 is-end).
+   Tab 으로 칩에 가면 페이드 구역 왼쪽에 멈추도록 scroll-padding. */
+.qf-chips--scroll { scroll-padding-inline-end: var(--s-10); }
+@supports (animation-timeline: scroll()) {
+  @keyframes qf-chips-fade { 0%, 92% { -webkit-mask-image: linear-gradient(to right, black calc(100% - var(--s-10)), transparent); mask-image: linear-gradient(to right, black calc(100% - var(--s-10)), transparent); } 100% { -webkit-mask-image: none; mask-image: none; } }
+  .qf-chips--scroll { animation: qf-chips-fade linear both; animation-timeline: scroll(self inline); }
+}
+@supports not (animation-timeline: scroll()) {
+  .qf-chips--scroll {
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - var(--s-10)), transparent);
+    mask-image: linear-gradient(to right, black calc(100% - var(--s-10)), transparent);
+  }
+  .qf-chips--scroll.is-end { -webkit-mask-image: none; mask-image: none; }
+}
+
+/* ───── Display: Day rule · layer: generic ───── */
+/* 목록 사이 날짜/구간 구분줄: eyebrow 톤 라벨 + 선. <li role="separator"> 로 쓴다.
+   --sticky 는 스크롤 시 상단에 붙고 배경을 앱 배경으로 깔아 아래 항목이 비치지 않는다.
+   ARIA separator 는 자식이 presentational 이라 라벨이 낭독되지 않는다 → role="separator" 를 쓰면 aria-label 로 같은 텍스트를 함께 준다.
+   노브: --qf-dayrule-top(고정 헤더 아래 오프셋, 기본 0) · --qf-dayrule-bg(패널 안에서 쓸 때 배경, 기본 --bg-app). */
+.qf-dayrule {
+  display: flex; align-items: center; gap: var(--s-3); list-style: none;
+  padding-block: var(--s-3); margin: 0;
+  font: 600 var(--fs-12)/var(--lh-tight) var(--font-sans); text-transform: uppercase; letter-spacing: var(--tracking-caps); /* 013: 12px 바닥 */
+  color: var(--text-muted);
+}
+.qf-dayrule__label { color: var(--accent-text); white-space: nowrap; }
+.qf-dayrule::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.qf-dayrule--sticky {
+  position: sticky; top: var(--qf-dayrule-top, 0); z-index: var(--z-sticky);
+  background: var(--qf-dayrule-bg, var(--bg-app));
+  transition: top var(--dur-base) var(--ease-standard); /* 고정 상단 바가 숨을 때 top 0 으로 미끄러짐(014) */
+}
+/* 스택 안에서 첫 구분줄이 아니면 앞 그룹과 한 칸 더 띈다. */
+.qf-dayrule:not(:first-child) { margin-top: var(--s-4); }
+
+/* ───── Display: Timeline · layer: generic ───── */
+/* 세로 타임라인(시간순 기록. 진행 단계인 qf-steps 와 다름). 열 = 시각 | 마커 | 본문.
+   마커 색은 --qf-timeline-marker 하나로 열어 둔다(소비처가 토큰으로 지정: var(--viz-2) 등). 기본 --text-muted
+   (--border-strong 은 그래픽 대비 3:1 미달 — 다크 2.29, 라이트 1.65 — 이라 쓰지 않는다).
+   __day 는 날짜 전환 구분(본문 열에 정렬). --stacked 는 시각을 본문 위로 올린다(아주 좁은 폭용 opt-in). */
+.qf-timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.qf-timeline__item, .qf-timeline__day { position: relative; margin: 0; }
+.qf-timeline__item {
+  display: grid; grid-template-columns: var(--sz-timeline-time) var(--sz-timeline-marker) minmax(0, 1fr);
+  column-gap: var(--s-3); align-items: start; padding-block: var(--s-3);
+}
+/* 세로선: 마커 열 중앙, 항목마다 이어 그려 연속선이 된다. 첫/끝 항목은 마커에서 시작/끝. */
+.qf-timeline__item::before, .qf-timeline__day::before {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--border); /* bg-app 위 분절선 규약(--border) */
+  left: calc(var(--sz-timeline-time) + var(--s-3) + var(--sz-timeline-marker) / 2 - 1px);
+}
+.qf-timeline__item:first-child::before { top: calc(var(--s-3) + var(--fs-14) * var(--lh-normal) / 2); }
+.qf-timeline__item:last-child::before { bottom: calc(100% - var(--s-3) - var(--fs-14) * var(--lh-normal) / 2); }
+.qf-timeline__day:first-child::before { top: 50%; }
+.qf-timeline__day:last-child::before { bottom: 50%; }
+.qf-timeline__time {
+  grid-column: 1; text-align: end; white-space: nowrap;
+  font: 500 var(--fs-12)/var(--lh-normal) var(--font-sans); color: var(--text-muted); font-variant-numeric: tabular-nums;
+  padding-top: calc((var(--fs-14) * var(--lh-normal) - var(--fs-12) * var(--lh-normal)) / 2);
+}
+.qf-timeline__marker {
+  grid-column: 2; position: relative; z-index: 1;
+  width: var(--sz-timeline-marker); height: var(--sz-timeline-marker); border-radius: var(--r-pill);
+  background: var(--qf-timeline-marker, var(--text-muted));
+  margin-top: calc((var(--fs-14) * var(--lh-normal) - var(--sz-timeline-marker)) / 2);
+}
+.qf-timeline__body { grid-column: 3; min-width: 0; font-size: var(--fs-14); line-height: var(--lh-normal); color: var(--text); } /* 줄바꿈은 "한국어 줄바꿈" 통합 규칙 */
+.qf-timeline__body > .qf-source { margin-right: var(--s-1); }
+/* 본문 줄에 메타 텍스트가 함께 있어 "본문 안 링크" — 색 외 단서로 옅은 밑줄(WCAG 1.4.1). hover 시 accent + 진한 밑줄. */
+.qf-timeline__body > .qf-link {
+  color: var(--text-strong); font-weight: 500;
+  text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 2px;
+  padding-block: var(--s-2); /* 013: 인라인 세로 패딩으로 탭 대상 ≥ 24px(줄 간격은 그대로) */
+}
+.qf-timeline__body > .qf-link:hover { color: var(--accent-text); text-decoration-color: currentColor; }
+.qf-timeline__body > .qf-link:visited { color: var(--text-secondary); }
+.qf-timeline__body > .qf-link:visited:hover { color: var(--accent-text); }
+.qf-timeline__meta { color: var(--text-muted); font-size: var(--fs-12); white-space: nowrap; margin-left: var(--s-1); }
+.qf-timeline__day {
+  padding: var(--s-4) 0 var(--s-2);
+  padding-left: calc(var(--sz-timeline-time) + var(--s-3) + var(--sz-timeline-marker) + var(--s-3));
+  font: 600 var(--fs-12)/var(--lh-tight) var(--font-sans); text-transform: uppercase; letter-spacing: var(--tracking-caps); /* 013: 12px 바닥 */
+  color: var(--text-secondary);
+}
+.qf-timeline__day:not(:first-child) { margin-top: var(--s-2); }
+/* --stacked: 시각이 본문 위 줄로. 열 = 마커 | (시각 / 본문). */
+.qf-timeline--stacked .qf-timeline__item { grid-template-columns: var(--sz-timeline-marker) minmax(0, 1fr); }
+.qf-timeline--stacked .qf-timeline__time { grid-column: 2; grid-row: 1; text-align: start; padding-top: 0; }
+.qf-timeline--stacked .qf-timeline__marker { grid-column: 1; grid-row: 1 / span 2; margin-top: calc((var(--fs-12) * var(--lh-normal) - var(--sz-timeline-marker)) / 2); }
+.qf-timeline--stacked .qf-timeline__body { grid-column: 2; grid-row: 2; }
+.qf-timeline--stacked .qf-timeline__item::before, .qf-timeline--stacked .qf-timeline__day::before { left: calc(var(--sz-timeline-marker) / 2 - 1px); }
+.qf-timeline--stacked .qf-timeline__item:first-child::before { top: calc(var(--s-3) + var(--fs-12) * var(--lh-normal) / 2); }
+.qf-timeline--stacked .qf-timeline__item:last-child::before { bottom: calc(100% - var(--s-3) - var(--fs-12) * var(--lh-normal) / 2); }
+.qf-timeline--stacked .qf-timeline__day { padding-left: calc(var(--sz-timeline-marker) + var(--s-3)); }
+
+/* ═══════════════════════════════════════════════════════════════
+   읽은 다음(014 · issue-hub 요청) — ToTop · Nudge · Figure · Footer. 전부 layer: generic.
+   동작(언제 보이고 숨기는가)은 소비처 JS 가 클래스를 붙였다 떼며, 여기는 모양과 클래스 계약만.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───── Actions: To top · layer: generic ───── */
+/* 오른쪽 아래에 떠 있는 둥근 아이콘 버튼(qf-i-chevron-up). 기본은 숨김, 한 화면 넘게 내려갔을 때 소비처가 .is-shown 을 붙인다.
+   44px 탭 대상, 엄지 자리. 바닥 광고 등으로 자리를 옮길 때 --qf-totop-bottom(기본 --safe-bottom = max(12px, 안전 영역)). */
+.qf-totop {
+  position: fixed; right: var(--s-5); bottom: var(--qf-totop-bottom, var(--safe-bottom)); z-index: var(--z-sticky);
+  display: inline-grid; place-items: center; width: var(--m-touch); height: var(--m-touch);
+  border: 1px solid var(--border); border-radius: var(--r-pill);
+  background: var(--bg-elevated); color: var(--text); box-shadow: var(--elev-3); cursor: pointer;
+  opacity: 0; visibility: hidden; transform: translateY(var(--s-3)); pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard), visibility 0s linear var(--dur-fast);
+}
+.qf-totop.is-shown { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition-delay: 0s; }
+.qf-totop:hover { background: var(--bg-hover); border-color: var(--border-strong); }
+.qf-totop:focus-visible { outline: none; box-shadow: var(--ring-focus), var(--elev-3); }
+
+/* ───── Feedback: Nudge · layer: generic ───── */
+/* 상단 바 아래 가운데에 떠서 "새 이슈 3건" 처럼 알리고 누르면 맨 위로 가며 새로 고치는 알약 버튼.
+   새 항목이 있을 때만 소비처가 DOM 에 넣고(마운트 모션: 위에서 내려옴) 누르거나 처리되면 제거한다 — is-* 클래스 없음.
+   --qf-nudge-top 으로 상단 바 높이(기본 --h-navbar)를 맞춘다. 흰 글자 위한 solid accent(AA). */
+@keyframes qf-nudge-in {
+  from { opacity: 0; transform: translate(-50%, calc(-1 * var(--s-6))); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.qf-nudge {
+  position: fixed; top: calc(var(--qf-nudge-top, var(--h-navbar)) + var(--s-3)); left: 50%; transform: translate(-50%, 0); z-index: var(--z-sticky);
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  height: var(--s-9); padding: 0 var(--s-5); border: none; border-radius: var(--r-pill);
+  background: var(--accent-solid); color: var(--text-onAccent); box-shadow: var(--elev-3);
+  font: 600 var(--fs-13)/1 var(--font-sans); white-space: nowrap; cursor: pointer; text-decoration: none;
+  animation: qf-nudge-in var(--dur-base) var(--ease-emphasized);
+}
+.qf-nudge:hover { background: var(--accent-solid-hover); }
+.qf-nudge:active { background: var(--accent-solid-press); }
+.qf-nudge:focus-visible { outline: none; box-shadow: var(--ring-focus), var(--elev-3); }
+@media (any-pointer: coarse) { .qf-nudge { height: var(--m-touch); } }
+
+/* ───── Media: Figure · layer: generic ───── */
+/* 그림 + 아래 한 줄 캡션. 캡션 링크는 색만이 아니라 밑줄 + qf-i-external 아이콘(소비처 마크업)으로 링크임을 보인다.
+   "이미지 출처: AI 생성" 같은 비링크 문구도 같은 자리. --qf-figure-max-h 로 그림 최대 높이(기본 제한 없음). */
+.qf-figure { margin: 0; display: grid; justify-items: center; gap: var(--s-2); }
+.qf-figure > img, .qf-figure > video {
+  display: block; width: auto; max-width: 100%; height: auto; max-height: var(--qf-figure-max-h, none); /* width/height 속성이 있어도 비율 유지 */
+  border-radius: var(--r-lg); background: var(--bg-media);
+}
+.qf-figure__caption { justify-self: start; font-size: var(--fs-13); line-height: var(--lh-snug); color: var(--text-muted); }
+.qf-figure__caption a {
+  color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--border-strong);
+  padding-block: var(--s-1);
+}
+.qf-figure__caption a:hover { color: var(--text); text-decoration-color: currentColor; }
+.qf-figure__caption a > svg { vertical-align: -0.15em; margin-left: var(--s-1); } /* 아이콘 클래스는 icons.css 영역이라 요소 선택자로 */
+
+/* ───── Layout: Footer · layer: generic ───── */
+/* 읽기 폭 안의 바닥글: 위 선 + 안내 문단(한 문단 권장, 줄 길이 제한) + 링크 줄. 링크는 13px 에 세로 패딩으로 탭 대상 ≥ 24px,
+   폰에서 두 줄로 감싸도 줄 사이 간격 유지(gap). 아래 여백은 안전 영역을 더한다. */
+.qf-footer {
+  margin-top: var(--s-10); padding-block: var(--s-7) calc(var(--s-6) + var(--safe-bottom)); /* block 만 — qf-container 와 같은 요소에 쓸 때 좌우 여백 보존 */
+  border-top: 1px solid var(--border);
+  color: var(--text-muted); font-size: var(--fs-13); line-height: var(--lh-normal);
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+.qf-footer__note { margin: 0; max-width: var(--container-w-narrow); }
+.qf-footer__note + .qf-footer__note { margin-top: var(--s-2); }
+.qf-footer__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-5); margin: var(--s-4) 0 0; padding: 0; list-style: none; }
+.qf-footer__links a {
+  display: inline-flex; align-items: center; padding-block: var(--s-2);
+  color: var(--text-secondary); font-size: var(--fs-13); text-decoration: none;
+}
+.qf-footer__links a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.qf-footer__links a:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--r-xs); }
+
+/* ═══════════════════════════════════════════════════════════════
+   넓은 화면의 2열(017 · issue-hub 요청) — TwoCol · Aside · RankList. 전부 layer: generic.
+   본문 열은 읽기 폭(--container-w-reading 720)을 그대로 두고 옆에 사이드 열(--sz-aside 300)을 둔다.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───── Layout: Two columns · layer: generic ───── */
+/* qf-container--wide(1200) 안에서 쓴다. 1열(기본): 본문 열 하나를 가운데(지금의 reading 컨테이너와 같은 모양), 사이드는 본문 뒤로.
+   2열(≥1100px): 본문 minmax(0, 720) + 사이드 300, 간격 --s-9(40). 두 열 묶음을 가운데 정렬해 1100~1200 에서도 본문이 720 을
+   유지하고 사이드가 좁아지지 않는다(1100 = 16 + 720 + 40 + 300 + 16 + 여유 8). 그 아래에서는 사이드가 내려간다. */
+.qf-twocol {
+  display: grid; grid-template-columns: minmax(0, var(--container-w-reading)); justify-content: center;
+  column-gap: var(--s-9); row-gap: var(--s-10);
+}
+.qf-twocol__main, .qf-twocol__aside { min-width: 0; }
+@media (min-width: 1100px) {
+  .qf-twocol { grid-template-columns: minmax(0, var(--container-w-reading)) var(--sz-aside); align-items: start; }
+  /* 사이드는 고정 상단 바 아래에 붙는다. 바가 숨으면(is-hidden) 날짜줄과 같은 방식으로 맨 위로 미끄러진다.
+     내용이 뷰포트보다 길면 아래가 가려지므로 사이드는 뷰포트보다 짧게(섹션 3~4개) 두는 것이 계약. */
+  .qf-twocol__aside { position: sticky; top: calc(var(--qf-aside-top, var(--h-navbar)) + var(--s-6)); transition: top var(--dur-base) var(--ease-standard); }
+  :root:has(.qf-navbar--sticky.is-hidden) .qf-twocol__aside { top: var(--s-6); }
+}
+
+/* ───── Layout: Aside · layer: generic ───── */
+/* 사이드 열의 내용: 섹션(제목 + 본문) 묶음. 본문보다 한 단계 조용한 톤, 상자·선 없이 열 자체가 구분. 제목은 qf-keypoints__title 과 같은 톤. */
+.qf-aside { display: flex; flex-direction: column; gap: var(--s-6); color: var(--text-secondary); font-size: var(--fs-14); }
+.qf-aside__section { min-width: 0; }
+.qf-aside__title {
+  margin: 0 0 var(--s-3);
+  font: 600 var(--fs-12)/var(--lh-tight) var(--font-sans); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--text-muted);
+}
+.qf-aside__section > :last-child { margin-bottom: 0; }
+
+/* ───── Display: Rank list · layer: generic ───── */
+/* 순위 목록(지금 뜨는 이슈 1~5). 번호는 CSS counter(순위가 의미) — 액센트, tabular-nums. 항목 전체가 링크: 제목 14px 600 두 줄 clamp + 메타 12px. */
+.qf-ranklist { list-style: none; margin: 0; padding: 0; counter-reset: qf-rank; display: flex; flex-direction: column; }
+.qf-ranklist__item { counter-increment: qf-rank; }
+.qf-ranklist__link {
+  display: grid; grid-template-columns: var(--s-7) minmax(0, 1fr); column-gap: var(--s-3); align-items: start;
+  padding: var(--s-3) var(--s-2); margin-inline: calc(-1 * var(--s-2)); border-radius: var(--r-md);
+  color: inherit; text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-standard);
+}
+.qf-ranklist__link::before {
+  content: counter(qf-rank); grid-row: 1 / span 2;
+  font: 700 var(--fs-14)/var(--lh-snug) var(--font-sans); font-variant-numeric: tabular-nums; color: var(--accent-text); text-align: center;
+}
+.qf-ranklist__title {
+  font: 600 var(--fs-14)/var(--lh-snug) var(--font-sans); color: var(--text-strong);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; word-break: keep-all; overflow-wrap: anywhere;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.qf-ranklist__meta { grid-column: 2; margin-top: var(--s-1); font-size: var(--fs-12); color: var(--text-muted); }
+.qf-ranklist__link:hover { background: var(--bg-row-hover); }
+.qf-ranklist__link:hover .qf-ranklist__title { color: var(--accent-text); }
+.qf-ranklist__link:visited .qf-ranklist__title { color: var(--text-secondary); }
+.qf-ranklist__link:visited:hover .qf-ranklist__title { color: var(--accent-text); }
+.qf-ranklist__link:focus-visible { outline: none; box-shadow: var(--ring-focus); }

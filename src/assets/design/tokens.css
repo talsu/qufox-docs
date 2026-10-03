@@ -1,4 +1,4 @@
-/*! qufox-design v0.6.2 — tokens.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
+/*! qufox-design v0.14.0 — tokens.css · https://design.qufox.com · 항상 최신 빌드(버전 핀은 벤더링) */
 /* qufox · design-system tokens
  * Dark-first. Semantic aliases flip under [data-theme="light"].
  * Import at the root of your stylesheet:
@@ -80,6 +80,7 @@
   --fs-14:  0.875rem;    /* 14px — secondary body */
   --fs-15:  0.9375rem;   /* 15px — message body (base) */
   --fs-16:  1rem;        /* 16px — settings body */
+  --fs-17:  1.0625rem;   /* 17px — 기사 소제목(본문 16 과 리드 18 사이, 016) */
   --fs-18:  1.125rem;    /* 18px — section titles */
   --fs-20:  1.25rem;     /* 20px — modal titles */
   --fs-24:  1.5rem;      /* 24px — page titles */
@@ -141,6 +142,7 @@
   --dur-base:      220ms;
   --dur-slow:      320ms;
   --dur-deliberate: 520ms;
+  --dur-toast-brief: 2400ms; /* qf-toast--brief 가 떠 있다 사라지기까지(014) */
   --dur-longpress: 500ms;   /* mobile press-and-hold → context sheet */
   --motion-typing: 1.4s;    /* qf-typing 3점 bounce 루프 */
 
@@ -150,6 +152,7 @@
   --z-drawer:    15;   /* mobile slide-in drawers — above header, below dropdowns */
   --z-dropdown:  20;
   --z-sticky:    30;
+  --z-header-sticky: 35; /* 고정 상단 바(qf-navbar--sticky) — 페이지 안 sticky(날짜줄 30) 위, 모바일 탭바(40) 아래 (014) */
   --z-tabbar:    40;   /* mobile bottom tab bar — global chrome above sticky content */
   /* Settings overlay (full-viewport popup) sits below alert dialogs so
      confirm prompts opened from within settings still land on top. */
@@ -187,13 +190,16 @@
   /* ───── Generic layout (범용 — 비-채팅 앱도 사용. app-layout 과 구분) ───── */
   --container-w:        960px;   /* 기본 본문 최대폭 */
   --container-w-narrow: 640px;   /* 폼·문서 */
+  --container-w-reading: 720px;  /* 목록형 읽기(뉴스·이슈·블로그 목록). narrow 는 좁고 기본은 행이 길다(011) */
   --container-w-wide:   1200px;  /* 대시보드·테이블 */
   --grid-cell-min:      240px;   /* qf-grid auto-fill 최소 셀폭 */
   --sidenav-w:          240px;   /* qf-app-shell / qf-sidenav 기본 폭 */
-  --aside-w:            280px;   /* qf-app-shell 우측 보조 패널(aside) 폭 — 3단 레이아웃 */
+  --aside-w:            280px;   /* qf-app-shell 우측 보조 패널(aside) 폭 — 3단 앱 셸 전용(읽기 페이지의 사이드 열은 --sz-aside) */
+  --sz-aside:           300px;   /* qf-twocol 사이드 열 폭(읽기 열 720 옆, 017). 2열 시작 1100px = 16+720+40+300+16 + 여유 8(overlay 스크롤바 기준). 앱 셸의 --aside-w 와 별개 */
   --h-navbar:           56px;    /* qf-navbar 높이 */
   --aspect-16x9:        16 / 9;  /* 미디어 슬롯 종횡비(비디오/썸네일) */
   --aspect-2x3:         2 / 3;   /* 미디어 슬롯 종횡비(포스터) */
+  --aspect-4x3:         4 / 3;   /* 미디어 슬롯 종횡비(뉴스 썸네일 · qf-story__media) */
   --shell-vh:           100dvh;  /* 풀뷰포트 셸 높이(dvh — 모바일 URL바/키보드 클리핑 방지) */
   --composer-max-h:     180px;   /* qf-composer auto-grow 성장 상한 */
   --composer-font-min:  16px;    /* qf-composer 입력 폰트 하한(iOS 줌 가드) */
@@ -224,6 +230,12 @@
   --sort-indicator-size: 12px;       /* qf-sort-toggle 방향 글리프 */
   --sz-status-dot-sm:   10px;        /* avatar-sm */
   --sz-status-dot-ring: var(--s-1);  /* 2px ring offset */
+  /* 뉴스형 목록 치수(010 · qf-story / qf-timeline). 소비처는 이 토큰을 덮어 밀도를 조절한다. */
+  --sz-story-media:      180px;      /* qf-story--pictured 썸네일 폭(데스크톱) */
+  --sz-story-media-sm:   100px;      /* 좁은 폭(≤600px) — 자리는 유지, 크기만 축소 */
+  --sz-story-media-lead: 280px;      /* qf-story--lead 썸네일 폭 */
+  --sz-timeline-time:    56px;       /* qf-timeline 시각 칸 폭(HH:MM) */
+  --sz-timeline-marker:  10px;       /* qf-timeline 마커 지름 */
 
   /* Message density — 2-tier: cozy(default) / compact. spacious reserved. */
   --msg-group-gap-cozy:     var(--s-5);   /* 16px gap before a new author group */
@@ -256,7 +268,7 @@
   --bg-floating:   var(--n-0);   /* popovers / command palette / autocomplete — darkest floating layer */
   --border:        var(--n-4);
   --border-strong: var(--n-6);
-  --divider:       var(--n-3);
+  --divider:       var(--n-3);   /* 패널·카드 *안* 의 미세 구분(리스트 행, 카드 헤더). bg-app 위 목록 분절선(qf-story, qf-dayrule, qf-timeline)은 --border — 라이트에서 --divider 는 1.15:1 로 거의 안 보임(011 규약) */
 
   /* 미디어 레터박스 표면 — 대비/커버 미디어 뒤 *무채색* 다크(neutral 표면은 night-lavender 틴트라
      영상/포스터 주위에 보라 헤일로가 낀다). 테마 반응. on-media 글래스(--on-media-*)와는 별개. */
@@ -327,6 +339,7 @@
   --danger-bg:     rgba(248,113,113,0.15);  /* danger 틴트 표면(badge/menu hover) */
   --danger-bgHov:  rgba(248,113,113,0.25);
   --ok-bg:         rgba(74,222,128,0.15);    /* success/online 틴트 */
+  --warn-bg:       rgba(251,191,36,0.15);    /* warn/idle 틴트(badge --warn). 양 테마 공통 알파 틴트(--ok-bg 와 동일 방식) */
   --bg-row-hover:  rgba(233,213,255,0.02);   /* 리스트/메시지 행 hover(테마별) */
   --accent-on-subtle: var(--a-200);          /* accent-subtle 표면 위 텍스트(badge/tag/mention) */
   --bg-track:      var(--n-5);               /* 스위치 off 트랙 등 컨트롤 표면 */
@@ -444,16 +457,20 @@
 }
 
 /* ───── Base element styles ───── */
+/* rem 기준(013): html 은 브라우저 기본(100% = 16px, 사용자 글자 크기 설정 존중)으로 두어 --fs-N 토큰이 이름대로 N px 가 된다.
+   본문 기본은 body 의 --fs-15. (이전에는 html 에도 --fs-15 를 주어 1rem = 15px, 모든 rem 토큰이 15/16 로 줄고
+   본문은 15 × 0.9375 = 14.06px 였다 — --fs-12 가 11.25px 로 렌더되던 원인.) */
+html { font-size: 100%; }
 html, body {
   margin: 0;
   background: var(--bg-app);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: var(--fs-15);
   line-height: var(--lh-normal);
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
 }
+body { font-size: var(--fs-15); }
 * { box-sizing: border-box; }
 
 /* Scrollbars (dark-aware) */
