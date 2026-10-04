@@ -92,8 +92,8 @@ export function createApp(context: AppContext): Hono {
   app.get(`/${SITEMAP_PATH}`, (c) =>
     textResponse(c, renderSitemap(config, index, href), "application/xml; charset=utf-8"),
   );
-  app.get(`/${ROBOTS_PATH}`, (c) =>
-    textResponse(c, renderRobots(config, href), "text/plain; charset=utf-8"),
+  app.get(`/${ROBOTS_PATH}`, async (c) =>
+    textResponse(c, await renderRobots(config, href), "text/plain; charset=utf-8"),
   );
   app.get("/favicon.ico", (c) =>
     config.site.favicon !== undefined

@@ -67,7 +67,7 @@ export async function exportSite(config: ResolvedConfig): Promise<BuildResult> {
   const sitemap = renderSitemap(config, site.index, href);
   if (feed !== null) await writeSite(outDir, FEED_PATH, feed);
   if (sitemap !== null) await writeSite(outDir, SITEMAP_PATH, sitemap);
-  await writeSite(outDir, ROBOTS_PATH, renderRobots(config, href));
+  await writeSite(outDir, ROBOTS_PATH, await renderRobots(config, href));
   if (config.site.url === undefined) {
     warnings.push("site.url is not set — the feed and sitemap were not written");
   }

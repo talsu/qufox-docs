@@ -102,7 +102,9 @@ are on the roadmap.
 
 With `site.url` set (or `QUFOX_SITE_URL`), the site also publishes an RSS feed at
 `/feed.xml` (the newest `feed.limit` posts, 20 by default), a `/sitemap.xml`, and
-canonical / OpenGraph tags on every page. `/robots.txt` is always served. Point
+canonical / OpenGraph tags on every page. `/robots.txt` is always served: put a
+`robots.txt` at the root of your content folder to set your own crawling policy,
+otherwise everything is allowed and the sitemap is announced. Point
 `site.favicon` at an image in the vault to give the site an icon.
 
 ## Redirects

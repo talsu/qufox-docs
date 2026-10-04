@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import type { ResolvedConfig } from "../config/schema.js";
 import type { Note, SiteIndex } from "../types.js";
 import type { Href } from "./url.js";
@@ -80,8 +82,17 @@ export function renderSitemap(config: ResolvedConfig, index: SiteIndex, href: Hr
   ].join("\n");
 }
 
-/** robots.txt allowing everything, pointing at the sitemap when it exists. */
-export function renderRobots(config: ResolvedConfig, href: Href): string {
+/**
+ * robots.txt. A `robots.txt` at the root of the content folder is the site's
+ * own policy and is served as written; otherwise everything is allowed and the
+ * sitemap, when there is one, is announced.
+ */
+export async function renderRobots(config: ResolvedConfig, href: Href): Promise<string> {
+  try {
+    return await readFile(join(config.contentDirAbs, ROBOTS_PATH), "utf8");
+  } catch {
+    // no site-provided file
+  }
   const sitemap = absoluteUrl(config, href, SITEMAP_PATH);
   return [
     "User-agent: *",

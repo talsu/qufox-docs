@@ -1,3 +1,6 @@
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it } from "vitest";
 import { createServer, type QufoxServer } from "../../src/boot.js";
@@ -189,5 +192,21 @@ describe("brand fonts", () => {
     expect(font.status).toBe(200);
     expect(font.headers.get("content-type")).toBe("font/woff2");
     expect(font.headers.get("cache-control")).toContain("immutable");
+  });
+});
+
+describe("site-provided robots.txt", () => {
+  it("is served as written instead of the generated one", async () => {
+    const dir = realpathSync(mkdtempSync(join(tmpdir(), "qufox-robots-")));
+    try {
+      writeFileSync(join(dir, "note.md"), "# Note\n\nBody.");
+      writeFileSync(join(dir, "robots.txt"), "User-agent: ExampleBot\nDisallow: /\n");
+      const config = await resolveConfig({ cwd: dir, mode: "serve", contentDir: ".", env: {} });
+      const custom = await createServer(config, { watch: false });
+      const text = await (await custom.app.request("/robots.txt")).text();
+      expect(text).toBe("User-agent: ExampleBot\nDisallow: /\n");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
